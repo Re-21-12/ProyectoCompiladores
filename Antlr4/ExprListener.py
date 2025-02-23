@@ -80,6 +80,15 @@ class ExprListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExprParser#mostrar.
+    def enterMostrar(self, ctx:ExprParser.MostrarContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#mostrar.
+    def exitMostrar(self, ctx:ExprParser.MostrarContext):
+        pass
+
+
     # Enter a parse tree produced by ExprParser#sentencia_if.
     def enterSentencia_if(self, ctx:ExprParser.Sentencia_ifContext):
         pass

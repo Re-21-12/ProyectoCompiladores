@@ -25,9 +25,9 @@ MENOSMENOS: '--';  // Operador de decremento
 IGUAL: '==';  // Operador de comparación igual
 DIFERENTE: '!=';  // Operador de comparación diferente
 PUNTO_Y_COMA: ';';  // Separador de expresiones en el ciclo for
-
+MOSTRAR: 'mostrar';  // Palabra clave para la sentencia mostrar
 // Ignorar espacios, tabulaciones y saltos de línea
-SIN_ESPACIO: [ \t\r\n]+ -> skip;
+SIN_ESPACIO: [ \t\r\n]+ -> skip; 
 
 
 gramatica: programa EOF;  // La gramática comienza con un bloque de sentencias y debe terminar en EOF
@@ -59,7 +59,11 @@ sentencia:
   | sentencia_if  // O una sentencia if
   | sentencia_while  // O una sentencia while
   | sentencia_for  // O una sentencia for
+  | mostrar // O una sentencia de mostrar
 ;
+
+mostrar:
+  MOSTRAR PARENTESIS_INICIAL expr PARENTESIS_FINAL PUNTO_Y_COMA;  // Sentencia de mostrar un valor
 
 sentencia_if:
   IF bloque_condicional (ELSE IF bloque_condicional)* (ELSE bloque_de_sentencia)?;  // Sentencia if con uno o más else if y un posible else
