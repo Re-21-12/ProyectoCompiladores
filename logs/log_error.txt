@@ -41,3 +41,64 @@
 2025-02-23 13:26:50,748 - ERROR - Error de sintaxis en la línea 3, columna 9: missing '=' at '('
 2025-02-23 13:26:50,748 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
 2025-02-23 13:26:50,748 - ERROR - Error en la evaluación: None
+2025-02-23 13:57:14,727 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:57:14,728 - ERROR - Error de sintaxis en la línea 2, columna 8: missing '=' at '('
+2025-02-23 13:57:14,728 - ERROR - Error de sintaxis en la línea 2, columna 11: mismatched input '=' expecting ')'
+2025-02-23 13:57:14,729 - ERROR - Error de sintaxis en la línea 2, columna 18: mismatched input '<' expecting '='
+2025-02-23 13:57:14,729 - ERROR - Error de sintaxis en la línea 2, columna 25: mismatched input '++' expecting '='
+2025-02-23 13:57:14,729 - ERROR - Error de sintaxis en la línea 3, columna 11: missing '=' at '('
+2025-02-23 13:57:14,729 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
+2025-02-23 13:57:14,730 - ERROR - Error en la evaluación: None
+2025-02-23 13:59:09,701 - ERROR - Ocurrió un error durante el análisis: [Errno 2] No such file or directory: 'good-input-files/mostrar_try.txt'
+2025-02-23 13:59:25,960 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:59:25,961 - ERROR - Error de sintaxis en la línea 3, columna 11: missing '=' at '('
+2025-02-23 13:59:25,962 - ERROR - Error en la evaluación: None
+2025-02-23 14:04:35,726 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 14:04:35,728 - ERROR - Error de sintaxis en la línea 5, columna 11: missing '=' at '('
+2025-02-23 14:04:35,728 - ERROR - Error en la evaluación: None
+2025-02-23 14:09:43,261 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 14:09:43,262 - ERROR - Error de sintaxis en la línea 4, columna 10: missing '=' at '('
+2025-02-23 14:09:43,263 - ERROR - Error de sintaxis en la línea 4, columna 13: mismatched input '<' expecting ')'
+2025-02-23 14:09:43,263 - ERROR - Error de sintaxis en la línea 4, columna 16: mismatched input ')' expecting '='
+2025-02-23 14:09:43,263 - ERROR - Error de sintaxis en la línea 5, columna 9: mismatched input '++' expecting '='
+2025-02-23 14:09:43,264 - ERROR - Error de sintaxis en la línea 6, columna 15: missing '=' at '('
+2025-02-23 14:09:43,264 - ERROR - Error de sintaxis en la línea 8, columna 0: extraneous input '}' expecting <EOF>
+2025-02-23 14:09:43,264 - ERROR - Error en la evaluación: None
+2025-02-23 14:12:27,956 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 14:12:27,958 - ERROR - Error de sintaxis en la línea 4, columna 10: missing '=' at '('
+2025-02-23 14:12:27,958 - ERROR - Error de sintaxis en la línea 4, columna 13: mismatched input '<' expecting ')'
+2025-02-23 14:12:27,959 - ERROR - Error de sintaxis en la línea 4, columna 16: mismatched input ')' expecting '='
+2025-02-23 14:12:27,959 - ERROR - Error de sintaxis en la línea 5, columna 9: mismatched input '++' expecting '='
+2025-02-23 14:12:27,959 - ERROR - Error de sintaxis en la línea 6, columna 15: missing '=' at '('
+2025-02-23 14:12:27,959 - ERROR - Error de sintaxis en la línea 8, columna 0: extraneous input '}' expecting <EOF>
+2025-02-23 14:12:27,960 - ERROR - Error en la evaluación: None
+2025-02-23 14:16:46,237 - ERROR - Error de sintaxis en la línea 4, columna 10: missing '=' at '('
+2025-02-23 14:16:46,238 - ERROR - Error de sintaxis en la línea 4, columna 13: mismatched input '<' expecting ')'
+2025-02-23 14:16:46,238 - ERROR - Error de sintaxis en la línea 4, columna 16: mismatched input ')' expecting '='
+2025-02-23 14:16:46,238 - ERROR - Error de sintaxis en la línea 5, columna 9: mismatched input '++' expecting '='
+2025-02-23 14:16:46,238 - ERROR - Error de sintaxis en la línea 6, columna 15: missing '=' at '('
+2025-02-23 14:16:46,239 - ERROR - Error de sintaxis en la línea 8, columna 0: extraneous input '}' expecting <EOF>
+2025-02-23 14:16:46,239 - ERROR - Error en la evaluación: None
+2025-02-23 14:18:35,145 - ERROR - Error de sintaxis en la línea 4, columna 10: missing '=' at '('
+2025-02-23 14:18:35,146 - ERROR - Error de sintaxis en la línea 4, columna 13: mismatched input '<' expecting ')'
+2025-02-23 14:18:35,146 - ERROR - Error de sintaxis en la línea 4, columna 16: mismatched input ')' expecting '='
+2025-02-23 14:18:35,146 - ERROR - Error de sintaxis en la línea 5, columna 9: mismatched input '++' expecting '='
+2025-02-23 14:18:35,146 - ERROR - Error de sintaxis en la línea 6, columna 15: missing '=' at '('
+2025-02-23 14:18:35,147 - ERROR - Error de sintaxis en la línea 8, columna 0: mismatched input '}' expecting <EOF>
+2025-02-23 14:18:35,147 - ERROR - Error en la evaluación: None
+2025-02-23 14:21:35,418 - ERROR - Error de sintaxis en la línea 6, columna 0: extraneous input 'EOF' expecting <EOF>
+2025-02-23 14:21:35,419 - ERROR - Error en la evaluación: None
+2025-02-23 14:22:18,387 - ERROR - Error de sintaxis en la línea 6, columna 0: mismatched input '<' expecting <EOF>
+2025-02-23 14:22:18,387 - ERROR - Error en la evaluación: None
+2025-02-23 14:23:06,004 - ERROR - Error en la evaluación: None
+2025-02-23 14:24:14,093 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
+2025-02-23 14:24:14,093 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 14:24:14,094 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 14:24:14,094 - ERROR - Error en la evaluación: None
+2025-02-23 14:29:39,189 - ERROR - Error de sintaxis en la línea 4, columna 10: missing '=' at '('
+2025-02-23 14:29:39,189 - ERROR - Error de sintaxis en la línea 4, columna 13: mismatched input '<' expecting ')'
+2025-02-23 14:29:39,190 - ERROR - Error de sintaxis en la línea 4, columna 16: mismatched input ')' expecting '='
+2025-02-23 14:29:39,190 - ERROR - Error de sintaxis en la línea 5, columna 9: mismatched input '++' expecting '='
+2025-02-23 14:29:39,190 - ERROR - Error de sintaxis en la línea 6, columna 15: missing '=' at '('
+2025-02-23 14:29:39,191 - ERROR - Error de sintaxis en la línea 9, columna 4: mismatched input 'if' expecting <EOF>
+2025-02-23 14:29:39,191 - ERROR - Error en la evaluación: None

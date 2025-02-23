@@ -33,7 +33,7 @@ SIN_ESPACIO: [ \t\r\n]+ -> skip;
 gramatica: programa EOF;  // La gramática comienza con un bloque de sentencias y debe terminar en EOF
 
 // Regla para el inicio del programa
-programa: LLAVES_INICIAL bloque LLAVES_FINAL;  // Programa envuelto entre llaves
+programa: VARIABLE LLAVES_INICIAL bloque LLAVES_FINAL;  // Programa envuelto entre llaves
 
 
 bloque: sentencia*;  // Un bloque puede contener cero o más sentencias
