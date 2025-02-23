@@ -1,0 +1,43 @@
+2025-02-22 23:27:00,848 - ERROR - Error de sintaxis en la línea 1, columna 18: mismatched input '<EOF>' expecting ')'
+2025-02-22 23:29:27,034 - ERROR - Error de sintaxis en la línea 1, columna 18: mismatched input '<EOF>' expecting ')'
+2025-02-22 23:30:15,577 - ERROR - Ocurrió un error durante el análisis: 'TerminalNodeImpl' object has no attribute 'getChildren'
+2025-02-22 23:30:32,426 - ERROR - Error de sintaxis en la línea 1, columna 18: mismatched input '<EOF>' expecting ')'
+2025-02-22 23:31:23,695 - ERROR - Error de sintaxis en la línea 1, columna 18: mismatched input '<EOF>' expecting ')'
+2025-02-23 11:56:59,061 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input '5' expecting <EOF>
+2025-02-23 11:57:12,334 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input '5' expecting <EOF>
+2025-02-23 12:31:05,154 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input '5' expecting <EOF>
+2025-02-23 12:36:54,315 - ERROR - Ocurrió un error durante el análisis: Variable no definida: x
+2025-02-23 13:03:41,067 - ERROR - Error en la evaluación: None
+2025-02-23 13:03:55,450 - ERROR - Error en la evaluación: None
+2025-02-23 13:07:42,035 - ERROR - Error de sintaxis en la línea 1, columna 7: mismatched input '{' expecting '='
+2025-02-23 13:07:42,037 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
+2025-02-23 13:07:42,037 - ERROR - Ocurrió un error durante el análisis: 'NoneType' object has no attribute 'accept'
+2025-02-23 13:12:41,761 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:12:41,763 - ERROR - Error en la evaluación: None
+2025-02-23 13:23:22,422 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:23:22,423 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
+2025-02-23 13:23:22,423 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 13:23:22,424 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 13:23:22,424 - ERROR - Error en la evaluación: None
+2025-02-23 13:26:01,928 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:26:01,930 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
+2025-02-23 13:26:01,930 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 13:26:01,931 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 13:26:01,931 - ERROR - Error en la evaluación: None
+2025-02-23 13:26:09,195 - ERROR - Ocurrió un error durante el análisis: [Errno 2] No such file or directory: 'input-files/for_try.txt'
+2025-02-23 13:26:35,247 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:26:35,248 - ERROR - Error de sintaxis en la línea 2, columna 8: missing '=' at '('
+2025-02-23 13:26:35,248 - ERROR - Error de sintaxis en la línea 2, columna 13: mismatched input 'i' expecting ')'
+2025-02-23 13:26:35,249 - ERROR - Error de sintaxis en la línea 2, columna 22: mismatched input '<' expecting '='
+2025-02-23 13:26:35,249 - ERROR - Error de sintaxis en la línea 2, columna 29: mismatched input '++' expecting '='
+2025-02-23 13:26:35,249 - ERROR - Error de sintaxis en la línea 3, columna 9: missing '=' at '('
+2025-02-23 13:26:35,250 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
+2025-02-23 13:26:35,250 - ERROR - Ocurrió un error durante el análisis: Variable no definida: var
+2025-02-23 13:26:50,746 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:26:50,746 - ERROR - Error de sintaxis en la línea 2, columna 8: missing '=' at '('
+2025-02-23 13:26:50,747 - ERROR - Error de sintaxis en la línea 2, columna 11: mismatched input '=' expecting ')'
+2025-02-23 13:26:50,747 - ERROR - Error de sintaxis en la línea 2, columna 18: mismatched input '<' expecting '='
+2025-02-23 13:26:50,748 - ERROR - Error de sintaxis en la línea 2, columna 25: mismatched input '++' expecting '='
+2025-02-23 13:26:50,748 - ERROR - Error de sintaxis en la línea 3, columna 9: missing '=' at '('
+2025-02-23 13:26:50,748 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
+2025-02-23 13:26:50,748 - ERROR - Error en la evaluación: None

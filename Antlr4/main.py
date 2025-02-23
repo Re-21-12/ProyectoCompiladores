@@ -1,0 +1,71 @@
+import sys
+import logging
+from antlr4 import *
+from antlr4.error.ErrorListener import ErrorListener
+# antlr4 -Dlanguage=Python3 -visitor Expr.g4
+from ExprLexer import ExprLexer
+from ExprParser import ExprParser
+from ExprVisitor import ExprVisitor
+
+# Configuración de los logs
+success_handler = logging.FileHandler("logs/log_success.txt")
+error_handler = logging.FileHandler("logs/log_error.txt")
+
+# Formato común para los logs
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+success_handler.setFormatter(formatter)
+error_handler.setFormatter(formatter)
+
+
+
+
+# Creación de los loggers
+success_logger = logging.getLogger("SuccessLogger")
+error_logger = logging.getLogger("ErrorLogger")
+
+# Asignar manejadores a los loggers
+success_logger.addHandler(success_handler)
+error_logger.addHandler(error_handler)
+
+# Establecer niveles de log
+success_logger.setLevel(logging.INFO)
+error_logger.setLevel(logging.ERROR)
+
+# Definición del ErrorListener personalizado
+class MyErrorListener(ErrorListener):
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        error_message = f"Error de sintaxis en la línea {line}, columna {column}: {msg}"
+        print(error_message)
+        error_logger.error(error_message)
+
+def main():
+    try:
+        # Ejemplo de entrada
+        input_stream = FileStream("input-files/for_try.txt")  # Expresión que quieres analizar
+        lexer = ExprLexer(input_stream)
+        token_stream = CommonTokenStream(lexer)
+        parser = ExprParser(token_stream)
+        parser.addErrorListener(MyErrorListener())  # Añadir el listener de errores
+        tree = parser.gramatica()  # Cambia a tu regla de entrada específica
+        print("Análisis sintáctico completado correctamente.")
+        print(tree.toStringTree(recog=parser))
+        
+        # Evaluar la expresión usando ExprVisitor
+        visitor = ExprVisitor()
+        result = visitor.visit(tree)  # Evalúa el árbol utilizando el visitante
+        print(f"Resultado de la evaluación: {result}")  # Imprime el resultado de la evaluación
+        
+        # Log de éxito
+        if result is None:
+            error_logger.error(f"Error en la evaluación: {result}")
+            
+        success_logger.info("Análisis sintáctico completado correctamente para la expresión válida.")
+        success_logger.info(f"Resultado de la evaluación: {result}")
+
+    except Exception as e:
+        # En caso de error, mostramos el mensaje y lo guardamos en el log de errores
+        print(f"Ocurrió un error: {e}")
+        error_logger.error(f"Ocurrió un error durante el análisis: {e}")
+
+if __name__ == "__main__":
+    main()
