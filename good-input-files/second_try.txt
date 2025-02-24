@@ -1,9 +1,9 @@
 program {
-x = 10;
-y = 20;
-z = x + y * 2;
+x entero = 10;
+y entero = 20;
+z entero = x + y * 2;
 if (z > 30) {
-w = z / 2;
+w entero = z / 2;
 } else {
 w = z - 5;
 }

@@ -71,12 +71,30 @@ class ExprListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExprParser#reasignacion.
+    def enterReasignacion(self, ctx:ExprParser.ReasignacionContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#reasignacion.
+    def exitReasignacion(self, ctx:ExprParser.ReasignacionContext):
+        pass
+
+
     # Enter a parse tree produced by ExprParser#sentencia.
     def enterSentencia(self, ctx:ExprParser.SentenciaContext):
         pass
 
     # Exit a parse tree produced by ExprParser#sentencia.
     def exitSentencia(self, ctx:ExprParser.SentenciaContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#tipo.
+    def enterTipo(self, ctx:ExprParser.TipoContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#tipo.
+    def exitTipo(self, ctx:ExprParser.TipoContext):
         pass
 
 
@@ -140,6 +158,15 @@ class ExprListener(ParseTreeListener):
 
     # Exit a parse tree produced by ExprParser#factor.
     def exitFactor(self, ctx:ExprParser.FactorContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#actualizacion.
+    def enterActualizacion(self, ctx:ExprParser.ActualizacionContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#actualizacion.
+    def exitActualizacion(self, ctx:ExprParser.ActualizacionContext):
         pass
 
 

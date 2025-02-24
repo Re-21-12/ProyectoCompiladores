@@ -102,3 +102,33 @@
 2025-02-23 14:29:39,190 - ERROR - Error de sintaxis en la línea 6, columna 15: missing '=' at '('
 2025-02-23 14:29:39,191 - ERROR - Error de sintaxis en la línea 9, columna 4: mismatched input 'if' expecting <EOF>
 2025-02-23 14:29:39,191 - ERROR - Error en la evaluación: None
+2025-02-23 16:52:27,997 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
+2025-02-23 16:52:27,998 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 16:52:27,999 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 16:52:27,999 - ERROR - Error en la evaluación: None
+2025-02-23 16:59:58,924 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
+2025-02-23 16:59:58,924 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 16:59:58,925 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 16:59:58,925 - ERROR - Error en la evaluación: None
+2025-02-23 17:05:33,331 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
+2025-02-23 17:05:33,331 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 17:05:33,332 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 17:05:33,332 - ERROR - Error en la evaluación: None
+2025-02-23 17:21:16,484 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
+2025-02-23 17:21:16,484 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 17:21:16,485 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 17:21:16,485 - ERROR - Error en la evaluación: None
+2025-02-23 17:30:30,381 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 17:30:30,381 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 17:30:30,382 - ERROR - Ocurrió un error durante el análisis: 'Sentencia_ifContext' object has no attribute 'bloque_condicional'
+2025-02-23 17:54:19,642 - ERROR - Error en la evaluación: None
+2025-02-23 17:55:08,428 - ERROR - Error en la evaluación: None
+2025-02-23 17:56:48,157 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 17:56:48,158 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 17:56:48,158 - ERROR - Ocurrió un error durante el análisis: 'Sentencia_ifContext' object has no attribute 'bloque_condicional'
+2025-02-23 18:00:33,638 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
+2025-02-23 18:00:33,639 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
+2025-02-23 18:00:33,639 - ERROR - Ocurrió un error durante el análisis: 'list' object has no attribute 'expr'
+2025-02-23 18:03:44,691 - ERROR - Error de sintaxis en la línea 8, columna 2: missing {'entero', 'decimal'} at '='
+2025-02-23 18:03:44,692 - ERROR - Ocurrió un error durante el análisis: 'list' object has no attribute 'expr'
+2025-02-23 18:08:03,350 - ERROR - Ocurrió un error durante el análisis: 'list' object has no attribute 'expr'

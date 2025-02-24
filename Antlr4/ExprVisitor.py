@@ -78,7 +78,14 @@ class ExprVisitor(ParseTreeVisitor):
     def visitSentencia(self, ctx:ExprParser.SentenciaContext):
         return self.visitChildren(ctx)
  
- 
+    # Visit a parse tree produced by ExprParser#tipo.
+    def visitTipo(self, ctx:ExprParser.TipoContext):
+        return self.visitChildren(ctx)
+
+   # Visit a parse tree produced by ExprParser#actualizacion.
+    def visitActualizacion(self, ctx:ExprParser.ActualizacionContext):
+        return self.visitChildren(ctx) 
+    
     # Visit a parse tree produced by ExprParser#sentencia_if.
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
         # Visitar la condición (bloque_condicional)
@@ -198,6 +205,4 @@ class ExprVisitor(ParseTreeVisitor):
         else:
             raise ValueError("Operación no soportada")
  
-
-
 del ExprParser

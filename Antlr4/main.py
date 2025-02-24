@@ -7,6 +7,8 @@ from ExprLexer import ExprLexer
 from ExprParser import ExprParser
 from ExprVisitor import ExprVisitor
 
+from antlr4.tree.Trees import Trees
+
 # Configuración de los logs
 success_handler = logging.FileHandler("logs/log_success.txt")
 error_handler = logging.FileHandler("logs/log_error.txt")
@@ -38,6 +40,16 @@ class MyErrorListener(ErrorListener):
         print(error_message)
         error_logger.error(error_message)
 
+def prettyPrintTree(tree, parser, indent=0):
+    """Imprime el árbol de análisis de forma estructurada."""
+    if tree.getChildCount() == 0:
+        print("  " * indent + str(tree.getText()))
+    else:
+        print("  " * indent + parser.ruleNames[tree.getRuleIndex()])
+        for i in range(tree.getChildCount()):
+            prettyPrintTree(tree.getChild(i), parser, indent + 1)
+
+
 def main():
     try:
         # Ejemplo de entrada
@@ -48,7 +60,7 @@ def main():
         parser.addErrorListener(MyErrorListener())  # Añadir el listener de errores
         tree = parser.gramatica()  # Cambia a tu regla de entrada específica
         print("Análisis sintáctico completado correctamente.")
-        print(tree.toStringTree(recog=parser))
+        prettyPrintTree(tree, parser)
         
         # Evaluar la expresión usando ExprVisitor
         visitor = ExprVisitor()
