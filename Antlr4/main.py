@@ -53,7 +53,7 @@ def prettyPrintTree(tree, parser, indent=0):
 def main():
     try:
         # Ejemplo de entrada
-        input_stream = FileStream("good-input-files/second_try.txt")  # Expresión que quieres analizar
+        input_stream = FileStream("good-input-files/first_try.txt")  # Expresión que quieres analizar
         lexer = ExprLexer(input_stream)
         token_stream = CommonTokenStream(lexer)
         parser = ExprParser(token_stream)

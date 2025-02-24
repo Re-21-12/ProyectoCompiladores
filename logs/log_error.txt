@@ -132,3 +132,10 @@
 2025-02-23 18:03:44,691 - ERROR - Error de sintaxis en la línea 8, columna 2: missing {'entero', 'decimal'} at '='
 2025-02-23 18:03:44,692 - ERROR - Ocurrió un error durante el análisis: 'list' object has no attribute 'expr'
 2025-02-23 18:08:03,350 - ERROR - Ocurrió un error durante el análisis: 'list' object has no attribute 'expr'
+2025-02-23 18:14:09,788 - ERROR - Ocurrió un error durante el análisis: 'list' object has no attribute 'expr'
+2025-02-23 18:15:49,585 - ERROR - Ocurrió un error durante el análisis: '>' not supported between instances of 'NoneType' and 'int'
+2025-02-23 18:18:42,762 - ERROR - Ocurrió un error durante el análisis: No se puede comparar None con un número
+2025-02-23 18:21:55,068 - ERROR - Ocurrió un error durante el análisis: No se puede comparar None con un número
+2025-02-23 18:23:11,347 - ERROR - Error en la evaluación: None
+2025-02-23 18:34:23,011 - ERROR - Ocurrió un error durante el análisis: 'DeclaracionContext' object has no attribute 'TIPO'
+2025-02-23 18:34:57,964 - ERROR - Error en la evaluación: None

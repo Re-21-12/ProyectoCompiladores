@@ -65,15 +65,48 @@ class ExprVisitor(ParseTreeVisitor):
  
         return None  # El bloque for no devuelve un valor directamente
  
+ 
+    def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
+        var_name = ctx.VARIABLE().getText()  # Obtener el nombre de la variable
+        new_value = self.visit(ctx.expr())  # Obtener el nuevo valor a asignar a la variable
+
+        if var_name in self.variables:  # Verificar si la variable ya está definida
+            original_value = self.variables[var_name]  # Obtener el valor original de la variable
+
+            # Validación "insana" del tipo
+            if isinstance(original_value, int) and not isinstance(new_value, int):
+                raise TypeError(f"Error de tipo: La variable '{var_name}' es de tipo 'int', pero se intentó asignar un valor de tipo {type(new_value)}")
+            elif isinstance(original_value, float) and not isinstance(new_value, float):
+                raise TypeError(f"Error de tipo: La variable '{var_name}' es de tipo 'float', pero se intentó asignar un valor de tipo {type(new_value)}")
+            else:
+                # Si el tipo coincide, realizar la reasignación
+                print(f"Reasignando {var_name} a {new_value}")
+                self.variables[var_name] = new_value  # Actualizar el valor de la variable
+        else:
+            raise NameError(f"Variable no definida: {var_name}")
+
+        return new_value  # Retornar el nuevo valor asignado
+ 
        # Visit a parse tree produced by ExprParser#declaracion.
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         var_name = ctx.VARIABLE().getText()  # Obtener el nombre de la variable
-        value = self.visit(ctx.getChild(2))  # Obtener el valor de la expresión (a la derecha del '=')
-        self.variables[var_name] = value  # Asignar el valor a la variable
-        print(f" Variable: {value}")
- 
+        var_type = ctx.tipo().getText()  # Obtener el tipo de la variable
+        value = self.visit(ctx.expr())  # Obtener el valor de la expresión
+
+        # Validación "insana" del tipo
+        if var_type == "entero":
+            if not isinstance(value, int):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'int' para la variable '{var_name}', pero se obtuvo {type(value)}")
+        elif var_type == "decimal":
+            if not isinstance(value, float):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'float' para la variable '{var_name}', pero se obtuvo {type(value)}")
+        else:
+            raise TypeError(f"Tipo de variable no soportado: {var_type}")
+
+        # Asignar el valor a la variable si pasa la validación
+        self.variables[var_name] = value
         return value  # Retornar el valor de la asignación
- 
+
     # Visit a parse tree produced by ExprParser#sentencia.
     def visitSentencia(self, ctx:ExprParser.SentenciaContext):
         return self.visitChildren(ctx)
@@ -88,22 +121,24 @@ class ExprVisitor(ParseTreeVisitor):
     
     # Visit a parse tree produced by ExprParser#sentencia_if.
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
-        # Visitar la condición (bloque_condicional)
-        condition_value = self.visit(ctx.bloque_condicional().expr())
+        # Comprobar si bloque_condicional es una lista
+        bloques_condicionales = ctx.bloque_condicional()
+        if isinstance(bloques_condicionales, list):
+            condition_value = self.visit(bloques_condicionales[0].expr())  # Accede al primer bloque
+        else:
+            condition_value = self.visit(bloques_condicionales.expr())  # Si no es lista, accede directamente
+        
         if condition_value:
-            # Si la condición es verdadera, visitar el bloque dentro del if
             self.visit(ctx.bloque_condicional().bloque_de_sentencia())
         else:
-            # Si hay un bloque ELSE, se evalúa
             if ctx.ELSE():
-                self.visit(ctx.bloque_de_sentencia())  # Visitar el bloque del else
-            # Si hay else ifs, recorrerlos
+                self.visit(ctx.bloque_de_sentencia())
             for elif_block in ctx.ELSEIF():
                 elif_condition = self.visit(elif_block.bloque_condicional().expr())
                 if elif_condition:
                     self.visit(elif_block.bloque_condicional().bloque_de_sentencia())
-                    break  # Si se ejecutó un bloque, no seguimos evaluando más condiciones
- 
+                    break
+
  
     # Visit a parse tree produced by ExprParser#sentencia_while.
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
@@ -143,14 +178,24 @@ class ExprVisitor(ParseTreeVisitor):
         elif operator.getText() == '-':
             result = left - right
         # Operadores de comparación
+   # Operadores de comparación
         elif operator.getText() == '<':
+            if left is None or right is None:
+                raise ValueError("No se puede comparar None con un número")
             result = left < right
         elif operator.getText() == '>':
+            if left is None or right is None:
+                raise ValueError("No se puede comparar None con un número")
             result = left > right
         elif operator.getText() == '<=':
+            if left is None or right is None:
+                raise ValueError("No se puede comparar None con un número")
             result = left <= right
         elif operator.getText() == '>=':
+            if left is None or right is None:
+                raise ValueError("No se puede comparar None con un número")
             result = left >= right
+
         else:
             raise ValueError(f"Operador desconocido {operator.getText()}")
  
