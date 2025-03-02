@@ -86,3 +86,5 @@
 2025-02-23 18:23:11,347 - INFO - Resultado de la evaluación: None
 2025-02-23 18:34:57,964 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
 2025-02-23 18:34:57,964 - INFO - Resultado de la evaluación: None
+2025-02-23 18:41:20,963 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-02-23 18:41:20,963 - INFO - Resultado de la evaluación: None
