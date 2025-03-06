@@ -174,3 +174,8 @@
 2025-03-06 12:56:42,458 - ERROR - Error en la evaluación: None
 2025-03-06 12:58:26,625 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
 2025-03-06 13:00:28,932 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 13:03:09,930 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 13:04:27,115 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 13:08:26,460 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 13:08:41,207 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 13:08:41,209 - ERROR - Error en la evaluación: None

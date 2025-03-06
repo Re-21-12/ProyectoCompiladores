@@ -54,7 +54,7 @@ def checkExtension(text):
 
 def main():
     try:
-        path_file = "good-input-files/while_try.txt"
+        path_file = "good-input-files/for_try.txt"
         # path_file = "bad-input-files/bad-division-try.txt"
         
         if not checkExtension(path_file):

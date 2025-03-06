@@ -48,8 +48,14 @@ class ExprVisitor(ParseTreeVisitor):
  
  
     # Visit a parse tree produced by ExprParser#bloque_de_sentencia.
-    def visitBloque_de_sentencia(self, ctx:ExprParser.Bloque_de_sentenciaContext):
-        return self.visitChildren(ctx)
+    def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
+    # Si el bloque contiene varias sentencias, ejecutarlas en orden
+        if ctx.sentencia():
+            for sentencia in ctx.sentencia():
+                self.visit(sentencia)
+        # Si el bloque es una sola sentencia, ejecutarla directamente
+        elif ctx.getChildCount() == 1:
+            self.visit(ctx.getChild(0))
  
  
     # Visit a parse tree produced by ExprParser#bloque_for.
@@ -110,8 +116,23 @@ class ExprVisitor(ParseTreeVisitor):
         return value  # Retornar el valor de la asignación
 
     # Visit a parse tree produced by ExprParser#sentencia.
-    def visitSentencia(self, ctx:ExprParser.SentenciaContext):
-        return self.visitChildren(ctx)
+    def visitSentencia(self, ctx: ExprParser.SentenciaContext):
+        if ctx.sentencia_if():
+            return self.visitSentencia_if(ctx.sentencia_if())
+        elif ctx.sentencia_while():
+            return self.visitSentencia_while(ctx.sentencia_while())
+        elif ctx.sentencia_for():
+            return self.visitSentencia_for(ctx.sentencia_for())
+        elif ctx.reasignacion():
+            return self.visitReasignacion(ctx.reasignacion())
+        elif ctx.declaracion():
+            return self.visitDeclaracion(ctx.declaracion())
+        elif ctx.mostrar():
+            return self.visitMostrar(ctx.mostrar())
+        elif ctx.actualizacion():  # Manejar actualización como sentencia
+            return self.visitActualizacion(ctx.actualizacion())
+        else:
+            raise ValueError("Sentencia no reconocida")
  
     # Visit a parse tree produced by ExprParser#tipo.
     def visitTipo(self, ctx:ExprParser.TipoContext):
@@ -129,8 +150,8 @@ class ExprVisitor(ParseTreeVisitor):
         elif ctx.MENOSMENOS():  # Manejar 'x--'
             self.variables[var_name] -= 1
         elif ctx.expr():  
-                new_value = self.visit(ctx.expr())  
-                self.variables[var_name] = new_value  
+            new_value = self.visit(ctx.expr())  
+            self.variables[var_name] = new_value  
       
         return self.variables[var_name]
     
