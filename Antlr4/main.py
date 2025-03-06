@@ -54,8 +54,8 @@ def checkExtension(text):
 
 def main():
     try:
-        path_file = "good-input-files/if_try.txt"
-        # path_file = "bad-input-files/bad-division-try.txt"
+        # path_file = "good-input-files/entero_decimal.txt"
+        path_file = "bad-input-files/bad-entero_decimal.txt"
         
         if not checkExtension(path_file):
             raise ValueError("El archivo debe tener una extensión .txt")

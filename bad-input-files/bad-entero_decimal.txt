@@ -1,0 +1,6 @@
+program{
+    x decimal = 12.5;
+    y entero = 2;
+    res entero = x / y; 
+    mostrar(res);
+}

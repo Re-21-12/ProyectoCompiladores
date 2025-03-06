@@ -234,3 +234,10 @@
 2025-03-06 16:30:21,471 - ERROR - Error en la evaluación: None
 2025-03-06 16:30:28,444 - ERROR - Error en la evaluación: None
 2025-03-06 16:30:54,249 - ERROR - Error en la evaluación: None
+2025-03-06 16:34:20,471 - ERROR - Ocurrió un error durante el análisis: Operador desconocido ==
+2025-03-06 16:35:32,334 - ERROR - Error en la evaluación: None
+2025-03-06 16:35:44,000 - ERROR - Error en la evaluación: None
+2025-03-06 16:37:38,532 - ERROR - Error en la evaluación: None
+2025-03-06 16:38:40,314 - ERROR - Ocurrió un error durante el análisis: Tipo de dato no soportado: <class 'float'>
+2025-03-06 16:42:57,310 - ERROR - Error en la evaluación: None
+2025-03-06 16:43:10,084 - ERROR - Ocurrió un error durante el análisis: Tipo de dato no soportado: <class 'float'>

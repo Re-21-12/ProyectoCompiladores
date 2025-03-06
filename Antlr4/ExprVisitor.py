@@ -13,7 +13,7 @@ def traducir_tipo(tipo):
     elif type(tipo) == float:
         return "decimal"
     else:
-        raise ValueError(f"Tipo de dato no soportado: {tipo}")
+        raise ValueError(f"El tipo de dato no es el correcto: {tipo}")
     
 
 class ExprVisitor(ParseTreeVisitor):
@@ -198,6 +198,14 @@ class ExprVisitor(ParseTreeVisitor):
             if left is None or right is None:
                 raise ValueError("No se puede comparar None con un número")
             result = left >= right
+        elif operator.getText() == '==':
+            if left is None or right is None:
+                raise ValueError("No se puede comparar None con un número")
+            result = left == right
+        elif operator.getText() == '!=':
+            if left is None or right is None:
+                raise ValueError("No se puede comparar None con un número")
+            result = left != right
         else:
             raise ValueError(f"Operador desconocido {operator.getText()}")
  
