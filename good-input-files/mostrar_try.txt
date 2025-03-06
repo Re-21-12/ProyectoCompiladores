@@ -1,6 +1,6 @@
 program{
-    x = 1;
-    y = 2;
-    z = x + y;
+    x entero = 1;
+    y entero = 2;
+    z entero = x + y;
     mostrar(z);
 }

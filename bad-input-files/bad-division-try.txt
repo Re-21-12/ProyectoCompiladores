@@ -1,0 +1,6 @@
+program{
+    numero1 entero = 0.0;
+    numero2 entero = 0.0;
+    resultado entero = numero1 / numero2;
+
+}

@@ -49,23 +49,31 @@ def prettyPrintTree(tree, parser, indent=0):
         for i in range(tree.getChildCount()):
             prettyPrintTree(tree.getChild(i), parser, indent + 1)
 
+def checkExtension(text):
+    return text.endswith('.txt') 
 
 def main():
     try:
-        # Ejemplo de entrada
-        input_stream = FileStream("good-input-files/first_try.txt")  # Expresión que quieres analizar
+        path_file = "good-input-files/while_try.txt"
+        # path_file = "bad-input-files/bad-division-try.txt"
+        
+        if not checkExtension(path_file):
+            raise ValueError("El archivo debe tener una extensión .txt")
+        
+        input_stream = FileStream(path_file)  # Expresión que quieres analizar
         lexer = ExprLexer(input_stream)
         token_stream = CommonTokenStream(lexer)
         parser = ExprParser(token_stream)
         parser.addErrorListener(MyErrorListener())  # Añadir el listener de errores
-        tree = parser.gramatica()  # Cambia a tu regla de entrada específica
+        tree = parser.gramatica()  # Cambiar regla de entrada específica
+        
         print("Análisis sintáctico completado correctamente.")
         prettyPrintTree(tree, parser)
         
         # Evaluar la expresión usando ExprVisitor
         visitor = ExprVisitor()
-        result = visitor.visit(tree)  # Evalúa el árbol utilizando el visitante
-        print(f"Resultado de la evaluación: {result}")  # Imprime el resultado de la evaluación
+        result = visitor.visit(tree)  # Evaluamos el árbol utilizando el visitor
+        print(f"Resultado de la evaluación: {result}")  # Imprimmimos el resultado de la evaluación
         
         # Log de éxito
         if result is None:

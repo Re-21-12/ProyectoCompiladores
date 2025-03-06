@@ -140,3 +140,26 @@
 2025-02-23 18:34:23,011 - ERROR - Ocurrió un error durante el análisis: 'DeclaracionContext' object has no attribute 'TIPO'
 2025-02-23 18:34:57,964 - ERROR - Error en la evaluación: None
 2025-02-23 18:41:20,963 - ERROR - Error en la evaluación: None
+2025-03-06 10:29:52,101 - ERROR - Ocurrió un error durante el análisis: Variable no definida: res
+2025-03-06 10:30:31,562 - ERROR - Error de sintaxis en la línea 2, columna 8: no viable alternative at input 'resnumero'
+2025-03-06 10:30:31,563 - ERROR - Error de sintaxis en la línea 3, columna 9: no viable alternative at input 'res2numero'
+2025-03-06 10:30:31,563 - ERROR - Error de sintaxis en la línea 4, columna 11: no viable alternative at input 'resresnumero'
+2025-03-06 10:30:31,564 - ERROR - Ocurrió un error durante el análisis: Variable no definida: numero
+2025-03-06 10:30:54,835 - ERROR - Error en la evaluación: None
+2025-03-06 10:30:59,498 - ERROR - Error en la evaluación: None
+2025-03-06 10:39:58,895 - ERROR - Error en la evaluación: None
+2025-03-06 10:42:18,850 - ERROR - Error en la evaluación: None
+2025-03-06 10:46:50,483 - ERROR - Error en la evaluación: None
+2025-03-06 10:51:12,879 - ERROR - Ocurrió un error durante el análisis: El archivo debe tener una extensión .txt
+2025-03-06 10:54:06,838 - ERROR - Ocurrió un error durante el análisis: [Errno 2] No such file or directory: 'bad-input-files/bad-negative-try.txt'
+2025-03-06 10:55:29,054 - ERROR - Ocurrió un error durante el análisis: [Errno 2] No such file or directory: 'bad-input-files/bad-negative-try.txt'
+2025-03-06 10:56:10,755 - ERROR - Error en la evaluación: None
+2025-03-06 10:56:39,269 - ERROR - Ocurrió un error durante el análisis: Variable no definida: asd
+2025-03-06 10:56:51,609 - ERROR - Ocurrió un error durante el análisis: Variable no definida: asd
+2025-03-06 11:05:38,316 - ERROR - Ocurrió un error durante el análisis: División por cero no permitida
+2025-03-06 11:06:03,837 - ERROR - Ocurrió un error durante el análisis: Error de tipo: Se esperaba un valor de tipo 'int' para la variable 'numero1', pero se obtuvo <class 'float'>
+2025-03-06 11:11:25,925 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 11:11:25,925 - ERROR - Ocurrió un error durante el análisis: Variable no definida: x
+2025-03-06 11:14:36,818 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 11:14:36,818 - ERROR - Ocurrió un error durante el análisis: Variable no definida: x
+2025-03-06 11:16:38,154 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'

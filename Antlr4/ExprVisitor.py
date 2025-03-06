@@ -7,6 +7,15 @@ else:
 
 # This class defines a complete generic visitor for a parse tree produced by ExprParser.
 
+# funciones auxiliares
+    def traducir_tipo(tipo):
+        if  type(tipo) == int:
+            return "entero"
+        elif type(tipo) == float:
+            return "decimal"
+        else:
+            raise ValueError(f"Tipo de dato no soportado: {tipo}")
+
 class ExprVisitor(ParseTreeVisitor):
 
   
@@ -96,10 +105,10 @@ class ExprVisitor(ParseTreeVisitor):
         # Validación "insana" del tipo
         if var_type == "entero":
             if not isinstance(value, int):
-                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'int' para la variable '{var_name}', pero se obtuvo {type(value)}")
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'int' para la variable '{var_name}', pero se obtuvo {traducir_tipo(type(value))}")
         elif var_type == "decimal":
             if not isinstance(value, float):
-                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'float' para la variable '{var_name}', pero se obtuvo {type(value)}")
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'float' para la variable '{var_name}', pero se obtuvo {traducir_tipo(type(value))}")
         else:
             raise TypeError(f"Tipo de variable no soportado: {var_type}")
 
@@ -117,7 +126,17 @@ class ExprVisitor(ParseTreeVisitor):
 
    # Visit a parse tree produced by ExprParser#actualizacion.
     def visitActualizacion(self, ctx:ExprParser.ActualizacionContext):
-        return self.visitChildren(ctx) 
+        var_name = ctx.VARIABLE().getText()
+
+        if var_name not in self.variables:
+            raise NameError(f"Variable no definida: {var_name}")
+
+        if ctx.INCREMENTO():  # Manejar 'x++'
+            self.variables[var_name] += 1
+        elif ctx.DECREMENTO():  # Manejar 'x--'
+            self.variables[var_name] -= 1
+
+        return self.variables[var_name]
     
     # Visit a parse tree produced by ExprParser#sentencia_if.
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
@@ -249,5 +268,7 @@ class ExprVisitor(ParseTreeVisitor):
             return self.variables[var_name]
         else:
             raise ValueError("Operación no soportada")
+ 
+
  
 del ExprParser
