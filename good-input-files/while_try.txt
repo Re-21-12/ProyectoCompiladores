@@ -1,6 +1,6 @@
 program{
     x entero = 0;
-    y entero = 10;
+    y entero = 10; 
     while (x < y){
         x++;
         mostrar(x);

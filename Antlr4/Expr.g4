@@ -57,24 +57,6 @@ programa: VARIABLE LLAVES_INICIAL bloque LLAVES_FINAL;
 
 bloque: sentencia*;  // Un bloque puede contener cero o más sentencias
 
-bloque_condicional:
-  PARENTESIS_INICIAL expr PARENTESIS_FINAL bloque_de_sentencia;  
-
-bloque_de_sentencia:
-  LLAVES_INICIAL bloque LLAVES_FINAL  // Bloque entre llaves
-  | sentencia  // O una sola sentencia
-;
-
-bloque_for:
-  FOR PARENTESIS_INICIAL declaracion PUNTO_Y_COMA expr PUNTO_Y_COMA expr PARENTESIS_FINAL bloque_de_sentencia; 
-
-
-declaracion:
-  VARIABLE tipo ASIGNACION expr PUNTO_Y_COMA;  // Una declaración es una variable asignada a una expresión seguida de un punto y coma
-
-reasignacion:
-  VARIABLE ASIGNACION expr PUNTO_Y_COMA;
-
 // Reglas de sentencias
 sentencia: 
     sentencia_if  
@@ -83,7 +65,36 @@ sentencia:
   | reasignacion  
   | declaracion  
   | mostrar 
+  | actualizacion
 ;
+
+sentencia_if:
+  IF bloque_condicional
+  (ELSE_IF bloque_condicional)*
+  (ELSE bloque_de_sentencia)?
+;
+
+sentencia_while:
+  WHILE bloque_condicional
+; 
+
+sentencia_for:
+  FOR PARENTESIS_INICIAL declaracion PUNTO_Y_COMA expr PUNTO_Y_COMA actualizacion PARENTESIS_FINAL bloque_de_sentencia;  
+
+
+bloque_condicional:
+  PARENTESIS_INICIAL expr PARENTESIS_FINAL bloque_de_sentencia;  
+
+bloque_de_sentencia:
+  LLAVES_INICIAL bloque LLAVES_FINAL  // Bloque entre llaves
+  | sentencia  // O una sola sentencia
+;
+
+declaracion:
+  VARIABLE tipo ASIGNACION expr PUNTO_Y_COMA;  // Una declaración es una variable asignada a una expresión seguida de un punto y coma
+
+reasignacion:
+  VARIABLE ASIGNACION expr PUNTO_Y_COMA;
 
 tipo:
 TIPO_ENTERO
@@ -93,16 +104,6 @@ TIPO_ENTERO
 mostrar:
   MOSTRAR PARENTESIS_INICIAL expr PARENTESIS_FINAL PUNTO_Y_COMA;  
 
-sentencia_if:
-  IF bloque_condicional
-  (ELSE_IF bloque_condicional)*
-  (ELSE bloque_de_sentencia)?;
-
-sentencia_while:
-  WHILE PARENTESIS_INICIAL expr PARENTESIS_FINAL bloque_de_sentencia; 
-
-sentencia_for:
-  FOR PARENTESIS_INICIAL declaracion PUNTO_Y_COMA expr PUNTO_Y_COMA actualizacion PARENTESIS_FINAL bloque_de_sentencia;  
 
 
 expr:
