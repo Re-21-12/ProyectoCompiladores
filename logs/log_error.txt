@@ -206,3 +206,24 @@
 2025-03-06 15:57:03,163 - ERROR - Error en la evaluación: None
 2025-03-06 15:58:41,679 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
 2025-03-06 15:58:41,681 - ERROR - Error en la evaluación: None
+2025-03-06 16:00:21,944 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 16:00:21,946 - ERROR - Error en la evaluación: None
+2025-03-06 16:00:40,522 - ERROR - Error de sintaxis en la línea 5, columna 11: mismatched input ';' expecting '}'
+2025-03-06 16:00:40,522 - ERROR - Error de sintaxis en la línea 8, columna 0: extraneous input '}' expecting <EOF>
+2025-03-06 16:00:40,523 - ERROR - Error en la evaluación: None
+2025-03-06 16:06:46,359 - ERROR - Error de sintaxis en la línea 5, columna 11: mismatched input ';' expecting '}'
+2025-03-06 16:06:46,359 - ERROR - Error de sintaxis en la línea 8, columna 0: extraneous input '}' expecting <EOF>
+2025-03-06 16:06:46,360 - ERROR - Error en la evaluación: None
+2025-03-06 16:06:57,990 - ERROR - Error de sintaxis en la línea 4, columna 4: missing ';' at '}'
+2025-03-06 16:06:57,990 - ERROR - Ocurrió un error durante el análisis: 'list' object has no attribute 'bloque_de_sentencia'
+2025-03-06 16:07:13,664 - ERROR - Ocurrió un error durante el análisis: 'list' object has no attribute 'bloque_de_sentencia'
+2025-03-06 16:13:52,618 - ERROR - Ocurrió un error durante el análisis: Variable no definida: hola
+2025-03-06 16:14:27,608 - ERROR - Error en la evaluación: None
+2025-03-06 16:14:48,322 - ERROR - Ocurrió un error durante el análisis: 'Sentencia_ifContext' object has no attribute 'ELSEIF'
+2025-03-06 16:23:14,199 - ERROR - Error en la evaluación: None
+2025-03-06 16:23:34,317 - ERROR - Error en la evaluación: None
+2025-03-06 16:24:58,033 - ERROR - Ocurrió un error durante el análisis: 'TerminalNodeImpl' object has no attribute 'bloque_condicional'
+2025-03-06 16:26:12,600 - ERROR - Error en la evaluación: None
+2025-03-06 16:26:39,999 - ERROR - Error en la evaluación: None
+2025-03-06 16:28:25,275 - ERROR - Ocurrió un error durante el análisis: 'ExprVisitor' object has no attribute 'visitDeclaracion'
+2025-03-06 16:29:35,482 - ERROR - Error en la evaluación: None

@@ -61,17 +61,24 @@ class ExprVisitor(ParseTreeVisitor):
             condition_value = self.visit(bloques_condicionales[0].expr())
         else:
             condition_value = self.visit(bloques_condicionales.expr())
- 
+
+        print(f"Condición IF: {condition_value}")
         if condition_value:
-            self.visit(ctx.bloque_condicional().bloque_de_sentencia())
+            print("Ejecutando bloque IF")
+            self.visit(bloques_condicionales[0].bloque_de_sentencia())
+            return
         else:
-            if ctx.ELSE():
-                self.visit(ctx.bloque_de_sentencia())
-            for elif_block in ctx.ELSEIF():
-                elif_condition = self.visit(elif_block.bloque_condicional().expr())
+            for i in range(1, len(bloques_condicionales)):
+                elif_condition = self.visit(bloques_condicionales[i].expr())
+                print(f"Condición ELSE IF {i}: {elif_condition}")
                 if elif_condition:
-                    self.visit(elif_block.bloque_condicional().bloque_de_sentencia())
-                    break
+                    print(f"Ejecutando bloque ELSE IF {i}")
+                    self.visit(bloques_condicionales[i].bloque_de_sentencia())
+                    return
+
+            if ctx.ELSE():
+                print("Ejecutando bloque ELSE")
+                self.visit(ctx.bloque_de_sentencia())
 
     # Visit a parse tree produced by ExprParser#sentencia_if.
     def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
@@ -155,8 +162,8 @@ class ExprVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExprParser#mostrar.
     def visitMostrar(self, ctx:ExprParser.MostrarContext):
-        return self.visitChildren(ctx)
-
+        value = self.visit(ctx.expr())
+        print(value)
 
     # Visit a parse tree produced by ExprParser#expr.
     def visitExpr(self, ctx: ExprParser.ExprContext):

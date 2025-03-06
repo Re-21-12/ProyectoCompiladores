@@ -1,0 +1,11 @@
+program{
+    x entero = 0;
+    if(x<0){
+        mostrar(2);
+    }else if(1>x){
+        mostrar(3);
+    }else{
+        mostrar(4);
+    }
+
+}
