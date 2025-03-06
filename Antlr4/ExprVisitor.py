@@ -55,25 +55,18 @@ class ExprVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by ExprParser#bloque_for.
     def visitBloque_for(self, ctx: ExprParser.Bloque_forContext):
         # Inicialización
-        init_expr = self.visit(ctx.expr(0))  # Expresión inicial
-        # Condición
-        condition_expr = self.visit(ctx.expr(1))  # Expresión de la condición
-        # Actualización
-        update_expr = self.visit(ctx.expr(2))  # Expresión de actualización
- 
-        # Ejecutar el ciclo while la condición sea verdadera
-        while condition_expr:
+        self.visit(ctx.expr(0))  # Ejecutar la expresión de inicialización
+
+        # Evaluar la condición antes de entrar al bucle
+        while self.visit(ctx.expr(1)):  # Evaluar la condición en cada iteración
             # Ejecutar el bloque dentro del for
-            self.visit(ctx.bloque())  # Visitar el bloque de código dentro del for
- 
-            # Actualizar la variable de control del for
-            update_expr = self.visit(ctx.expr(2))  # Evaluar la expresión de actualización
- 
-            # Volver a evaluar la condición
-            condition_expr = self.visit(ctx.expr(1))  # Evaluar la condición nuevamente
- 
+            self.visit(ctx.bloque())  
+
+            # Actualizar la variable de control
+            self.visit(ctx.expr(2))  
+
         return None  # El bloque for no devuelve un valor directamente
- 
+
  
     def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
         var_name = ctx.VARIABLE().getText()  # Obtener el nombre de la variable
@@ -131,11 +124,14 @@ class ExprVisitor(ParseTreeVisitor):
         if var_name not in self.variables:
             raise NameError(f"Variable no definida: {var_name}")
 
-        if ctx.INCREMENTO():  # Manejar 'x++'
+        if ctx.MASMAS():  # Manejar 'x++'
             self.variables[var_name] += 1
-        elif ctx.DECREMENTO():  # Manejar 'x--'
+        elif ctx.MENOSMENOS():  # Manejar 'x--'
             self.variables[var_name] -= 1
-
+        elif ctx.expr():  
+                new_value = self.visit(ctx.expr())  
+                self.variables[var_name] = new_value  
+      
         return self.variables[var_name]
     
     # Visit a parse tree produced by ExprParser#sentencia_if.
@@ -161,22 +157,23 @@ class ExprVisitor(ParseTreeVisitor):
  
     # Visit a parse tree produced by ExprParser#sentencia_while.
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
-    # Evaluar la condición del while
-        while self.visit(ctx.expr()):
-            self.visit(ctx.bloque_de_sentencia())  # Ejecutar el bloque de sentencia mientras la condición sea verdadera
+    # Evaluar la condición antes de entrar al bucle
+        while self.visit(ctx.expr()):  # Mientras la condición sea verdadera
+            # Ejecutar el bloque de sentencias dentro del while
+            self.visit(ctx.bloque_de_sentencia())
  
  
     # Visit a parse tree produced by ExprParser#sentencia_for.
     def visitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-    # Primero ejecutamos la declaración (asignación)
+        # Primero ejecutamos la declaración (asignación)
         self.visit(ctx.declaracion())
- 
-    # Condición del ciclo
+    
+        # Condición del ciclo
         while self.visit(ctx.expr()):
-        # Ejecutamos el bloque dentro del for
+            # Ejecutamos el bloque dentro del for
             self.visit(ctx.bloque_de_sentencia())
             # Realizamos el incremento/decremento de la variable en el ciclo
-            self.visit(ctx.getChild(4))  # El último hijo es la parte de actualización del ciclo
+            self.visit(ctx.actualizacion())  # Actualización de la variable de control
  
  
     # Visit a parse tree produced by ExprParser#expr.

@@ -163,3 +163,14 @@
 2025-03-06 11:14:36,818 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
 2025-03-06 11:14:36,818 - ERROR - Ocurrió un error durante el análisis: Variable no definida: x
 2025-03-06 11:16:38,154 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 12:37:51,640 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 12:41:05,562 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 12:41:08,084 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 12:45:38,123 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 12:45:39,692 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 12:54:01,936 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 12:54:01,938 - ERROR - Ocurrió un error durante el análisis: 'ActualizacionContext' object has no attribute 'INCREMENTO'
+2025-03-06 12:56:42,457 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 12:56:42,458 - ERROR - Error en la evaluación: None
+2025-03-06 12:58:26,625 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
+2025-03-06 13:00:28,932 - ERROR - Error de sintaxis en la línea 5, columna 9: no viable alternative at input 'x++'
