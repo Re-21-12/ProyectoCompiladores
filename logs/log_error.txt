@@ -227,3 +227,10 @@
 2025-03-06 16:26:39,999 - ERROR - Error en la evaluación: None
 2025-03-06 16:28:25,275 - ERROR - Ocurrió un error durante el análisis: 'ExprVisitor' object has no attribute 'visitDeclaracion'
 2025-03-06 16:29:35,482 - ERROR - Error en la evaluación: None
+2025-03-06 16:30:12,425 - ERROR - Error de sintaxis en la línea 5, columna 11: mismatched input ';' expecting '}'
+2025-03-06 16:30:12,425 - ERROR - Error de sintaxis en la línea 8, columna 0: extraneous input '}' expecting <EOF>
+2025-03-06 16:30:12,426 - ERROR - Error en la evaluación: None
+2025-03-06 16:30:21,469 - ERROR - Error de sintaxis en la línea 2, columna 23: missing ';' at 'i'
+2025-03-06 16:30:21,471 - ERROR - Error en la evaluación: None
+2025-03-06 16:30:28,444 - ERROR - Error en la evaluación: None
+2025-03-06 16:30:54,249 - ERROR - Error en la evaluación: None
