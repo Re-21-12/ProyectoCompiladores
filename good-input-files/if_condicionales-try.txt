@@ -1,7 +1,13 @@
 program{
     x entero = 1;
     y entero = 2;
-    if(x != y){
-        mostrar(3);
+    z entero = x + y * 5;
+
+    if(z > 10){
+    for (i entero = 0;; i < 10; i++) {
+        mostrar(i);
+    }   
+    }else{
+        mostrar(z);
     }
 }

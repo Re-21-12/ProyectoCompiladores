@@ -5,7 +5,7 @@ from antlr4.error.ErrorListener import ErrorListener
 # antlr4 -Dlanguage=Python3 -visitor Expr.g4
 from ExprLexer import ExprLexer
 from ExprParser import ExprParser
-from ExprVisitor import ExprVisitor
+from PersonalizatedVsitor import ExprVisitor
 
 from antlr4.tree.Trees import Trees
 
@@ -54,8 +54,8 @@ def checkExtension(text):
 
 def main():
     try:
-        # path_file = "good-input-files/entero_decimal.txt"
-        path_file = "bad-input-files/bad-entero_decimal.txt"
+        path_file = "good-input-files/if_condicionales-try.txt"
+        # path_file = "bad-input-files/bad-entero_decimal.txt"
         
         if not checkExtension(path_file):
             raise ValueError("El archivo debe tener una extensión .txt")

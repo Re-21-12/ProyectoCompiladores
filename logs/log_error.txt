@@ -241,3 +241,14 @@
 2025-03-06 16:38:40,314 - ERROR - Ocurrió un error durante el análisis: Tipo de dato no soportado: <class 'float'>
 2025-03-06 16:42:57,310 - ERROR - Error en la evaluación: None
 2025-03-06 16:43:10,084 - ERROR - Ocurrió un error durante el análisis: Tipo de dato no soportado: <class 'float'>
+2025-03-15 09:19:13,255 - ERROR - Ocurrió un error durante el análisis: El tipo de dato no es el correcto: <class 'float'>
+2025-03-15 09:21:49,252 - ERROR - Error en la evaluación: None
+2025-03-15 10:51:56,052 - ERROR - Error de sintaxis en la línea 7, columna 23: missing ';' at 'i'
+2025-03-15 10:51:56,053 - ERROR - Error de sintaxis en la línea 9, columna 5: missing '}' at 'else'
+2025-03-15 10:51:56,054 - ERROR - Error de sintaxis en la línea 13, columna 0: extraneous input '}' expecting <EOF>
+2025-03-15 10:51:56,055 - ERROR - Error en la evaluación: None
+2025-03-15 10:53:23,965 - ERROR - Error de sintaxis en la línea 7, columna 23: missing ';' at 'i'
+2025-03-15 10:53:23,967 - ERROR - Error en la evaluación: None
+2025-03-15 10:55:55,729 - ERROR - Error en la evaluación: None
+2025-03-15 10:56:45,597 - ERROR - Error en la evaluación: None
+2025-03-25 23:13:00,266 - ERROR - Error en la evaluación: None
