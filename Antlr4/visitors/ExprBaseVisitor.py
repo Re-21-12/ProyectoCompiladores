@@ -1,11 +1,10 @@
 from antlr4 import *
-from ExprParser import ExprParser
 
 class ExprBaseVisitor(ParseTreeVisitor):
     def __init__(self):
         self.variables = {}
 
-    def traducir_tipo(self, tipo):
+    def traducir_tipo( tipo):
         if isinstance(tipo, int):
             return "entero"
         elif isinstance(tipo, float):

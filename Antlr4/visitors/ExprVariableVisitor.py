@@ -1,6 +1,5 @@
 from ExprParser import ExprParser
-from  ExprBaseVisitor import ExprBaseVisitor
-
+from  visitors.ExprBaseVisitor import *
 
 class ExprVariableVisitor(ExprBaseVisitor):
 
@@ -10,9 +9,9 @@ class ExprVariableVisitor(ExprBaseVisitor):
         value = self.visit(ctx.expr())
 
         if var_type == "entero" and not isinstance(value, int):
-            raise TypeError(f"Error de tipo: Se esperaba un entero para '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+            raise TypeError(f"Error de tipo: Se esperaba un entero para '{var_name}', pero se obtuvo {ExprBaseVisitor.traducir_tipo(value)}")
         elif var_type == "decimal" and not isinstance(value, float):
-            raise TypeError(f"Error de tipo: Se esperaba un decimal para '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+            raise TypeError(f"Error de tipo: Se esperaba un decimal para '{var_name}', pero se obtuvo {ExprBaseVisitor.traducir_tipo(value)}")
 
         self.variables[var_name] = value
         return value
@@ -34,3 +33,23 @@ class ExprVariableVisitor(ExprBaseVisitor):
             raise NameError(f"Variable no definida: {var_name}")
 
         return new_value
+
+    def visitActualizacion(self, ctx: ExprParser.ActualizacionContext):
+        var_name = ctx.VARIABLE().getText()
+        print(f"Actualizando variable: {var_name}")
+ 
+        if var_name not in self.variables:
+            raise NameError(f"Variable no definida: {var_name}")
+ 
+        if ctx.MASMAS():
+            print(f"Incrementando {var_name}")
+            self.variables[var_name] += 1
+        elif ctx.MENOSMENOS():
+            print(f"Decrementando {var_name}")
+            self.variables[var_name] -= 1
+        elif ctx.expr():
+            new_value = self.visit(ctx.expr())
+            self.variables[var_name] = new_value
+ 
+        print(f"Nuevo valor de {var_name}: {self.variables[var_name]}")
+        return self.variables[var_name]

@@ -1,7 +1,7 @@
 from ExprParser import ExprParser
 
 
-from ExprBaseVisitor import ExprBaseVisitor
+from visitors.ExprBaseVisitor import *
 
 class ExprMathVisitor(ExprBaseVisitor):
 
