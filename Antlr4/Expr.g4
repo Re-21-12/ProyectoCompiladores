@@ -50,6 +50,9 @@ reasignacion:
 tipo:
 TIPO_ENTERO
 | TIPO_DECIMAL 
+| TIPO_BOOLEANO
+| TIPO_CADENA 
+
 ;
 
 mostrar:
@@ -69,8 +72,11 @@ factor:
   | PARENTESIS_INICIAL expr PARENTESIS_FINAL  // Paréntesis
   | NUMERO                     // Número entero
   | DECIMAL                    // Número decimal
+  | BOOLEANO                   // Valor booleano ('true' o 'false')
+  | CADENA                     // Cadena de texto entre comillas
   | VARIABLE                   // Variable
 ;
+
 actualizacion:
     VARIABLE ASIGNACION expr
   | VARIABLE MASMAS
@@ -90,6 +96,9 @@ MOSTRAR: 'mostrar';
 //Tipos de dato
 TIPO_ENTERO: 'entero';
 TIPO_DECIMAL: 'decimal';
+TIPO_CADENA: 'cadena';
+TIPO_BOOLEANO: 'bool';
+
 
 //Simbolo de asignacion
 ASIGNACION: '=';  
@@ -124,6 +133,8 @@ MAIN: 'main';
 
 //Tokens
 NUMERO: [0-9]+;  // Número entero
+BOOLEANO: 'true' | 'false';  // Valores booleanos permitidos
+CADENA: '"' (~["])* '"';  // Cadenas de texto entre comillas dobles
 VARIABLE: [a-zA-Z_][a-zA-Z0-9_]*;  // Nombre de variable (letras y números, empezando con letra o guion bajo)
 DECIMAL: [0-9]+ '.' [0-9]+;  // Número decimal
 SIN_ESPACIO: [ \t\r\n]+ -> skip; 

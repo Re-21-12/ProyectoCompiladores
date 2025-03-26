@@ -12,6 +12,11 @@ class ExprVariableVisitor(ExprBaseVisitor):
             raise TypeError(f"Error de tipo: Se esperaba un entero para '{var_name}', pero se obtuvo {ExprBaseVisitor.traducir_tipo(value)}")
         elif var_type == "decimal" and not isinstance(value, float):
             raise TypeError(f"Error de tipo: Se esperaba un decimal para '{var_name}', pero se obtuvo {ExprBaseVisitor.traducir_tipo(value)}")
+        elif var_type == "cadena" and not isinstance(value, str):
+            raise TypeError(f"Error de tipo: Se esperaba una cadena  para '{var_name}', pero se obtuvo {ExprBaseVisitor.traducir_tipo(value)}")
+        elif var_type == "bool" and not isinstance(value, bool):
+            raise TypeError(f"Error de tipo: Se esperaba un bool  para '{var_name}', pero se obtuvo {ExprBaseVisitor.traducir_tipo(value)}")
+
 
         self.variables[var_name] = value
         return value
@@ -27,12 +32,18 @@ class ExprVariableVisitor(ExprBaseVisitor):
                 raise TypeError(f"La variable '{var_name}' es un entero, pero se intentó asignar {self.traducir_tipo(new_value)}")
             elif isinstance(original_value, float) and not isinstance(new_value, float):
                 raise TypeError(f"La variable '{var_name}' es un decimal, pero se intentó asignar {self.traducir_tipo(new_value)}")
+            elif isinstance(original_value, str) and not isinstance(new_value, str):
+                raise TypeError(f"La variable '{var_name}' es una cadena, pero se intentó asignar {self.traducir_tipo(new_value)}")
+            elif isinstance(original_value, bool) and not isinstance(new_value, bool):
+                raise TypeError(f"La variable '{var_name}' es un bool, pero se intentó asignar {self.traducir_tipo(new_value)}")
 
+            # Si pasa todas las validaciones, actualizar el valor
             self.variables[var_name] = new_value
         else:
             raise NameError(f"Variable no definida: {var_name}")
 
         return new_value
+
 
     def visitActualizacion(self, ctx: ExprParser.ActualizacionContext):
         var_name = ctx.VARIABLE().getText()
