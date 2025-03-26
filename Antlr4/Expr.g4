@@ -17,6 +17,25 @@ sentencia:
   | declaracion  
   | mostrar 
   | actualizacion
+  | declaracion_funcion
+  | funcion_llamada
+;
+
+declaracion_funcion:
+  FUNCION VARIABLE tipo PARENTESIS_INICIAL parametros? PARENTESIS_FINAL LLAVES_INICIAL bloque RETURN expr PUNTO_Y_COMA LLAVES_FINAL
+;
+funcion_llamada:
+    VARIABLE PARENTESIS_INICIAL argumentos? PARENTESIS_FINAL
+;
+
+parametros:
+parametro (COMA parametro)* 
+;
+parametro:
+VARIABLE tipo 
+;
+argumentos:
+    expr (COMA expr)*
 ;
 
 sentencia_if:
@@ -72,7 +91,7 @@ factor:
   | PARENTESIS_INICIAL expr PARENTESIS_FINAL  // Paréntesis
   | NUMERO                     // Número entero
   | DECIMAL                    // Número decimal
-  | BOOLEANO                   // Valor booleano ('true' o 'false')
+  | BOOLEANO                   // Valor booleano ('verdadero' o 'falso')
   | CADENA                     // Cadena de texto entre comillas
   | VARIABLE                   // Variable
 ;
@@ -126,14 +145,17 @@ MENOSMENOS: '--';
 IGUAL: '==';  // Operador de comparación igual
 DIFERENTE: '!=';  // Operador de comparación diferente
 
+COMA: ',';
 PUNTO_Y_COMA: ';';  // Separador de expresiones en el ciclo for
 
-// MAIN
-MAIN: 'main';
+// KEYWORDS
+MAIN: 'hola';
+FUNCION: 'funcion';
+RETURN: 'retorna';
 
 //Tokens
 NUMERO: [0-9]+;  // Número entero
-BOOLEANO: 'true' | 'false';  // Valores booleanos permitidos
+BOOLEANO: 'verdadero' | 'falso';  // Valores booleanos permitidos
 CADENA: '"' (~["])* '"';  // Cadenas de texto entre comillas dobles
 VARIABLE: [a-zA-Z_][a-zA-Z0-9_]*;  // Nombre de variable (letras y números, empezando con letra o guion bajo)
 DECIMAL: [0-9]+ '.' [0-9]+;  // Número decimal

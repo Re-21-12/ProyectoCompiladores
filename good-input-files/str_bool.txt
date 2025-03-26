@@ -1,0 +1,9 @@
+hola{
+    y bool = verdadero;
+    z bool = verdadero;
+    x cadena = "hola mundo";
+
+    if(y == z){
+    mostrar(x);
+    }
+}

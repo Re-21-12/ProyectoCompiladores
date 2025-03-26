@@ -44,6 +44,51 @@ class ExprListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExprParser#declaracion_funcion.
+    def enterDeclaracion_funcion(self, ctx:ExprParser.Declaracion_funcionContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#declaracion_funcion.
+    def exitDeclaracion_funcion(self, ctx:ExprParser.Declaracion_funcionContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#funcion_llamada.
+    def enterFuncion_llamada(self, ctx:ExprParser.Funcion_llamadaContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#funcion_llamada.
+    def exitFuncion_llamada(self, ctx:ExprParser.Funcion_llamadaContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#parametros.
+    def enterParametros(self, ctx:ExprParser.ParametrosContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#parametros.
+    def exitParametros(self, ctx:ExprParser.ParametrosContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#parametro.
+    def enterParametro(self, ctx:ExprParser.ParametroContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#parametro.
+    def exitParametro(self, ctx:ExprParser.ParametroContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#argumentos.
+    def enterArgumentos(self, ctx:ExprParser.ArgumentosContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#argumentos.
+    def exitArgumentos(self, ctx:ExprParser.ArgumentosContext):
+        pass
+
+
     # Enter a parse tree produced by ExprParser#sentencia_if.
     def enterSentencia_if(self, ctx:ExprParser.Sentencia_ifContext):
         pass

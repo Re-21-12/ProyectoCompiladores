@@ -158,12 +158,16 @@ class PersonalizatedVisitor(ParseTreeVisitor):
             raise ValueError(f"Operador desconocido {operator.getText()}")
  
 
-    # Visit a parse tree produced by ExprParser#factor.
+        # Visit a parse tree produced by ExprParser#factor.
     def visitFactor(self, ctx: ExprParser.FactorContext):
         if ctx.NUMERO():
             return int(ctx.NUMERO().getText())
         elif ctx.DECIMAL():
             return float(ctx.DECIMAL().getText())
+        elif ctx.BOOLEANO():
+            return ctx.BOOLEANO().getText() == "verdadero"  # Devuelve True si es 'true', False si es 'false'
+        elif ctx.CADENA():
+            return ctx.CADENA().getText()[1:-1]  # Elimina las comillas de la cadena
         elif ctx.VARIABLE():
             var_name = ctx.VARIABLE().getText()
             if var_name in self.variables:
@@ -184,6 +188,7 @@ class PersonalizatedVisitor(ParseTreeVisitor):
             return self.variables[var_name]
         else:
             raise ValueError("Operación no soportada")
+
  
 
     # Visit a parse tree produced by ExprParser#actualizacion.
