@@ -266,3 +266,46 @@
 2025-03-26 12:21:34,183 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.traducir_tipo() missing 1 required positional argument: 'tipo'
 2025-03-26 12:22:24,076 - ERROR - Ocurrió un error durante el análisis: El tipo de dato no es el correcto: None
 2025-03-26 12:37:47,765 - ERROR - Error en la evaluación: None
+2025-03-26 12:44:56,364 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'program' expecting 'MAIN'
+2025-03-26 12:44:56,370 - ERROR - Error en la evaluación: None
+2025-03-26 12:45:59,141 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'MAIN' expecting 'MAIN'
+2025-03-26 12:45:59,147 - ERROR - Error en la evaluación: None
+2025-03-26 12:49:19,474 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'MAIN' expecting 'MAIN'
+2025-03-26 12:49:19,481 - ERROR - Error en la evaluación: None
+2025-03-26 12:56:09,763 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'MAIN' expecting 'MAIN'
+2025-03-26 12:56:09,769 - ERROR - Error en la evaluación: None
+2025-03-26 13:02:35,550 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'MAIN' expecting 'main'
+2025-03-26 13:02:35,557 - ERROR - Error en la evaluación: None
+2025-03-26 13:03:31,258 - ERROR - Error en la evaluación: None
+2025-03-26 13:06:48,473 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'MAIN' expecting 'main'
+2025-03-26 13:06:48,479 - ERROR - Error en la evaluación: None
+2025-03-26 13:07:12,245 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 13:07:12,255 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del programa
+2025-03-26 13:07:39,348 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 13:07:39,357 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del programa
+2025-03-26 13:07:52,750 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 13:07:52,756 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del programa
+2025-03-26 13:10:06,107 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 13:10:06,115 - ERROR - Error en la evaluación: None
+2025-03-26 13:12:21,255 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 13:12:21,260 - ERROR - Error en la evaluación: None
+2025-03-26 14:50:38,329 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 14:50:38,348 - ERROR - Error en la evaluación: None
+2025-03-26 14:51:34,734 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 14:51:34,740 - ERROR - Error en la evaluación: None
+2025-03-26 15:04:20,596 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 15:04:20,602 - ERROR - Error en la evaluación: None
+2025-03-26 15:06:42,510 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 15:06:42,514 - ERROR - Error en la evaluación: None
+2025-03-26 15:07:10,827 - ERROR - Error de sintaxis en la línea 1, columna 1: mismatched input 'main' expecting 'main'
+2025-03-26 15:07:10,831 - ERROR - Error en la evaluación: None
+2025-03-26 15:07:27,983 - ERROR - Error de sintaxis en la línea 1, columna 1: mismatched input 'main' expecting 'main'
+2025-03-26 15:07:27,991 - ERROR - Error en la evaluación: None
+2025-03-26 15:07:49,056 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 15:07:49,061 - ERROR - Error en la evaluación: None
+2025-03-26 15:07:53,664 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 15:07:53,668 - ERROR - Error en la evaluación: None
+2025-03-26 15:14:07,362 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
+2025-03-26 15:14:07,362 - ERROR - Error en la evaluación: None
+2025-03-26 15:15:30,893 - ERROR - Error en la evaluación: None
+2025-03-26 15:21:44,199 - ERROR - Error en la evaluación: None

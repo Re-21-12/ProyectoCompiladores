@@ -23,8 +23,10 @@ class PersonalizatedVisitor(ParseTreeVisitor):
 
 
     # Visit a parse tree produced by ExprParser#programa.
-    def visitPrograma(self, ctx:ExprParser.ProgramaContext):
+    def visitPrograma(self, ctx: ExprParser.ProgramaContext):
+      
         return self.visitChildren(ctx)
+
 
 
     # Visit a parse tree produced by ExprParser#bloque.

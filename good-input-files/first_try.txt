@@ -1,4 +1,4 @@
-program{
+main {
 x entero = 5;
 y entero = 3;
 z entero = x + y * 2;

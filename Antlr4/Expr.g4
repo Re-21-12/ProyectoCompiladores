@@ -1,58 +1,9 @@
 grammar Expr;
 
-
-// Palabras clave
-IF: 'if';
-ELSE_IF: 'else if';
-ELSE: 'else';
-WHILE: 'while';
-FOR: 'for';
-MOSTRAR: 'mostrar';
-
-//Tipos de dato
-TIPO_ENTERO: 'entero';
-TIPO_DECIMAL: 'decimal';
-
-//Simbolo de asignacion
-ASIGNACION: '=';  
-
-//Simbolos de agrupacion y estructura 
-PARENTESIS_INICIAL: '(';  // Paréntesis de apertura
-PARENTESIS_FINAL: ')';  // Paréntesis de cierre
-LLAVES_INICIAL: '{';  // Llave de apertura
-LLAVES_FINAL: '}';  // Llave de cierre
-
-//Operadores aritmeticos
-MAS: '+';  
-MENOS: '-';  
-MULTIPLICACION: '*';  
-DIVISION: '/';  
-MENOR_QUE: '<';  
-MAYOR_QUE: '>';  
-MENOR_IGUAL_QUE: '<=';  
-MAYOR_IGUAL_QUE: '>=';  
-
-//Operadores de decremento e incremeneto unario 
-MASMAS: '++';  
-MENOSMENOS: '--';
-
-IGUAL: '==';  // Operador de comparación igual
-DIFERENTE: '!=';  // Operador de comparación diferente
-
-PUNTO_Y_COMA: ';';  // Separador de expresiones en el ciclo for
-
-//Tokens
-NUMERO: [0-9]+;  // Número entero
-VARIABLE: [a-zA-Z_][a-zA-Z0-9_]*;  // Nombre de variable (letras y números, empezando con letra o guion bajo)
-DECIMAL: [0-9]+ '.' [0-9]+;  // Número decimal
-
-SIN_ESPACIO: [ \t\r\n]+ -> skip; 
-
-
 gramatica: programa EOF;  // La gramática comienza con un bloque de sentencias y debe terminar en EOF
 
 // Regla para el inicio del programa
-programa: VARIABLE LLAVES_INICIAL bloque LLAVES_FINAL; 
+programa: MAIN LLAVES_INICIAL bloque LLAVES_FINAL; 
 
 
 bloque: sentencia*;  // Un bloque puede contener cero o más sentencias
@@ -79,7 +30,7 @@ sentencia_while:
 ; 
 
 sentencia_for:
-  FOR PARENTESIS_INICIAL declaracion PUNTO_Y_COMA expr PUNTO_Y_COMA actualizacion PARENTESIS_FINAL bloque_de_sentencia;  
+  FOR PARENTESIS_INICIAL declaracion expr PUNTO_Y_COMA actualizacion PARENTESIS_FINAL bloque_de_sentencia;  
 
 
 bloque_condicional:
@@ -126,3 +77,53 @@ actualizacion:
   | VARIABLE MENOSMENOS
 ;
 
+// Reglas
+
+// Palabras clave
+IF: 'if';
+ELSE_IF: 'else if';
+ELSE: 'else';
+WHILE: 'while';
+FOR: 'for';
+MOSTRAR: 'mostrar';
+
+//Tipos de dato
+TIPO_ENTERO: 'entero';
+TIPO_DECIMAL: 'decimal';
+
+//Simbolo de asignacion
+ASIGNACION: '=';  
+
+//Simbolos de agrupacion y estructura 
+PARENTESIS_INICIAL: '(';  // Paréntesis de apertura
+PARENTESIS_FINAL: ')';  // Paréntesis de cierre
+LLAVES_INICIAL: '{';  // Llave de apertura
+LLAVES_FINAL: '}';  // Llave de cierre
+
+//Operadores aritmeticos
+MAS: '+';  
+MENOS: '-';  
+MULTIPLICACION: '*';  
+DIVISION: '/';  
+MENOR_QUE: '<';  
+MAYOR_QUE: '>';  
+MENOR_IGUAL_QUE: '<=';  
+MAYOR_IGUAL_QUE: '>=';  
+
+//Operadores de decremento e incremeneto unario 
+MASMAS: '++';  
+MENOSMENOS: '--';
+
+IGUAL: '==';  // Operador de comparación igual
+DIFERENTE: '!=';  // Operador de comparación diferente
+
+PUNTO_Y_COMA: ';';  // Separador de expresiones en el ciclo for
+
+// MAIN
+MAIN: 'main';
+
+//Tokens
+NUMERO: [0-9]+;  // Número entero
+VARIABLE: [a-zA-Z_][a-zA-Z0-9_]*;  // Nombre de variable (letras y números, empezando con letra o guion bajo)
+DECIMAL: [0-9]+ '.' [0-9]+;  // Número decimal
+SIN_ESPACIO: [ \t\r\n]+ -> skip; 
