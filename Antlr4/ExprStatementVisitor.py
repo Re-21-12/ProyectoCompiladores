@@ -1,5 +1,5 @@
-from Antlr4 import ExprParser
-from Antlr4.visitors import ExprBaseVisitor
+from ExprParser import ExprParser
+from ExprBaseVisitor import ExprBaseVisitor
 
 
 class ExprStatementVisitor(ExprBaseVisitor):

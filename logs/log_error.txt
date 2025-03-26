@@ -252,3 +252,6 @@
 2025-03-15 10:55:55,729 - ERROR - Error en la evaluación: None
 2025-03-15 10:56:45,597 - ERROR - Error en la evaluación: None
 2025-03-25 23:13:00,266 - ERROR - Error en la evaluación: None
+2025-03-26 00:47:04,537 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.__init__() takes 1 positional argument but 3 were given
+2025-03-26 00:53:50,767 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.__init__() takes 1 positional argument but 3 were given
+2025-03-26 00:55:19,770 - ERROR - Error en la evaluación: None

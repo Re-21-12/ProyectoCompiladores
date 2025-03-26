@@ -18,9 +18,6 @@ formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 success_handler.setFormatter(formatter)
 error_handler.setFormatter(formatter)
 
-
-
-
 # Creación de los loggers
 success_logger = logging.getLogger("SuccessLogger")
 error_logger = logging.getLogger("ErrorLogger")
