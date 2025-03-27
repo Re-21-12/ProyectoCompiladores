@@ -329,3 +329,13 @@
 2025-03-26 23:31:54,119 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'hola'
 2025-03-26 23:31:54,121 - ERROR - Error en la evaluación: None
 2025-03-26 23:32:34,513 - ERROR - Error en la evaluación: None
+2025-03-27 16:52:47,963 - ERROR - Error en la evaluación: None
+2025-03-27 16:53:24,621 - ERROR - Error en la evaluación: None
+2025-03-27 16:59:46,258 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'define_variable'
+2025-03-27 17:02:40,039 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'define_variable'
+2025-03-27 17:02:54,284 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'define_variable'
+2025-03-27 17:02:54,823 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'define_variable'
+2025-03-27 17:03:56,486 - ERROR - Error en la evaluación: None
+2025-03-27 17:06:20,125 - ERROR - Error en la evaluación: None
+2025-03-27 17:06:40,643 - ERROR - Error en la evaluación: None
+2025-03-27 17:07:01,239 - ERROR - Error en la evaluación: None

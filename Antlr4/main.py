@@ -5,7 +5,7 @@ from antlr4.error.ErrorListener import ErrorListener
 # antlr4 -Dlanguage=Python3 -visitor Expr.g4
 from ExprLexer import ExprLexer
 from ExprParser import ExprParser
-from PersonalizatedVisitor import PersonalizatedVisitor
+from ExprVisitor import ExprVisitor
 
 from antlr4.tree.Trees import Trees
 
@@ -68,7 +68,7 @@ def main():
         prettyPrintTree(tree, parser)
         
         # Evaluar la expresión usando ExprVisitor
-        visitor = PersonalizatedVisitor()
+        visitor = ExprVisitor()
         result = visitor.visit(tree)  # Evaluamos el árbol utilizando el visitor
         print(f"Resultado de la evaluación: {result}")  # Imprimmimos el resultado de la evaluación
         
