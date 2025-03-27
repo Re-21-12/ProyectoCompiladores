@@ -1,6 +1,8 @@
 import sys
 import logging
+import traceback
 from antlr4 import *
+
 from antlr4.error.ErrorListener import ErrorListener
 # antlr4 -Dlanguage=Python3 -visitor Expr.g4
 from ExprLexer import ExprLexer
@@ -82,7 +84,7 @@ def main():
     except Exception as e:
         # En caso de error, mostramos el mensaje y lo guardamos en el log de errores
         print(f"Ocurrió un error: {e}")
+        traceback.print_exc()  # Esto imprime más detalles sobre el error
         error_logger.error(f"Ocurrió un error durante el análisis: {e}")
-
 if __name__ == "__main__":
     main()

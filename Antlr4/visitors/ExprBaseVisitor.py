@@ -50,7 +50,7 @@ class ExprBaseVisitor(ParseTreeVisitor):
             return "decimal"
         elif isinstance(tipo, str):
             return "cadena"
-        elif isinstance(tipo, float):
+        elif isinstance(tipo, bool):
             return "bool"
         else:
             raise ValueError(f"El tipo de dato no es el correcto: {tipo}")
