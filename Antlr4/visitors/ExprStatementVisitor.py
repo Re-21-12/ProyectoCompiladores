@@ -20,7 +20,7 @@ class ExprStatementVisitor(ExprBaseVisitor):
         elif ctx.declaracion_funcion():
             return self.visitDeclaracion_funcion(ctx.declaracion_funcion())
         elif ctx.funcion_llamada():
-            return self.funcion_llamada(ctx.funcion_llamada())
+            return self.visitFuncion_llamada(ctx.funcion_llamada())
         else:
             raise ValueError("Sentencia no reconocida")
         

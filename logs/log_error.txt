@@ -341,3 +341,35 @@
 2025-03-27 00:21:16,791 - ERROR - Error de sintaxis en la línea 4, columna 19: no viable alternative at input 'returnnumeruno'
 2025-03-27 00:21:16,791 - ERROR - Error de sintaxis en la línea 6, columna 4: mismatched input 'primerafuncion' expecting <EOF>
 2025-03-27 00:21:16,791 - ERROR - Error en la evaluación: None
+2025-03-27 14:59:18,848 - ERROR - Error de sintaxis en la línea 3, columna 63: extraneous input 'enterodos' expecting {'entero', 'decimal', 'cadena', 'bool'}
+2025-03-27 14:59:18,849 - ERROR - Error de sintaxis en la línea 4, columna 19: no viable alternative at input 'returnnumeruno'
+2025-03-27 14:59:18,850 - ERROR - Error de sintaxis en la línea 6, columna 4: mismatched input 'primerafuncion' expecting <EOF>
+2025-03-27 14:59:18,850 - ERROR - Error en la evaluación: None
+2025-03-27 15:00:47,272 - ERROR - Error de sintaxis en la línea 4, columna 19: no viable alternative at input 'returnnumeruno'
+2025-03-27 15:00:47,272 - ERROR - Error de sintaxis en la línea 6, columna 4: mismatched input 'primerafuncion' expecting <EOF>
+2025-03-27 15:00:47,273 - ERROR - Error en la evaluación: None
+2025-03-27 15:02:40,291 - ERROR - Error de sintaxis en la línea 4, columna 19: no viable alternative at input 'returnnumeruno'
+2025-03-27 15:02:40,292 - ERROR - Error de sintaxis en la línea 6, columna 4: mismatched input 'primerafuncion' expecting <EOF>
+2025-03-27 15:02:40,292 - ERROR - Error en la evaluación: None
+2025-03-27 16:03:50,064 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'funcion_llamada'
+2025-03-27 16:15:56,715 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'funcion_llamada'
+2025-03-27 16:16:44,040 - ERROR - Ocurrió un error durante el análisis: Error: la función 'primerafuncion' espera 3 argumentos, pero recibió 2.
+2025-03-27 16:17:09,506 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute '_asignar_variable'
+2025-03-27 16:23:35,030 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'define_variable'
+2025-03-27 16:24:44,847 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'define_variable'
+2025-03-27 16:25:31,193 - ERROR - Ocurrió un error durante el análisis: Variable no definida: numeruno
+2025-03-27 16:28:07,552 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'define_variable'
+2025-03-27 16:33:00,756 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'enter_scope'
+2025-03-27 16:33:56,932 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.enter_scope() missing 1 required positional argument: 'self'
+2025-03-27 16:34:24,843 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'enter_scope'
+2025-03-27 16:35:34,090 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'enter_scope'
+2025-03-27 16:36:09,252 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.define_variable() missing 1 required positional argument: 'value'
+2025-03-27 16:36:33,935 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'get_variable'
+2025-03-27 16:37:55,476 - ERROR - Ocurrió un error durante el análisis: Variable no definida: numeruno
+2025-03-27 16:41:54,508 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'assign_variable'
+2025-03-27 16:42:50,290 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.define_variable() missing 1 required positional argument: 'value'
+2025-03-27 16:43:07,801 - ERROR - Error en la evaluación: None
+2025-03-27 16:43:15,682 - ERROR - Error en la evaluación: None
+2025-03-27 16:44:16,188 - ERROR - Error en la evaluación: None
+2025-03-27 16:50:54,431 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'ambitos'
+2025-03-27 16:52:10,022 - ERROR - Error en la evaluación: None
