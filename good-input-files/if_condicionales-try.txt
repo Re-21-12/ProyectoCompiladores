@@ -4,6 +4,7 @@ hola {
     z entero = x + y * 5;
 
     if(z > 10){
+
     for (i entero = 0; i < 10; i++) {
         mostrar(i);
     }   

@@ -43,7 +43,7 @@ class ExprFunctionsVisitor(ExprBaseVisitor):
             raise Exception(f"Error: la función '{nombre}' espera {len(parametros)} argumentos, pero recibió {len(argumentos)}.")
 
         # Guardar el contexto local de la función en el ámbito actual
-        self._entrar_ambito()
+        self.enter_scope()
         for param, arg in zip(parametros, argumentos):
             self._asignar_variable(param, arg)
 
@@ -51,7 +51,7 @@ class ExprFunctionsVisitor(ExprBaseVisitor):
         resultado = self.visit(funcion["retorna"])  # Evaluar la expresión de retorno
 
         # Salir del ámbito local
-        self._salir_ambito()
+        self.exit_scope()
 
         return resultado
 

@@ -1,0 +1,7 @@
+hola{
+
+    funcion primerafuncion entero (numerouno entero, numerodos enterodos entero ){
+            return numeruno + numerodos;
+        }
+    primerafuncion(3,4);
+}

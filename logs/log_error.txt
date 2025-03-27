@@ -329,3 +329,15 @@
 2025-03-26 23:31:54,119 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'hola'
 2025-03-26 23:31:54,121 - ERROR - Error en la evaluación: None
 2025-03-26 23:32:34,513 - ERROR - Error en la evaluación: None
+2025-03-27 00:20:39,001 - ERROR - Error de sintaxis en la línea 3, columna 63: extraneous input 'enterodos' expecting {'entero', 'decimal', 'cadena', 'bool'}
+2025-03-27 00:20:39,002 - ERROR - Error de sintaxis en la línea 4, columna 19: no viable alternative at input 'returnnumeruno'
+2025-03-27 00:20:39,002 - ERROR - Error de sintaxis en la línea 6, columna 4: mismatched input 'mostrar' expecting <EOF>
+2025-03-27 00:20:39,002 - ERROR - Error en la evaluación: None
+2025-03-27 00:20:44,062 - ERROR - Error de sintaxis en la línea 3, columna 63: extraneous input 'enterodos' expecting {'entero', 'decimal', 'cadena', 'bool'}
+2025-03-27 00:20:44,063 - ERROR - Error de sintaxis en la línea 4, columna 19: no viable alternative at input 'returnnumeruno'
+2025-03-27 00:20:44,064 - ERROR - Error de sintaxis en la línea 6, columna 4: mismatched input 'mostrar' expecting <EOF>
+2025-03-27 00:20:44,064 - ERROR - Error en la evaluación: None
+2025-03-27 00:21:16,790 - ERROR - Error de sintaxis en la línea 3, columna 63: extraneous input 'enterodos' expecting {'entero', 'decimal', 'cadena', 'bool'}
+2025-03-27 00:21:16,791 - ERROR - Error de sintaxis en la línea 4, columna 19: no viable alternative at input 'returnnumeruno'
+2025-03-27 00:21:16,791 - ERROR - Error de sintaxis en la línea 6, columna 4: mismatched input 'primerafuncion' expecting <EOF>
+2025-03-27 00:21:16,791 - ERROR - Error en la evaluación: None

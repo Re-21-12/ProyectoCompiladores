@@ -51,7 +51,7 @@ def checkExtension(text):
 
 def main():
     try:
-        path_file = "good-input-files/if_condicionales-try.txt"
+        path_file = "good-input-files/funcion.txt"
         # path_file = "bad-input-files/bad-entero_decimal.txt"
         
         if not checkExtension(path_file):
