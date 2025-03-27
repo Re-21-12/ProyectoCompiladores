@@ -1,4 +1,4 @@
-main {
+hola {
     x entero = 1;
     y entero = 2;
     z entero = x + y * 5;

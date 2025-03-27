@@ -1,6 +1,4 @@
 from ExprParser import ExprParser
-
-
 from visitors.ExprBaseVisitor import *
 
 class ExprMathVisitor(ExprBaseVisitor):
@@ -56,6 +54,8 @@ class ExprMathVisitor(ExprBaseVisitor):
             return float(ctx.DECIMAL().getText())
         elif ctx.VARIABLE():
             var_name = ctx.VARIABLE().getText()
-            if var_name in self.variables:
-                return self.variables[var_name]
-            raise NameError(f"Variable no definida: {var_name}")
+            # Buscar la variable en los ámbitos
+            try:
+                return self.get_variable(var_name)  # Se busca la variable en los ámbitos
+            except NameError:
+                raise NameError(f"Variable no definida: {var_name}")
