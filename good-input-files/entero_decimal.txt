@@ -1,6 +1,8 @@
-program{
+hola{
     x decimal = 12.5;
     y entero = 2;
     res decimal = x / y; 
+    for(i entero = 0; i < 5; i++){
     mostrar(res);
+    }
 }

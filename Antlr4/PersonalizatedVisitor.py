@@ -68,11 +68,13 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprMath
 
     def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
         if ctx.sentencia():
+            result = None
             for sentencia in ctx.sentencia():
-                self.visit(sentencia)
+                result = self.visit(sentencia)
+            return result
         elif ctx.getChildCount() == 1:
-            return self.visit(ctx.getChild(0))  # Agregamos return aquí
-        return None  # Retornamos None explícitamente
+            return self.visit(ctx.getChild(0))
+        return None
 
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         return super().visitSentencia_while( ctx)

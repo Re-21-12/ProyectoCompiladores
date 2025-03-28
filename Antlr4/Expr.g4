@@ -57,8 +57,8 @@ bloque_condicional:
 ;  
 
 bloque_de_sentencia:
-  LLAVES_INICIAL bloque LLAVES_FINAL  // Bloque entre llaves
-  | sentencia  // O una sola sentencia
+  sentencia  // O una sola sentencia
+  |LLAVES_INICIAL bloque LLAVES_FINAL  // Bloque entre llaves
 ;
 
 declaracion:
