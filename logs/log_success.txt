@@ -1,11 +1,29 @@
-2025-03-28 13:00:36,291 - INFO - Análisis sintáctico completado sin errores
-2025-03-28 13:00:36,291 - INFO - 
+2025-03-28 16:31:25,752 - INFO - Análisis sintáctico completado sin errores
+2025-03-28 16:31:25,752 - INFO - 
 === TABLA DE SÍMBOLOS ===
-2025-03-28 13:00:36,291 - INFO - 
+2025-03-28 16:31:25,752 - INFO - 
 Ámbito:
-2025-03-28 13:00:36,291 - INFO - 
+2025-03-28 16:31:25,752 - INFO - 
 === FUNCIONES DECLARADAS ===
-2025-03-28 13:00:36,291 - INFO -   primerafuncion(numerouno:entero, numerodos:entero) -> entero
-2025-03-28 13:00:36,291 - INFO - Análisis semántico completado sin errores
-2025-03-28 13:00:36,291 - INFO - Programa ejecutado correctamente (sin valor de retorno)
-2025-03-28 13:00:36,291 - INFO - Proceso completado exitosamente
+2025-03-28 16:31:25,752 - INFO -   primerafuncion(numerouno:entero, numerodos:entero) -> entero
+2025-03-28 16:31:25,752 - INFO - Análisis semántico completado sin errores
+2025-03-28 16:31:25,752 - INFO - Programa ejecutado correctamente (sin valor de retorno)
+2025-03-28 16:31:25,752 - INFO - Proceso completado exitosamente
+2025-03-28 16:33:12,545 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 16:33:12,545 - INFO - Resultado de la evaluación: None
+2025-03-28 16:47:24,382 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 16:47:24,382 - INFO - Resultado de la evaluación: None
+2025-03-28 16:48:45,113 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 16:48:45,113 - INFO - Resultado de la evaluación: None
+2025-03-28 16:50:07,431 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 16:50:07,431 - INFO - Resultado de la evaluación: None
+2025-03-28 16:57:26,190 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 16:57:26,190 - INFO - Resultado de la evaluación: None
+2025-03-28 16:59:08,687 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 16:59:08,687 - INFO - Resultado de la evaluación: None
+2025-03-28 17:00:13,723 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 17:00:13,723 - INFO - Resultado de la evaluación: None
+2025-03-28 17:02:13,830 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 17:02:13,830 - INFO - Resultado de la evaluación: None
+2025-03-28 17:03:05,875 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 17:03:05,875 - INFO - Resultado de la evaluación: None
