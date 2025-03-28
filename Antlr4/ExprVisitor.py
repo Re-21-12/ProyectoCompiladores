@@ -163,7 +163,7 @@ class ExprVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by ExprParser#mostrar.
     def visitMostrar(self, ctx:ExprParser.MostrarContext):
         value = self.visit(ctx.expr())
-        print(value)
+        print("mostrando" , value)
 
     # Visit a parse tree produced by ExprParser#expr.
     def visitExpr(self, ctx: ExprParser.ExprContext):

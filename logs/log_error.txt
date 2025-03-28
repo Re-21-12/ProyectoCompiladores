@@ -339,3 +339,6 @@
 2025-03-27 17:06:20,125 - ERROR - Error en la evaluación: None
 2025-03-27 17:06:40,643 - ERROR - Error en la evaluación: None
 2025-03-27 17:07:01,239 - ERROR - Error en la evaluación: None
+2025-03-28 00:49:26,757 - ERROR - Error en la evaluación: None
+2025-03-28 00:50:21,604 - ERROR - Ocurrió un error durante el análisis: can only concatenate str (not "int") to str
+2025-03-28 00:50:43,865 - ERROR - Error en la evaluación: None
