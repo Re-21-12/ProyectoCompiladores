@@ -60,8 +60,8 @@ def serializedATN():
         28,0,0,130,132,3,36,18,0,131,129,1,0,0,0,132,135,1,0,0,0,133,131,
         1,0,0,0,133,134,1,0,0,0,134,23,1,0,0,0,135,133,1,0,0,0,136,137,5,
         12,0,0,137,138,3,36,18,0,138,139,5,13,0,0,139,140,3,26,13,0,140,
-        25,1,0,0,0,141,142,5,14,0,0,142,143,3,4,2,0,143,144,5,15,0,0,144,
-        147,1,0,0,0,145,147,3,6,3,0,146,141,1,0,0,0,146,145,1,0,0,0,147,
+        25,1,0,0,0,141,147,3,6,3,0,142,143,5,14,0,0,143,144,3,4,2,0,144,
+        145,5,15,0,0,145,147,1,0,0,0,146,141,1,0,0,0,146,142,1,0,0,0,147,
         27,1,0,0,0,148,149,5,36,0,0,149,150,3,32,16,0,150,151,5,11,0,0,151,
         152,3,36,18,0,152,153,5,29,0,0,153,29,1,0,0,0,154,155,5,36,0,0,155,
         156,5,11,0,0,156,157,3,36,18,0,157,158,5,29,0,0,158,31,1,0,0,0,159,
@@ -1187,6 +1187,10 @@ class ExprParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
+        def sentencia(self):
+            return self.getTypedRuleContext(ExprParser.SentenciaContext,0)
+
+
         def LLAVES_INICIAL(self):
             return self.getToken(ExprParser.LLAVES_INICIAL, 0)
 
@@ -1196,10 +1200,6 @@ class ExprParser ( Parser ):
 
         def LLAVES_FINAL(self):
             return self.getToken(ExprParser.LLAVES_FINAL, 0)
-
-        def sentencia(self):
-            return self.getTypedRuleContext(ExprParser.SentenciaContext,0)
-
 
         def getRuleIndex(self):
             return ExprParser.RULE_bloque_de_sentencia
@@ -1229,19 +1229,19 @@ class ExprParser ( Parser ):
             self.state = 146
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [14]:
+            if token in [1, 4, 5, 6, 31, 36]:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 141
-                self.match(ExprParser.LLAVES_INICIAL)
-                self.state = 142
-                self.bloque()
-                self.state = 143
-                self.match(ExprParser.LLAVES_FINAL)
-                pass
-            elif token in [1, 4, 5, 6, 31, 36]:
-                self.enterOuterAlt(localctx, 2)
-                self.state = 145
                 self.sentencia()
+                pass
+            elif token in [14]:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 142
+                self.match(ExprParser.LLAVES_INICIAL)
+                self.state = 143
+                self.bloque()
+                self.state = 144
+                self.match(ExprParser.LLAVES_FINAL)
                 pass
             else:
                 raise NoViableAltException(self)

@@ -46,27 +46,35 @@ class ExprStatementVisitor( ExprFunctionsVisitor):
         return super().visitArgumentos(ctx)
     
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
+        # Obtener todos los bloques condicionales (if + elifs)
         bloques_condicionales = ctx.bloque_condicional()
-        if isinstance(bloques_condicionales, list):
-            condition_value = self.visit(bloques_condicionales[0].expr())
-        else:
-            condition_value = self.visit(bloques_condicionales.expr())
-
-        print(f"Condición del if: {condition_value}")  # Debug para ver el valor de la condición
-        if condition_value:
-            self.visit(bloques_condicionales[0].bloque_de_sentencia())
-            return
-        else:
-            for i in range(1, len(bloques_condicionales)):
-                elif_condition = self.visit(bloques_condicionales[i].expr())
-                print(f"Condición else if: {elif_condition}")  # Debug para ver las condiciones elif
-                if elif_condition:
-                    self.visit(bloques_condicionales[i].bloque_de_sentencia())
-                    return
-
-            if ctx.ELSE():
-                self.visit(ctx.bloque_de_sentencia())
-
+        
+        # Procesar el IF principal
+        if not bloques_condicionales:  # Por si acaso no hay bloques
+            return None
+        
+        # Evaluar condición del IF
+        first_condition = self.visit(bloques_condicionales[0].expr())
+        print(f"Condición del if: {first_condition}")
+        
+        if first_condition:
+            # Ejecutar bloque del IF y retornar su resultado
+            return self.visit(bloques_condicionales[0].bloque_de_sentencia())
+        
+        # Procesar ELIFs si existen
+        for i in range(1, len(bloques_condicionales)):
+            elif_condition = self.visit(bloques_condicionales[i].expr())
+            print(f"Condición elif [{i}]: {elif_condition}")
+            if elif_condition:
+                # Ejecutar bloque del ELIF y retornar su resultado
+                return self.visit(bloques_condicionales[i].bloque_de_sentencia())
+        
+        # Procesar ELSE si existe
+        if ctx.ELSE():
+            print("Ejecutando bloque ELSE")
+            return self.visit(ctx.bloque_de_sentencia())
+        
+        return None
 
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         while self.visit(ctx.bloque_condicional().expr()):
@@ -81,8 +89,9 @@ class ExprStatementVisitor( ExprFunctionsVisitor):
             self.visit(ctx.bloque_de_sentencia())  # Ejecuta el bloque
             self.visit(ctx.actualizacion())  # Ejecuta la actualización
                 
-    # Visit a parse tree produced by ExprParser#mostrar.
+        # Visit a parse tree produced by ExprParser#mostrar.
     def visitMostrar(self, ctx:ExprParser.MostrarContext):
-        print(f"Visitando mostrar: {ctx}")
         value = self.visit(ctx.expr())
-        print(f"Mostrando: {value}")  # Agregar etiqueta para debug
+        print(value)
+        return value  
+

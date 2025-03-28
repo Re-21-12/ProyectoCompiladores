@@ -1,6 +1,8 @@
-program{
+hola{
     x entero = 1;
     y entero = 2;
     z entero = x + y;
+    if(z == 3){
     mostrar(z);
+    }
 }
