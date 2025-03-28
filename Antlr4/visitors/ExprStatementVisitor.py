@@ -1,8 +1,7 @@
 from ExprParser import ExprParser
-from visitors.ExprBaseVisitor import *
 from visitors.ExprFunctionsVisitor import *
 
-class ExprStatementVisitor(ExprBaseVisitor):
+class ExprStatementVisitor( ExprFunctionsVisitor):
 
     def visitSentencia(self, ctx: ExprParser.SentenciaContext):
         if ctx.sentencia_if():
@@ -21,30 +20,30 @@ class ExprStatementVisitor(ExprBaseVisitor):
         elif ctx.actualizacion():
             return self.visitActualizacion(ctx.actualizacion())
         elif ctx.declaracion_funcion():
-            return self.visitDeclaracion_funcion(ctx.declaracion_funcion())
+            return self.visit(ctx.declaracion_funcion())
         elif ctx.funcion_llamada():
             return self.visitFuncion_llamada(ctx.funcion_llamada())
         else:
             raise ValueError("Sentencia no reconocida")
         
     def visitDeclaracion_funcion(self, ctx:ExprParser.Declaracion_funcionContext):
-        return self.visitDeclaracion_funcion(self,ctx)
+        return super().visitDeclaracion_funcion(ctx)
 
     # Visit a parse tree produced by ExprParser#funcion_llamada.
     def visitFuncion_llamada(self, ctx:ExprParser.Funcion_llamadaContext):
-        return self.visitFuncion_llamada(self,ctx)
+        return super().visitFuncion_llamada(ctx)
 
     # Visit a parse tree produced by ExprParser#parametros.
     def visitParametros(self, ctx:ExprParser.ParametrosContext):
-        return self.visitParametros(self,ctx)
+        return super().visitParametros(ctx)
 
     # Visit a parse tree produced by ExprParser#parametro.
     def visitParametro(self, ctx:ExprParser.ParametroContext):
-        return self.visitParametro(self,ctx)
+        return super().visitParametro(ctx)
 
     # Visit a parse tree produced by ExprParser#argumentos.
     def visitArgumentos(self, ctx:ExprParser.ArgumentosContext):
-        return self.visitArgumentos(self,ctx)
+        return super().visitArgumentos(ctx)
     
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
         bloques_condicionales = ctx.bloque_condicional()
@@ -53,12 +52,14 @@ class ExprStatementVisitor(ExprBaseVisitor):
         else:
             condition_value = self.visit(bloques_condicionales.expr())
 
+        print(f"Condición del if: {condition_value}")  # Debug para ver el valor de la condición
         if condition_value:
             self.visit(bloques_condicionales[0].bloque_de_sentencia())
             return
         else:
             for i in range(1, len(bloques_condicionales)):
                 elif_condition = self.visit(bloques_condicionales[i].expr())
+                print(f"Condición else if: {elif_condition}")  # Debug para ver las condiciones elif
                 if elif_condition:
                     self.visit(bloques_condicionales[i].bloque_de_sentencia())
                     return
@@ -66,16 +67,20 @@ class ExprStatementVisitor(ExprBaseVisitor):
             if ctx.ELSE():
                 self.visit(ctx.bloque_de_sentencia())
 
+
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         while self.visit(ctx.bloque_condicional().expr()):
             self.visit(ctx.bloque_condicional().bloque_de_sentencia())
 
     def visitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        self.visit(ctx.declaracion())
-        while self.visit(ctx.expr()):
-            self.visit(ctx.bloque_de_sentencia())
-            self.visit(ctx.actualizacion())
-            
+        print("Visita de declaracion del for")
+        self.visit(ctx.declaracion())  # Visita la declaración
+        print(f"Condición de for: {ctx.expr()}")
+        while self.visit(ctx.expr()):  # Evalúa la condición del ciclo
+            print(f"Ejecutando bloque del for: {ctx.bloque_de_sentencia()}")
+            self.visit(ctx.bloque_de_sentencia())  # Ejecuta el bloque
+            self.visit(ctx.actualizacion())  # Ejecuta la actualización
+                
     # Visit a parse tree produced by ExprParser#mostrar.
     def visitMostrar(self, ctx:ExprParser.MostrarContext):
         print(f"Visitando mostrar: {ctx}")

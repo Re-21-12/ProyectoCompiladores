@@ -7,6 +7,7 @@ from antlr4.error.ErrorListener import ErrorListener
 # antlr4 -Dlanguage=Python3 -visitor Expr.g4
 from ExprLexer import ExprLexer
 from ExprParser import ExprParser
+from ExprListener import ExprListener
 from PersonalizatedVisitor import PersonalizatedVisitor
 from antlr4.tree.Trees import Trees
 
@@ -56,7 +57,7 @@ def main():
         
         # ! path_file = "good-input-files/if_condicionales-try.txt"
         
-        path_file = "good-input-files/for_try.txt"
+        path_file = "good-input-files/funcion.txt"
         # ! path_file = "bad-input-files/bad-entero_decimal.txt"
         
         if not checkExtension(path_file):
@@ -71,6 +72,12 @@ def main():
         
         print("Análisis sintáctico completado correctamente.")
         prettyPrintTree(tree, parser)
+        
+                # Crear y añadir el listener
+        listener = ExprListener()
+        walker = ParseTreeWalker()  # Usamos ParseTreeWalker para caminar por el árbol
+        walker.walk(listener, tree)  # El listener ahora escuchará los eventos del árbol
+
         
         # Evaluar la expresión usando ExprVisitor
         visitor = PersonalizatedVisitor()
