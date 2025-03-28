@@ -2,217 +2,122 @@ import sys
 import logging
 import traceback
 from antlr4 import *
-
 from antlr4.error.ErrorListener import ErrorListener
 from ExprLexer import ExprLexer
 from ExprParser import ExprParser
-from PersonalizatedListener import PersonalizatedListener
+from ExprListener import ExprListener
 from PersonalizatedVisitor import PersonalizatedVisitor
 from antlr4.tree.Trees import Trees
 
-# Configuración avanzada de logging
-def setup_logging():
-    """Configura el sistema de logging con handlers y formatters"""
-    # Handlers para archivos
-    success_handler = logging.FileHandler("logs/log_success.txt", mode='w')
-    error_handler = logging.FileHandler("logs/log_error.txt", mode='w')
-    console_handler = logging.StreamHandler()
-    
-    # Formateadores
-    file_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-    console_formatter = logging.Formatter("%(levelname)s - %(message)s")
-    
-    # Configurar handlers
-    success_handler.setFormatter(file_formatter)
-    error_handler.setFormatter(file_formatter)
-    console_handler.setFormatter(console_formatter)
-    
-    # Configurar loggers
-    success_logger = logging.getLogger("SuccessLogger")
-    error_logger = logging.getLogger("ErrorLogger")
-    console_logger = logging.getLogger("ConsoleLogger")
-    
-    # Asignar niveles y handlers
-    success_logger.setLevel(logging.INFO)
-    error_logger.setLevel(logging.ERROR)
-    console_logger.setLevel(logging.INFO)
-    
-    success_logger.addHandler(success_handler)
-    error_logger.addHandler(error_handler)
-    console_logger.addHandler(console_handler)
-    
-    return success_logger, error_logger, console_logger
+# Configuración de los logs
+success_handler = logging.FileHandler("logs/log_success.txt")
+error_handler = logging.FileHandler("logs/log_error.txt")
 
-class EnhancedErrorListener(ErrorListener):
-    """Listener de errores mejorado con logging detallado"""
-    def __init__(self, error_logger, console_logger):
-        super().__init__()
-        self.error_logger = error_logger
-        self.console_logger = console_logger
-    
+# Formato común para los logs
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+success_handler.setFormatter(formatter)
+error_handler.setFormatter(formatter)
+
+# Creación de los loggers
+success_logger = logging.getLogger("SuccessLogger")
+error_logger = logging.getLogger("ErrorLogger")
+
+# Asignar manejadores a los loggers
+success_logger.addHandler(success_handler)
+error_logger.addHandler(error_handler)
+
+# Establecer niveles de log
+success_logger.setLevel(logging.INFO)
+error_logger.setLevel(logging.ERROR)
+
+# Definición del ErrorListener personalizado
+class MyErrorListener(ErrorListener):
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
-        error_message = f"Error de sintaxis en línea {line}, columna {column}: {msg}"
-        self.console_logger.error(error_message)
-        self.error_logger.error(error_message)
-        # Modo pánico: podrías añadir lógica para recuperación aquí
+        error_message = f"Error de sintaxis en la línea {line}, columna {column}: {msg}"
+        print(error_message)
+        # Log de error con detalles adicionales de la línea y columna
+        error_logger.error(f"Error en la línea {line}, columna {column}: {msg}")
+    
+    def reportAmbiguity(self, recognizer, dfa, startIndex, stopIndex, exact, ambigAlts, configs):
+        error_message = f"Ambigüedad detectada entre los índices {startIndex}-{stopIndex}"
+        print(error_message)
+        error_logger.warning(error_message)
+    
+    def reportAttemptingFullContext(self, recognizer, dfa, startIndex, stopIndex, conflictingAlts):
+        error_message = f"Intento de análisis de contexto completo entre los índices {startIndex}-{stopIndex}"
+        print(error_message)
+        error_logger.warning(error_message)
+    
+    def reportContextSensitivity(self, recognizer, dfa, startIndex, stopIndex, conflictingAlts):
+        error_message = f"Confusión en el contexto de los índices {startIndex}-{stopIndex}"
+        print(error_message)
+        error_logger.warning(error_message)
 
 def prettyPrintTree(tree, parser, indent=0):
-    """Imprime el árbol de análisis de forma estructurada con colores"""
-    from colorama import init, Fore
-    init()  # Inicializa colorama
-    
+    """Imprime el árbol de análisis de forma estructurada."""
     if tree.getChildCount() == 0:
-        print("  " * indent + Fore.GREEN + str(tree.getText()) + Fore.RESET)
+        print("  " * indent + str(tree.getText()))
     else:
-        print("  " * indent + Fore.BLUE + parser.ruleNames[tree.getRuleIndex()] + Fore.RESET)
+        print("  " * indent + parser.ruleNames[tree.getRuleIndex()])
         for i in range(tree.getChildCount()):
             prettyPrintTree(tree.getChild(i), parser, indent + 1)
 
-def validate_file(path):
-    """Valida el archivo de entrada"""
-    if not path.endswith('.txt'):
-        raise ValueError("El archivo debe tener extensión .txt")
-    try:
-        with open(path, 'r') as f:
-            content = f.read(1)  # Lee solo el primer byte para verificar acceso
-        return True
-    except Exception as e:
-        raise IOError(f"No se pudo leer el archivo: {str(e)}")
-
-def display_symbol_table(symbol_table, logger):
-    """Muestra la tabla de símbolos de forma organizada"""
-    if not symbol_table:
-        logger.info("Tabla de símbolos vacía")
-        return
-    
-    logger.info("\n=== TABLA DE SÍMBOLOS ===")
-    for scope in symbol_table:
-        logger.info("\nÁmbito:")
-        for name, info in scope.items():
-            logger.info(f"  {name}: {info}")
-
-def display_functions(functions, logger):
-    """Muestra las funciones declaradas"""
-    if not functions:
-        logger.info("No hay funciones declaradas")
-        return
-    
-    logger.info("\n=== FUNCIONES DECLARADAS ===")
-    for name, func in functions.items():
-        params = ", ".join([f"{p[0]}:{p[1]}" for p in func['params']])
-        logger.info(f"  {name}({params}) -> {func.get('return_type', 'void')}")
+def checkExtension(text):
+    return text.endswith('.txt') 
 
 def main():
-    # Configura logging
-    success_logger, error_logger, console_logger = setup_logging()
-    
     try:
-        # Selección de archivo de entrada
-        path_file = "good-input-files/funcion.txt"
-        # path_file = "bad-input-files/bad-entero_decimal.txt"  # Para probar detección de errores
+        # Definir el archivo de entrada
+        path_file = "bad-input-files/bad-entero_decimal.txt"  # Cambia la ruta a tu archivo de entrada
         
-        # Validar archivo
-        validate_file(path_file)
-        console_logger.info(f"\nProcesando archivo: {path_file}")
+        if not checkExtension(path_file):
+            raise ValueError("El archivo debe tener una extensión .txt")
         
-        # 1. Análisis léxico y sintáctico
-        input_stream = FileStream(path_file, encoding='utf-8')
+        input_stream = FileStream(path_file)  # Expresión que quieres analizar
         lexer = ExprLexer(input_stream)
         token_stream = CommonTokenStream(lexer)
         parser = ExprParser(token_stream)
-        parser.addErrorListener(EnhancedErrorListener(error_logger, console_logger))
+
+        # Añadir el listener de errores
+        parser.addErrorListener(MyErrorListener())
+
+        # Generar el árbol de análisis
+        tree = parser.gramatica()  # Cambia esta regla según tu gramática
+
+        print("Análisis sintáctico completado correctamente.")
+        prettyPrintTree(tree, parser)  # Imprime el árbol de análisis para verificar la estructura
+
+        # Crear y añadir el listener personalizado
+        listener = ExprListener()  # Si necesitas personalizarlo, hereda de ExprListener
+        walker = ParseTreeWalker()  # Usamos ParseTreeWalker para caminar por el árbol
+        walker.walk(listener, tree)  # El listener ahora escuchará los eventos del árbol
+
+        # Evaluar la expresión usando ExprVisitor
+        visitor = PersonalizatedVisitor()  # El visitor personalizado para evaluar el árbol
+        result = visitor.visit(tree)  # Evaluamos el árbol utilizando el visitor
+        print(f"Resultado de la evaluación: {result}")  # Imprimimos el resultado de la evaluación
+
+        # Log de éxito
+        if result is None:
+            error_logger.error(f"Error en la evaluación: {result}")
         
-        try:
-            tree = parser.gramatica()
-            console_logger.info("\n=== ÁRBOL DE ANÁLISIS SINTÁCTICO ===")
-            prettyPrintTree(tree, parser)
-            success_logger.info("Análisis sintáctico completado sin errores")
-        except Exception as e:
-            error_msg = f"Error crítico en análisis sintáctico: {str(e)}"
-            console_logger.error(error_msg)
-            error_logger.error(error_msg)
-            raise
-        
-        # 2. Análisis semántico con el Listener
-        console_logger.info("\n=== ANÁLISIS SEMÁNTICO ===")
-        listener = PersonalizatedListener()
-        walker = ParseTreeWalker()
-        
-        try:
-            walker.walk(listener, tree)
-            
-            # Mostrar información semántica
-            if hasattr(listener, 'symbol_table_stack'):
-                display_symbol_table(listener.symbol_table_stack, console_logger)
-                display_symbol_table(listener.symbol_table_stack, success_logger)
-            
-            if hasattr(listener, 'functions'):
-                display_functions(listener.functions, console_logger)
-                display_functions(listener.functions, success_logger)
-            
-            # Resultados del análisis semántico
-            if listener.errors:
-                console_logger.error("\nERRORES SEMÁNTICOS ENCONTRADOS:")
-                for error in listener.errors:
-                    console_logger.error(f" - {error}")
-                    error_logger.error(error)
-            else:
-                console_logger.info("\n✓ Análisis semántico completado sin errores")
-                success_logger.info("Análisis semántico completado sin errores")
-            
-            if listener.warnings:
-                console_logger.warning("\nADVERTENCIAS:")
-                for warning in listener.warnings:
-                    console_logger.warning(f" - {warning}")
-                    success_logger.warning(warning)
-        
-        except Exception as e:
-            error_msg = f"Error en análisis semántico: {str(e)}"
-            console_logger.error(error_msg)
-            error_logger.error(error_msg)
-            raise
-        
-        # 3. Evaluación con el Visitor (solo si no hay errores semánticos)
-        if not listener.errors:
-            console_logger.info("\n=== EVALUACIÓN DEL PROGRAMA ===")
-            visitor = PersonalizatedVisitor()
-            
-            # Transferir información del listener al visitor
-            if hasattr(listener, 'symbol_table_stack'):
-                visitor.variables = listener.symbol_table_stack[0]  # Variables globales
-                visitor.functions = listener.functions  # Funciones declaradas
-            
-            try:
-                result = visitor.visit(tree)
-                
-                if result is not None:
-                    console_logger.info(f"\nRESULTADO FINAL: {result}")
-                    success_logger.info(f"Resultado de evaluación: {result}")
-                else:
-                    console_logger.info("\n✓ Programa ejecutado correctamente (sin valor de retorno)")
-                    success_logger.info("Programa ejecutado correctamente (sin valor de retorno)")
-            
-            except Exception as e:
-                error_msg = f"Error durante la evaluación: {str(e)}"
-                console_logger.error(error_msg)
-                error_logger.error(error_msg)
-                raise
-        
-        # Resumen final
-        if listener.errors:
-            console_logger.error("\n✗ Proceso completado con errores")
-            error_logger.error("Proceso completado con errores")
-        else:
-            console_logger.info("\n✓ Proceso completado exitosamente")
-            success_logger.info("Proceso completado exitosamente")
-    
+        success_logger.info("Análisis sintáctico completado correctamente para la expresión válida.")
+        success_logger.info(f"Resultado de la evaluación: {result}")
+
+    except FileNotFoundError as fnf_error:
+        # Captura errores de archivo no encontrado
+        print(f"Archivo no encontrado: {fnf_error}")
+        error_logger.error(f"Archivo no encontrado: {fnf_error}")
+    except ValueError as ve:
+        # Captura errores de valor como problemas de extensión de archivo
+        print(f"Error de valor: {ve}")
+        error_logger.error(f"Error de valor: {ve}")
     except Exception as e:
-        error_msg = f"\nERROR INESPERADO: {str(e)}"
-        console_logger.error(error_msg)
-        error_logger.error(error_msg)
-        error_logger.error(traceback.format_exc())
-        console_logger.debug("Detalles del error:", exc_info=True)
-        sys.exit(1)
+        # Captura cualquier otro tipo de excepción
+        print(f"Ocurrió un error: {e}")
+        traceback.print_exc()  # Esto imprime más detalles sobre el error
+        error_logger.error(f"Ocurrió un error durante el análisis: {e}")
+        error_logger.error(f"Detalles del error: {traceback.format_exc()}")
 
 if __name__ == "__main__":
     main()
