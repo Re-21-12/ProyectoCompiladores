@@ -5,13 +5,12 @@ from visitors.ExprMathVisitor import *
 from visitors.ExprBaseVisitor import *
 from visitors.ExprStatementVisitor import *
 from visitors.ExprVariableVisitor import *
-from visitors.ExprFunctionsVisitor import *
 
 def traducir_tipo(tipo):
     return ExprBaseVisitor.traducir_tipo(tipo)
 
 
-class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprFunctionsVisitor, ExprMathVisitor):
+class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprMathVisitor):
     def __init__(self):
         super().__init__()
 
@@ -94,9 +93,11 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprFunc
         value = self.visit(ctx.expr())  # Obtener el valor de la expresión
         super().define_variable( var_name, value)
 
-    def visitMostrar(self, ctx: ExprParser.MostrarContext):
+    # Visit a parse tree produced by ExprParser#mostrar.
+    def visitMostrar(self, ctx:ExprParser.MostrarContext):
         value = self.visit(ctx.expr())
         print(value)
+
 
     def visitExpr(self, ctx: ExprParser.ExprContext):
         if ctx.getChildCount() == 1:

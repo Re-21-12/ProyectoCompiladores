@@ -454,3 +454,18 @@
 2025-03-28 00:44:52,458 - ERROR - Error en la evaluación: None
 2025-03-28 00:45:55,984 - ERROR - Error en la evaluación: None
 2025-03-28 00:46:35,001 - ERROR - Error en la evaluación: None
+2025-03-28 00:53:08,398 - ERROR - Error en la evaluación: None
+2025-03-28 00:56:29,184 - ERROR - Error en la evaluación: None
+2025-03-28 00:59:40,152 - ERROR - Ocurrió un error durante el análisis: 'super' object has no attribute 'visitSentencia_for'
+2025-03-28 01:00:11,838 - ERROR - Error en la evaluación: None
+2025-03-28 01:00:28,818 - ERROR - Error en la evaluación: None
+2025-03-28 01:05:52,578 - ERROR - Error en la evaluación: None
+2025-03-28 10:10:55,325 - ERROR - Ocurrió un error durante el análisis: PersonalizatedVisitor.visitDeclaracion_funcion() takes 2 positional arguments but 3 were given
+2025-03-28 10:12:04,673 - ERROR - Ocurrió un error durante el análisis: Variable 'numeruno' no definida.
+2025-03-28 10:16:15,590 - ERROR - Ocurrió un error durante el análisis: Variable 'numeruno' no definida.
+2025-03-28 10:23:52,806 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'scopes'
+2025-03-28 10:24:27,519 - ERROR - Ocurrió un error durante el análisis: Variable 'numeruno' no definida.
+2025-03-28 10:25:33,462 - ERROR - Error en la evaluación: None
+2025-03-28 10:40:26,312 - ERROR - Ocurrió un error durante el análisis: 'Declaracion_funcionContext' object has no attribute 'ID'
+2025-03-28 10:43:53,857 - ERROR - Error en la evaluación: None
+2025-03-28 10:46:03,433 - ERROR - Error en la evaluación: None

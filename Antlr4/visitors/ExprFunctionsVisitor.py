@@ -47,6 +47,8 @@ class ExprFunctionsVisitor(ExprBaseVisitor):
         for param, arg in zip(parametros, argumentos):
             self.define_variable( param, arg)
 
+        print(f"Contexto actual: {self.ambitos[-1]}")
+
         # Ejecutar el cuerpo de la función
         resultado = self.visit(funcion["retorna"])  # Evaluar la expresión de retorno
 

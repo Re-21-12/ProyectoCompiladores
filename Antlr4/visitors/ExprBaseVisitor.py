@@ -21,9 +21,9 @@ class ExprBaseVisitor(ParseTreeVisitor):
 
     def get_variable(self, name):
         """Busca la variable en los ámbitos disponibles (de local a global)."""
-        for scope in reversed(self.ambitos):
-            if name in scope:
-                return scope[name]
+        for ambito in reversed(self.ambitos):
+            if name in ambito:
+                return ambito[name]
         raise NameError(f"Variable '{name}' no definida.")
 
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):

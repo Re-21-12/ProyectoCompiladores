@@ -10,11 +10,11 @@ bloque: sentencia*;  // Un bloque puede contener cero o más sentencias
 
 // Reglas de sentencias
 sentencia: 
-   mostrar 
-  | sentencia_if  
+   sentencia_if  
   | sentencia_while  
   | sentencia_for 
   | reasignacion  
+  | mostrar 
   | declaracion  
   | actualizacion
   | declaracion_funcion

@@ -37,8 +37,8 @@ def serializedATN():
         46,5,0,0,1,46,1,1,0,0,0,47,48,5,30,0,0,48,49,5,14,0,0,49,50,3,4,
         2,0,50,51,5,15,0,0,51,3,1,0,0,0,52,54,3,6,3,0,53,52,1,0,0,0,54,57,
         1,0,0,0,55,53,1,0,0,0,55,56,1,0,0,0,56,5,1,0,0,0,57,55,1,0,0,0,58,
-        68,3,34,17,0,59,68,3,8,4,0,60,68,3,10,5,0,61,68,3,12,6,0,62,68,3,
-        30,15,0,63,68,3,28,14,0,64,68,3,42,21,0,65,68,3,14,7,0,66,68,3,16,
+        68,3,8,4,0,59,68,3,10,5,0,60,68,3,12,6,0,61,68,3,30,15,0,62,68,3,
+        34,17,0,63,68,3,28,14,0,64,68,3,42,21,0,65,68,3,14,7,0,66,68,3,16,
         8,0,67,58,1,0,0,0,67,59,1,0,0,0,67,60,1,0,0,0,67,61,1,0,0,0,67,62,
         1,0,0,0,67,63,1,0,0,0,67,64,1,0,0,0,67,65,1,0,0,0,67,66,1,0,0,0,
         68,7,1,0,0,0,69,70,5,1,0,0,70,75,3,24,12,0,71,72,5,2,0,0,72,74,3,
@@ -376,10 +376,6 @@ class ExprParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def mostrar(self):
-            return self.getTypedRuleContext(ExprParser.MostrarContext,0)
-
-
         def sentencia_if(self):
             return self.getTypedRuleContext(ExprParser.Sentencia_ifContext,0)
 
@@ -394,6 +390,10 @@ class ExprParser ( Parser ):
 
         def reasignacion(self):
             return self.getTypedRuleContext(ExprParser.ReasignacionContext,0)
+
+
+        def mostrar(self):
+            return self.getTypedRuleContext(ExprParser.MostrarContext,0)
 
 
         def declaracion(self):
@@ -443,31 +443,31 @@ class ExprParser ( Parser ):
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 58
-                self.mostrar()
+                self.sentencia_if()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 59
-                self.sentencia_if()
+                self.sentencia_while()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 60
-                self.sentencia_while()
+                self.sentencia_for()
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
                 self.state = 61
-                self.sentencia_for()
+                self.reasignacion()
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
                 self.state = 62
-                self.reasignacion()
+                self.mostrar()
                 pass
 
             elif la_ == 6:
