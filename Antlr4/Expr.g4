@@ -10,16 +10,30 @@ bloque: sentencia*;  // Un bloque puede contener cero o más sentencias
 
 // Reglas de sentencias
 sentencia: 
-    sentencia_if  
+   mostrar 
+  | sentencia_if  
   | sentencia_while  
   | sentencia_for 
   | reasignacion  
   | declaracion  
-  | mostrar 
   | actualizacion
   | declaracion_funcion
   | funcion_llamada
 ;
+
+sentencia_if:
+  IF bloque_condicional
+  (ELSE_IF bloque_condicional)*
+  (ELSE bloque_de_sentencia)?
+;
+
+sentencia_while:
+  WHILE bloque_condicional
+; 
+
+sentencia_for:
+  FOR PARENTESIS_INICIAL declaracion expr PUNTO_Y_COMA actualizacion PARENTESIS_FINAL bloque_de_sentencia
+;  
 
 declaracion_funcion:
   FUNCION VARIABLE tipo PARENTESIS_INICIAL parametros? PARENTESIS_FINAL LLAVES_INICIAL bloque RETURN expr PUNTO_Y_COMA LLAVES_FINAL
@@ -38,22 +52,9 @@ argumentos:
     expr (COMA expr)*
 ;
 
-sentencia_if:
-  IF bloque_condicional
-  (ELSE_IF bloque_condicional)*
-  (ELSE bloque_de_sentencia)?
-;
-
-sentencia_while:
-  WHILE bloque_condicional
-; 
-
-sentencia_for:
-  FOR PARENTESIS_INICIAL declaracion expr PUNTO_Y_COMA actualizacion PARENTESIS_FINAL bloque_de_sentencia;  
-
-
 bloque_condicional:
-  PARENTESIS_INICIAL expr PARENTESIS_FINAL bloque_de_sentencia;  
+  PARENTESIS_INICIAL expr PARENTESIS_FINAL bloque_de_sentencia
+;  
 
 bloque_de_sentencia:
   LLAVES_INICIAL bloque LLAVES_FINAL  // Bloque entre llaves
@@ -61,23 +62,23 @@ bloque_de_sentencia:
 ;
 
 declaracion:
-  VARIABLE tipo ASIGNACION expr PUNTO_Y_COMA;  // Una declaración es una variable asignada a una expresión seguida de un punto y coma
+  VARIABLE tipo ASIGNACION expr PUNTO_Y_COMA
+;  // Una declaración es una variable asignada a una expresión seguida de un punto y coma
 
 reasignacion:
-  VARIABLE ASIGNACION expr PUNTO_Y_COMA;
+  VARIABLE ASIGNACION expr PUNTO_Y_COMA
+;
 
 tipo:
 TIPO_ENTERO
 | TIPO_DECIMAL 
 | TIPO_BOOLEANO
 | TIPO_CADENA 
-
 ;
 
 mostrar:
-  MOSTRAR PARENTESIS_INICIAL expr PARENTESIS_FINAL PUNTO_Y_COMA;  
-
-
+  MOSTRAR PARENTESIS_INICIAL expr PARENTESIS_FINAL PUNTO_Y_COMA
+;  
 
 expr:
     expr (MENOR_QUE | MAYOR_QUE | MENOR_IGUAL_QUE | MAYOR_IGUAL_QUE | IGUAL | DIFERENTE) expr  
@@ -98,12 +99,11 @@ factor:
 
 actualizacion:
     VARIABLE ASIGNACION expr
-  | VARIABLE MASMAS
-  | VARIABLE MENOSMENOS
+  | VARIABLE MASMAS 
+  | VARIABLE MENOSMENOS 
 ;
 
 // Reglas
-
 // Palabras clave
 IF: 'if';
 ELSE_IF: 'else if';
@@ -117,7 +117,6 @@ TIPO_ENTERO: 'entero';
 TIPO_DECIMAL: 'decimal';
 TIPO_CADENA: 'cadena';
 TIPO_BOOLEANO: 'bool';
-
 
 //Simbolo de asignacion
 ASIGNACION: '=';  

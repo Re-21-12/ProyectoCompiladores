@@ -13,10 +13,13 @@ class ExprStatementVisitor(ExprBaseVisitor):
             return self.visitSentencia_for(ctx.sentencia_for())
         elif ctx.reasignacion():
             return self.visitReasignacion(ctx.reasignacion())
+        elif ctx.mostrar():
+            print("mostrando mostrar")
+            return self.visitMostrar(ctx.mostrar())
         elif ctx.declaracion():
             return self.visitDeclaracion(ctx.declaracion())
-        elif ctx.mostrar():
-            return self.visitMostrar(ctx.mostrar())
+        elif ctx.actualizacion():
+            return self.visitActualizacion(ctx.actualizacion())
         elif ctx.declaracion_funcion():
             return self.visitDeclaracion_funcion(ctx.declaracion_funcion())
         elif ctx.funcion_llamada():
@@ -25,23 +28,23 @@ class ExprStatementVisitor(ExprBaseVisitor):
             raise ValueError("Sentencia no reconocida")
         
     def visitDeclaracion_funcion(self, ctx:ExprParser.Declaracion_funcionContext):
-        return ExprFunctionsVisitor().visitDeclaracion_funcion(self,ctx)
+        return self.visitDeclaracion_funcion(self,ctx)
 
     # Visit a parse tree produced by ExprParser#funcion_llamada.
     def visitFuncion_llamada(self, ctx:ExprParser.Funcion_llamadaContext):
-        return ExprFunctionsVisitor().visitFuncion_llamada(self,ctx)
+        return self.visitFuncion_llamada(self,ctx)
 
     # Visit a parse tree produced by ExprParser#parametros.
     def visitParametros(self, ctx:ExprParser.ParametrosContext):
-        return ExprFunctionsVisitor().visitParametros(self,ctx)
+        return self.visitParametros(self,ctx)
 
     # Visit a parse tree produced by ExprParser#parametro.
     def visitParametro(self, ctx:ExprParser.ParametroContext):
-        return ExprFunctionsVisitor().visitParametro(self,ctx)
+        return self.visitParametro(self,ctx)
 
     # Visit a parse tree produced by ExprParser#argumentos.
     def visitArgumentos(self, ctx:ExprParser.ArgumentosContext):
-        return ExprFunctionsVisitor().visitArgumentos(self,ctx)
+        return self.visitArgumentos(self,ctx)
     
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
         bloques_condicionales = ctx.bloque_condicional()
@@ -72,3 +75,9 @@ class ExprStatementVisitor(ExprBaseVisitor):
         while self.visit(ctx.expr()):
             self.visit(ctx.bloque_de_sentencia())
             self.visit(ctx.actualizacion())
+            
+    # Visit a parse tree produced by ExprParser#mostrar.
+    def visitMostrar(self, ctx:ExprParser.MostrarContext):
+        print(f"Visitando mostrar: {ctx}")
+        value = self.visit(ctx.expr())
+        print(f"Mostrando: {value}")  # Agregar etiqueta para debug

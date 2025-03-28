@@ -44,6 +44,33 @@ class ExprListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExprParser#sentencia_if.
+    def enterSentencia_if(self, ctx:ExprParser.Sentencia_ifContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#sentencia_if.
+    def exitSentencia_if(self, ctx:ExprParser.Sentencia_ifContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#sentencia_while.
+    def enterSentencia_while(self, ctx:ExprParser.Sentencia_whileContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#sentencia_while.
+    def exitSentencia_while(self, ctx:ExprParser.Sentencia_whileContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#sentencia_for.
+    def enterSentencia_for(self, ctx:ExprParser.Sentencia_forContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#sentencia_for.
+    def exitSentencia_for(self, ctx:ExprParser.Sentencia_forContext):
+        pass
+
+
     # Enter a parse tree produced by ExprParser#declaracion_funcion.
     def enterDeclaracion_funcion(self, ctx:ExprParser.Declaracion_funcionContext):
         pass
@@ -86,33 +113,6 @@ class ExprListener(ParseTreeListener):
 
     # Exit a parse tree produced by ExprParser#argumentos.
     def exitArgumentos(self, ctx:ExprParser.ArgumentosContext):
-        pass
-
-
-    # Enter a parse tree produced by ExprParser#sentencia_if.
-    def enterSentencia_if(self, ctx:ExprParser.Sentencia_ifContext):
-        pass
-
-    # Exit a parse tree produced by ExprParser#sentencia_if.
-    def exitSentencia_if(self, ctx:ExprParser.Sentencia_ifContext):
-        pass
-
-
-    # Enter a parse tree produced by ExprParser#sentencia_while.
-    def enterSentencia_while(self, ctx:ExprParser.Sentencia_whileContext):
-        pass
-
-    # Exit a parse tree produced by ExprParser#sentencia_while.
-    def exitSentencia_while(self, ctx:ExprParser.Sentencia_whileContext):
-        pass
-
-
-    # Enter a parse tree produced by ExprParser#sentencia_for.
-    def enterSentencia_for(self, ctx:ExprParser.Sentencia_forContext):
-        pass
-
-    # Exit a parse tree produced by ExprParser#sentencia_for.
-    def exitSentencia_for(self, ctx:ExprParser.Sentencia_forContext):
         pass
 
 

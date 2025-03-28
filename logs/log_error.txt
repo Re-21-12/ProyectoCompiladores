@@ -373,3 +373,84 @@
 2025-03-27 16:44:16,188 - ERROR - Error en la evaluación: None
 2025-03-27 16:50:54,431 - ERROR - Ocurrió un error durante el análisis: 'PersonalizatedVisitor' object has no attribute 'ambitos'
 2025-03-27 16:52:10,022 - ERROR - Error en la evaluación: None
+2025-03-27 21:01:10,931 - ERROR - Error en la evaluación: None
+2025-03-27 21:19:03,586 - ERROR - Error en la evaluación: None
+2025-03-27 21:21:09,868 - ERROR - Error en la evaluación: None
+2025-03-27 21:22:09,462 - ERROR - Error en la evaluación: None
+2025-03-27 21:29:44,947 - ERROR - Error en la evaluación: None
+2025-03-27 21:44:05,394 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.__init__() takes 1 positional argument but 2 were given
+2025-03-27 21:44:37,538 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.enter_scope() takes 1 positional argument but 2 were given
+2025-03-27 21:46:27,671 - ERROR - Error en la evaluación: None
+2025-03-27 21:59:36,444 - ERROR - Error en la evaluación: None
+2025-03-27 21:59:50,132 - ERROR - Error en la evaluación: None
+2025-03-27 22:02:42,869 - ERROR - Error en la evaluación: None
+2025-03-27 22:08:59,237 - ERROR - Error en la evaluación: None
+2025-03-27 22:09:57,185 - ERROR - Error en la evaluación: None
+2025-03-27 22:15:08,170 - ERROR - Error en la evaluación: None
+2025-03-27 22:15:25,148 - ERROR - Error en la evaluación: None
+2025-03-27 22:20:25,263 - ERROR - Error en la evaluación: None
+2025-03-27 22:21:23,276 - ERROR - Error de sintaxis en la línea 3, columna 7: mismatched input ';' expecting '}'
+2025-03-27 22:21:23,330 - ERROR - Ocurrió un error durante el análisis: maximum recursion depth exceeded
+2025-03-27 22:23:05,020 - ERROR - Error de sintaxis en la línea 3, columna 7: mismatched input ';' expecting '}'
+2025-03-27 22:23:05,020 - ERROR - Error en la evaluación: None
+2025-03-27 22:23:24,299 - ERROR - Ocurrió un error durante el análisis: [Errno 2] No such file or directory: 'good-input-files/if_condicional-try.txt'
+2025-03-27 22:23:39,610 - ERROR - Error en la evaluación: None
+2025-03-27 22:24:05,817 - ERROR - Error de sintaxis en la línea 3, columna 7: mismatched input ';' expecting '}'
+2025-03-27 22:24:05,818 - ERROR - Error en la evaluación: None
+2025-03-27 22:26:37,767 - ERROR - Error en la evaluación: None
+2025-03-27 22:28:07,409 - ERROR - Error de sintaxis en la línea 11, columna 0: missing '}' at '<EOF>'
+2025-03-27 22:28:07,410 - ERROR - Error en la evaluación: None
+2025-03-27 22:28:43,226 - ERROR - Error de sintaxis en la línea 11, columna 0: missing '}' at '<EOF>'
+2025-03-27 22:28:43,227 - ERROR - Error en la evaluación: None
+2025-03-27 22:29:02,361 - ERROR - Error de sintaxis en la línea 11, columna 0: missing '}' at '<EOF>'
+2025-03-27 22:29:02,361 - ERROR - Error en la evaluación: None
+2025-03-27 22:31:55,900 - ERROR - Error en la evaluación: None
+2025-03-27 22:38:48,080 - ERROR - Error en la evaluación: None
+2025-03-27 22:38:53,003 - ERROR - Error en la evaluación: None
+2025-03-27 22:46:00,181 - ERROR - Error en la evaluación: None
+2025-03-27 22:46:17,810 - ERROR - Ocurrió un error durante el análisis: [Errno 2] No such file or directory: 'good-input-files/if_condicionales.txt'
+2025-03-27 22:46:30,258 - ERROR - Error en la evaluación: None
+2025-03-27 22:47:19,277 - ERROR - Error en la evaluación: None
+2025-03-27 22:49:20,186 - ERROR - Error en la evaluación: None
+2025-03-27 22:53:24,610 - ERROR - Error en la evaluación: None
+2025-03-27 22:55:19,231 - ERROR - Error en la evaluación: None
+2025-03-27 22:56:58,986 - ERROR - Error en la evaluación: None
+2025-03-27 23:07:54,816 - ERROR - Error en la evaluación: None
+2025-03-27 23:08:03,913 - ERROR - Error en la evaluación: None
+2025-03-27 23:10:40,732 - ERROR - Error en la evaluación: None
+2025-03-27 23:11:20,027 - ERROR - Error en la evaluación: None
+2025-03-27 23:11:42,096 - ERROR - Error en la evaluación: None
+2025-03-27 23:14:46,603 - ERROR - Error de sintaxis en la línea 3, columna 7: mismatched input ';' expecting '}'
+2025-03-27 23:14:46,604 - ERROR - Error en la evaluación: None
+2025-03-27 23:21:09,861 - ERROR - Error en la evaluación: None
+2025-03-27 23:22:05,397 - ERROR - Error de sintaxis en la línea 2, columna 34: missing ';' at ')'
+2025-03-27 23:22:05,399 - ERROR - Error en la evaluación: None
+2025-03-27 23:22:29,364 - ERROR - Error de sintaxis en la línea 9, columna 34: missing ';' at ')'
+2025-03-27 23:22:29,365 - ERROR - Error en la evaluación: None
+2025-03-27 23:23:01,551 - ERROR - Error en la evaluación: None
+2025-03-27 23:23:53,668 - ERROR - Error en la evaluación: None
+2025-03-27 23:24:12,708 - ERROR - Error en la evaluación: None
+2025-03-27 23:27:58,147 - ERROR - Error en la evaluación: None
+2025-03-27 23:28:43,319 - ERROR - Error en la evaluación: None
+2025-03-27 23:29:38,048 - ERROR - Error en la evaluación: None
+2025-03-27 23:41:39,271 - ERROR - Error en la evaluación: None
+2025-03-27 23:42:29,186 - ERROR - Error en la evaluación: None
+2025-03-27 23:46:12,023 - ERROR - Error en la evaluación: None
+2025-03-27 23:46:57,179 - ERROR - Error de sintaxis en la línea 2, columna 34: missing ';' at ')'
+2025-03-27 23:46:57,180 - ERROR - Error en la evaluación: None
+2025-03-27 23:50:19,749 - ERROR - Error de sintaxis en la línea 2, columna 34: missing ';' at ')'
+2025-03-27 23:50:19,750 - ERROR - Error en la evaluación: None
+2025-03-27 23:56:06,745 - ERROR - Error en la evaluación: None
+2025-03-28 00:01:18,461 - ERROR - Error en la evaluación: None
+2025-03-28 00:11:57,848 - ERROR - Error en la evaluación: None
+2025-03-28 00:15:53,442 - ERROR - Error en la evaluación: None
+2025-03-28 00:18:18,055 - ERROR - Error en la evaluación: None
+2025-03-28 00:35:02,459 - ERROR - Error en la evaluación: None
+2025-03-28 00:35:36,032 - ERROR - Error en la evaluación: None
+2025-03-28 00:36:21,709 - ERROR - Error en la evaluación: None
+2025-03-28 00:38:47,749 - ERROR - Error en la evaluación: None
+2025-03-28 00:42:59,246 - ERROR - Error en la evaluación: None
+2025-03-28 00:43:59,128 - ERROR - Error en la evaluación: None
+2025-03-28 00:44:52,458 - ERROR - Error en la evaluación: None
+2025-03-28 00:45:55,984 - ERROR - Error en la evaluación: None
+2025-03-28 00:46:35,001 - ERROR - Error en la evaluación: None

@@ -15,11 +15,11 @@ def serializedATN():
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,2,5,2,54,8,2,10,
         2,12,2,57,9,2,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,3,68,8,3,1,4,
-        1,4,1,4,1,4,1,4,3,4,75,8,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,5,1,
-        5,1,5,3,5,88,8,5,1,5,1,5,1,5,1,6,1,6,1,6,5,6,96,8,6,10,6,12,6,99,
-        9,6,1,7,1,7,1,7,1,8,1,8,1,8,5,8,107,8,8,10,8,12,8,110,9,8,1,9,1,
-        9,1,9,1,9,5,9,116,8,9,10,9,12,9,119,9,9,1,9,1,9,3,9,123,8,9,1,10,
-        1,10,1,10,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,12,1,12,
+        1,4,1,4,1,4,5,4,74,8,4,10,4,12,4,77,9,4,1,4,1,4,3,4,81,8,4,1,5,1,
+        5,1,5,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,6,1,7,1,7,1,7,1,7,1,7,3,
+        7,100,8,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,8,1,8,1,8,3,8,113,8,
+        8,1,8,1,8,1,8,1,9,1,9,1,9,5,9,121,8,9,10,9,12,9,124,9,9,1,10,1,10,
+        1,10,1,11,1,11,1,11,5,11,132,8,11,10,11,12,11,135,9,11,1,12,1,12,
         1,12,1,12,1,12,1,13,1,13,1,13,1,13,1,13,3,13,147,8,13,1,14,1,14,
         1,14,1,14,1,14,1,14,1,15,1,15,1,15,1,15,1,15,1,16,1,16,1,17,1,17,
         1,17,1,17,1,17,1,17,1,18,1,18,1,18,1,18,5,18,172,8,18,10,18,12,18,
@@ -29,61 +29,62 @@ def serializedATN():
         8,20,1,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,217,8,21,1,21,0,1,36,
         22,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,
         0,4,1,0,7,10,1,0,16,17,2,0,20,23,26,27,1,0,18,19,225,0,44,1,0,0,
-        0,2,47,1,0,0,0,4,55,1,0,0,0,6,67,1,0,0,0,8,69,1,0,0,0,10,84,1,0,
-        0,0,12,92,1,0,0,0,14,100,1,0,0,0,16,103,1,0,0,0,18,111,1,0,0,0,20,
-        124,1,0,0,0,22,127,1,0,0,0,24,136,1,0,0,0,26,146,1,0,0,0,28,148,
+        0,2,47,1,0,0,0,4,55,1,0,0,0,6,67,1,0,0,0,8,69,1,0,0,0,10,82,1,0,
+        0,0,12,85,1,0,0,0,14,94,1,0,0,0,16,109,1,0,0,0,18,117,1,0,0,0,20,
+        125,1,0,0,0,22,128,1,0,0,0,24,136,1,0,0,0,26,146,1,0,0,0,28,148,
         1,0,0,0,30,154,1,0,0,0,32,159,1,0,0,0,34,161,1,0,0,0,36,167,1,0,
         0,0,38,184,1,0,0,0,40,207,1,0,0,0,42,216,1,0,0,0,44,45,3,2,1,0,45,
         46,5,0,0,1,46,1,1,0,0,0,47,48,5,30,0,0,48,49,5,14,0,0,49,50,3,4,
         2,0,50,51,5,15,0,0,51,3,1,0,0,0,52,54,3,6,3,0,53,52,1,0,0,0,54,57,
         1,0,0,0,55,53,1,0,0,0,55,56,1,0,0,0,56,5,1,0,0,0,57,55,1,0,0,0,58,
-        68,3,18,9,0,59,68,3,20,10,0,60,68,3,22,11,0,61,68,3,30,15,0,62,68,
-        3,28,14,0,63,68,3,34,17,0,64,68,3,42,21,0,65,68,3,8,4,0,66,68,3,
-        10,5,0,67,58,1,0,0,0,67,59,1,0,0,0,67,60,1,0,0,0,67,61,1,0,0,0,67,
-        62,1,0,0,0,67,63,1,0,0,0,67,64,1,0,0,0,67,65,1,0,0,0,67,66,1,0,0,
-        0,68,7,1,0,0,0,69,70,5,31,0,0,70,71,5,36,0,0,71,72,3,32,16,0,72,
-        74,5,12,0,0,73,75,3,12,6,0,74,73,1,0,0,0,74,75,1,0,0,0,75,76,1,0,
-        0,0,76,77,5,13,0,0,77,78,5,14,0,0,78,79,3,4,2,0,79,80,5,32,0,0,80,
-        81,3,36,18,0,81,82,5,29,0,0,82,83,5,15,0,0,83,9,1,0,0,0,84,85,5,
-        36,0,0,85,87,5,12,0,0,86,88,3,16,8,0,87,86,1,0,0,0,87,88,1,0,0,0,
-        88,89,1,0,0,0,89,90,5,13,0,0,90,91,5,29,0,0,91,11,1,0,0,0,92,97,
-        3,14,7,0,93,94,5,28,0,0,94,96,3,14,7,0,95,93,1,0,0,0,96,99,1,0,0,
-        0,97,95,1,0,0,0,97,98,1,0,0,0,98,13,1,0,0,0,99,97,1,0,0,0,100,101,
-        5,36,0,0,101,102,3,32,16,0,102,15,1,0,0,0,103,108,3,36,18,0,104,
-        105,5,28,0,0,105,107,3,36,18,0,106,104,1,0,0,0,107,110,1,0,0,0,108,
-        106,1,0,0,0,108,109,1,0,0,0,109,17,1,0,0,0,110,108,1,0,0,0,111,112,
-        5,1,0,0,112,117,3,24,12,0,113,114,5,2,0,0,114,116,3,24,12,0,115,
-        113,1,0,0,0,116,119,1,0,0,0,117,115,1,0,0,0,117,118,1,0,0,0,118,
-        122,1,0,0,0,119,117,1,0,0,0,120,121,5,3,0,0,121,123,3,26,13,0,122,
-        120,1,0,0,0,122,123,1,0,0,0,123,19,1,0,0,0,124,125,5,4,0,0,125,126,
-        3,24,12,0,126,21,1,0,0,0,127,128,5,5,0,0,128,129,5,12,0,0,129,130,
-        3,28,14,0,130,131,3,36,18,0,131,132,5,29,0,0,132,133,3,42,21,0,133,
-        134,5,13,0,0,134,135,3,26,13,0,135,23,1,0,0,0,136,137,5,12,0,0,137,
-        138,3,36,18,0,138,139,5,13,0,0,139,140,3,26,13,0,140,25,1,0,0,0,
-        141,142,5,14,0,0,142,143,3,4,2,0,143,144,5,15,0,0,144,147,1,0,0,
-        0,145,147,3,6,3,0,146,141,1,0,0,0,146,145,1,0,0,0,147,27,1,0,0,0,
-        148,149,5,36,0,0,149,150,3,32,16,0,150,151,5,11,0,0,151,152,3,36,
-        18,0,152,153,5,29,0,0,153,29,1,0,0,0,154,155,5,36,0,0,155,156,5,
-        11,0,0,156,157,3,36,18,0,157,158,5,29,0,0,158,31,1,0,0,0,159,160,
-        7,0,0,0,160,33,1,0,0,0,161,162,5,6,0,0,162,163,5,12,0,0,163,164,
-        3,36,18,0,164,165,5,13,0,0,165,166,5,29,0,0,166,35,1,0,0,0,167,168,
-        6,18,-1,0,168,173,3,38,19,0,169,170,7,1,0,0,170,172,3,38,19,0,171,
-        169,1,0,0,0,172,175,1,0,0,0,173,171,1,0,0,0,173,174,1,0,0,0,174,
-        181,1,0,0,0,175,173,1,0,0,0,176,177,10,2,0,0,177,178,7,2,0,0,178,
-        180,3,36,18,3,179,176,1,0,0,0,180,183,1,0,0,0,181,179,1,0,0,0,181,
-        182,1,0,0,0,182,37,1,0,0,0,183,181,1,0,0,0,184,189,3,40,20,0,185,
-        186,7,3,0,0,186,188,3,40,20,0,187,185,1,0,0,0,188,191,1,0,0,0,189,
-        187,1,0,0,0,189,190,1,0,0,0,190,39,1,0,0,0,191,189,1,0,0,0,192,193,
-        5,17,0,0,193,208,3,40,20,0,194,195,5,36,0,0,195,208,5,24,0,0,196,
-        197,5,36,0,0,197,208,5,25,0,0,198,199,5,12,0,0,199,200,3,36,18,0,
-        200,201,5,13,0,0,201,208,1,0,0,0,202,208,5,33,0,0,203,208,5,37,0,
-        0,204,208,5,34,0,0,205,208,5,35,0,0,206,208,5,36,0,0,207,192,1,0,
-        0,0,207,194,1,0,0,0,207,196,1,0,0,0,207,198,1,0,0,0,207,202,1,0,
-        0,0,207,203,1,0,0,0,207,204,1,0,0,0,207,205,1,0,0,0,207,206,1,0,
-        0,0,208,41,1,0,0,0,209,210,5,36,0,0,210,211,5,11,0,0,211,217,3,36,
-        18,0,212,213,5,36,0,0,213,217,5,24,0,0,214,215,5,36,0,0,215,217,
-        5,25,0,0,216,209,1,0,0,0,216,212,1,0,0,0,216,214,1,0,0,0,217,43,
-        1,0,0,0,14,55,67,74,87,97,108,117,122,146,173,181,189,207,216
+        68,3,34,17,0,59,68,3,8,4,0,60,68,3,10,5,0,61,68,3,12,6,0,62,68,3,
+        30,15,0,63,68,3,28,14,0,64,68,3,42,21,0,65,68,3,14,7,0,66,68,3,16,
+        8,0,67,58,1,0,0,0,67,59,1,0,0,0,67,60,1,0,0,0,67,61,1,0,0,0,67,62,
+        1,0,0,0,67,63,1,0,0,0,67,64,1,0,0,0,67,65,1,0,0,0,67,66,1,0,0,0,
+        68,7,1,0,0,0,69,70,5,1,0,0,70,75,3,24,12,0,71,72,5,2,0,0,72,74,3,
+        24,12,0,73,71,1,0,0,0,74,77,1,0,0,0,75,73,1,0,0,0,75,76,1,0,0,0,
+        76,80,1,0,0,0,77,75,1,0,0,0,78,79,5,3,0,0,79,81,3,26,13,0,80,78,
+        1,0,0,0,80,81,1,0,0,0,81,9,1,0,0,0,82,83,5,4,0,0,83,84,3,24,12,0,
+        84,11,1,0,0,0,85,86,5,5,0,0,86,87,5,12,0,0,87,88,3,28,14,0,88,89,
+        3,36,18,0,89,90,5,29,0,0,90,91,3,42,21,0,91,92,5,13,0,0,92,93,3,
+        26,13,0,93,13,1,0,0,0,94,95,5,31,0,0,95,96,5,36,0,0,96,97,3,32,16,
+        0,97,99,5,12,0,0,98,100,3,18,9,0,99,98,1,0,0,0,99,100,1,0,0,0,100,
+        101,1,0,0,0,101,102,5,13,0,0,102,103,5,14,0,0,103,104,3,4,2,0,104,
+        105,5,32,0,0,105,106,3,36,18,0,106,107,5,29,0,0,107,108,5,15,0,0,
+        108,15,1,0,0,0,109,110,5,36,0,0,110,112,5,12,0,0,111,113,3,22,11,
+        0,112,111,1,0,0,0,112,113,1,0,0,0,113,114,1,0,0,0,114,115,5,13,0,
+        0,115,116,5,29,0,0,116,17,1,0,0,0,117,122,3,20,10,0,118,119,5,28,
+        0,0,119,121,3,20,10,0,120,118,1,0,0,0,121,124,1,0,0,0,122,120,1,
+        0,0,0,122,123,1,0,0,0,123,19,1,0,0,0,124,122,1,0,0,0,125,126,5,36,
+        0,0,126,127,3,32,16,0,127,21,1,0,0,0,128,133,3,36,18,0,129,130,5,
+        28,0,0,130,132,3,36,18,0,131,129,1,0,0,0,132,135,1,0,0,0,133,131,
+        1,0,0,0,133,134,1,0,0,0,134,23,1,0,0,0,135,133,1,0,0,0,136,137,5,
+        12,0,0,137,138,3,36,18,0,138,139,5,13,0,0,139,140,3,26,13,0,140,
+        25,1,0,0,0,141,142,5,14,0,0,142,143,3,4,2,0,143,144,5,15,0,0,144,
+        147,1,0,0,0,145,147,3,6,3,0,146,141,1,0,0,0,146,145,1,0,0,0,147,
+        27,1,0,0,0,148,149,5,36,0,0,149,150,3,32,16,0,150,151,5,11,0,0,151,
+        152,3,36,18,0,152,153,5,29,0,0,153,29,1,0,0,0,154,155,5,36,0,0,155,
+        156,5,11,0,0,156,157,3,36,18,0,157,158,5,29,0,0,158,31,1,0,0,0,159,
+        160,7,0,0,0,160,33,1,0,0,0,161,162,5,6,0,0,162,163,5,12,0,0,163,
+        164,3,36,18,0,164,165,5,13,0,0,165,166,5,29,0,0,166,35,1,0,0,0,167,
+        168,6,18,-1,0,168,173,3,38,19,0,169,170,7,1,0,0,170,172,3,38,19,
+        0,171,169,1,0,0,0,172,175,1,0,0,0,173,171,1,0,0,0,173,174,1,0,0,
+        0,174,181,1,0,0,0,175,173,1,0,0,0,176,177,10,2,0,0,177,178,7,2,0,
+        0,178,180,3,36,18,3,179,176,1,0,0,0,180,183,1,0,0,0,181,179,1,0,
+        0,0,181,182,1,0,0,0,182,37,1,0,0,0,183,181,1,0,0,0,184,189,3,40,
+        20,0,185,186,7,3,0,0,186,188,3,40,20,0,187,185,1,0,0,0,188,191,1,
+        0,0,0,189,187,1,0,0,0,189,190,1,0,0,0,190,39,1,0,0,0,191,189,1,0,
+        0,0,192,193,5,17,0,0,193,208,3,40,20,0,194,195,5,36,0,0,195,208,
+        5,24,0,0,196,197,5,36,0,0,197,208,5,25,0,0,198,199,5,12,0,0,199,
+        200,3,36,18,0,200,201,5,13,0,0,201,208,1,0,0,0,202,208,5,33,0,0,
+        203,208,5,37,0,0,204,208,5,34,0,0,205,208,5,35,0,0,206,208,5,36,
+        0,0,207,192,1,0,0,0,207,194,1,0,0,0,207,196,1,0,0,0,207,198,1,0,
+        0,0,207,202,1,0,0,0,207,203,1,0,0,0,207,204,1,0,0,0,207,205,1,0,
+        0,0,207,206,1,0,0,0,208,41,1,0,0,0,209,210,5,36,0,0,210,211,5,11,
+        0,0,211,217,3,36,18,0,212,213,5,36,0,0,213,217,5,24,0,0,214,215,
+        5,36,0,0,215,217,5,25,0,0,216,209,1,0,0,0,216,212,1,0,0,0,216,214,
+        1,0,0,0,217,43,1,0,0,0,14,55,67,75,80,99,112,122,133,146,173,181,
+        189,207,216
     ]
 
 class ExprParser ( Parser ):
@@ -117,14 +118,14 @@ class ExprParser ( Parser ):
     RULE_programa = 1
     RULE_bloque = 2
     RULE_sentencia = 3
-    RULE_declaracion_funcion = 4
-    RULE_funcion_llamada = 5
-    RULE_parametros = 6
-    RULE_parametro = 7
-    RULE_argumentos = 8
-    RULE_sentencia_if = 9
-    RULE_sentencia_while = 10
-    RULE_sentencia_for = 11
+    RULE_sentencia_if = 4
+    RULE_sentencia_while = 5
+    RULE_sentencia_for = 6
+    RULE_declaracion_funcion = 7
+    RULE_funcion_llamada = 8
+    RULE_parametros = 9
+    RULE_parametro = 10
+    RULE_argumentos = 11
     RULE_bloque_condicional = 12
     RULE_bloque_de_sentencia = 13
     RULE_declaracion = 14
@@ -136,11 +137,12 @@ class ExprParser ( Parser ):
     RULE_factor = 20
     RULE_actualizacion = 21
 
-    ruleNames =  [ "gramatica", "programa", "bloque", "sentencia", "declaracion_funcion", 
+    ruleNames =  [ "gramatica", "programa", "bloque", "sentencia", "sentencia_if", 
+                   "sentencia_while", "sentencia_for", "declaracion_funcion", 
                    "funcion_llamada", "parametros", "parametro", "argumentos", 
-                   "sentencia_if", "sentencia_while", "sentencia_for", "bloque_condicional", 
-                   "bloque_de_sentencia", "declaracion", "reasignacion", 
-                   "tipo", "mostrar", "expr", "term", "factor", "actualizacion" ]
+                   "bloque_condicional", "bloque_de_sentencia", "declaracion", 
+                   "reasignacion", "tipo", "mostrar", "expr", "term", "factor", 
+                   "actualizacion" ]
 
     EOF = Token.EOF
     IF=1
@@ -374,6 +376,10 @@ class ExprParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
+        def mostrar(self):
+            return self.getTypedRuleContext(ExprParser.MostrarContext,0)
+
+
         def sentencia_if(self):
             return self.getTypedRuleContext(ExprParser.Sentencia_ifContext,0)
 
@@ -392,10 +398,6 @@ class ExprParser ( Parser ):
 
         def declaracion(self):
             return self.getTypedRuleContext(ExprParser.DeclaracionContext,0)
-
-
-        def mostrar(self):
-            return self.getTypedRuleContext(ExprParser.MostrarContext,0)
 
 
         def actualizacion(self):
@@ -441,37 +443,37 @@ class ExprParser ( Parser ):
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 58
-                self.sentencia_if()
+                self.mostrar()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 59
-                self.sentencia_while()
+                self.sentencia_if()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 60
-                self.sentencia_for()
+                self.sentencia_while()
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
                 self.state = 61
-                self.reasignacion()
+                self.sentencia_for()
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
                 self.state = 62
-                self.declaracion()
+                self.reasignacion()
                 pass
 
             elif la_ == 6:
                 self.enterOuterAlt(localctx, 6)
                 self.state = 63
-                self.mostrar()
+                self.declaracion()
                 pass
 
             elif la_ == 7:
@@ -493,6 +495,237 @@ class ExprParser ( Parser ):
                 pass
 
 
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class Sentencia_ifContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def IF(self):
+            return self.getToken(ExprParser.IF, 0)
+
+        def bloque_condicional(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(ExprParser.Bloque_condicionalContext)
+            else:
+                return self.getTypedRuleContext(ExprParser.Bloque_condicionalContext,i)
+
+
+        def ELSE_IF(self, i:int=None):
+            if i is None:
+                return self.getTokens(ExprParser.ELSE_IF)
+            else:
+                return self.getToken(ExprParser.ELSE_IF, i)
+
+        def ELSE(self):
+            return self.getToken(ExprParser.ELSE, 0)
+
+        def bloque_de_sentencia(self):
+            return self.getTypedRuleContext(ExprParser.Bloque_de_sentenciaContext,0)
+
+
+        def getRuleIndex(self):
+            return ExprParser.RULE_sentencia_if
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterSentencia_if" ):
+                listener.enterSentencia_if(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitSentencia_if" ):
+                listener.exitSentencia_if(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitSentencia_if" ):
+                return visitor.visitSentencia_if(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def sentencia_if(self):
+
+        localctx = ExprParser.Sentencia_ifContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 8, self.RULE_sentencia_if)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 69
+            self.match(ExprParser.IF)
+            self.state = 70
+            self.bloque_condicional()
+            self.state = 75
+            self._errHandler.sync(self)
+            _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
+                    self.state = 71
+                    self.match(ExprParser.ELSE_IF)
+                    self.state = 72
+                    self.bloque_condicional() 
+                self.state = 77
+                self._errHandler.sync(self)
+                _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
+
+            self.state = 80
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,3,self._ctx)
+            if la_ == 1:
+                self.state = 78
+                self.match(ExprParser.ELSE)
+                self.state = 79
+                self.bloque_de_sentencia()
+
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class Sentencia_whileContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def WHILE(self):
+            return self.getToken(ExprParser.WHILE, 0)
+
+        def bloque_condicional(self):
+            return self.getTypedRuleContext(ExprParser.Bloque_condicionalContext,0)
+
+
+        def getRuleIndex(self):
+            return ExprParser.RULE_sentencia_while
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterSentencia_while" ):
+                listener.enterSentencia_while(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitSentencia_while" ):
+                listener.exitSentencia_while(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitSentencia_while" ):
+                return visitor.visitSentencia_while(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def sentencia_while(self):
+
+        localctx = ExprParser.Sentencia_whileContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 10, self.RULE_sentencia_while)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 82
+            self.match(ExprParser.WHILE)
+            self.state = 83
+            self.bloque_condicional()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class Sentencia_forContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def FOR(self):
+            return self.getToken(ExprParser.FOR, 0)
+
+        def PARENTESIS_INICIAL(self):
+            return self.getToken(ExprParser.PARENTESIS_INICIAL, 0)
+
+        def declaracion(self):
+            return self.getTypedRuleContext(ExprParser.DeclaracionContext,0)
+
+
+        def expr(self):
+            return self.getTypedRuleContext(ExprParser.ExprContext,0)
+
+
+        def PUNTO_Y_COMA(self):
+            return self.getToken(ExprParser.PUNTO_Y_COMA, 0)
+
+        def actualizacion(self):
+            return self.getTypedRuleContext(ExprParser.ActualizacionContext,0)
+
+
+        def PARENTESIS_FINAL(self):
+            return self.getToken(ExprParser.PARENTESIS_FINAL, 0)
+
+        def bloque_de_sentencia(self):
+            return self.getTypedRuleContext(ExprParser.Bloque_de_sentenciaContext,0)
+
+
+        def getRuleIndex(self):
+            return ExprParser.RULE_sentencia_for
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterSentencia_for" ):
+                listener.enterSentencia_for(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitSentencia_for" ):
+                listener.exitSentencia_for(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitSentencia_for" ):
+                return visitor.visitSentencia_for(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def sentencia_for(self):
+
+        localctx = ExprParser.Sentencia_forContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 12, self.RULE_sentencia_for)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 85
+            self.match(ExprParser.FOR)
+            self.state = 86
+            self.match(ExprParser.PARENTESIS_INICIAL)
+            self.state = 87
+            self.declaracion()
+            self.state = 88
+            self.expr(0)
+            self.state = 89
+            self.match(ExprParser.PUNTO_Y_COMA)
+            self.state = 90
+            self.actualizacion()
+            self.state = 91
+            self.match(ExprParser.PARENTESIS_FINAL)
+            self.state = 92
+            self.bloque_de_sentencia()
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -572,39 +805,39 @@ class ExprParser ( Parser ):
     def declaracion_funcion(self):
 
         localctx = ExprParser.Declaracion_funcionContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 8, self.RULE_declaracion_funcion)
+        self.enterRule(localctx, 14, self.RULE_declaracion_funcion)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 69
+            self.state = 94
             self.match(ExprParser.FUNCION)
-            self.state = 70
+            self.state = 95
             self.match(ExprParser.VARIABLE)
-            self.state = 71
+            self.state = 96
             self.tipo()
-            self.state = 72
+            self.state = 97
             self.match(ExprParser.PARENTESIS_INICIAL)
-            self.state = 74
+            self.state = 99
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==36:
-                self.state = 73
+                self.state = 98
                 self.parametros()
 
 
-            self.state = 76
+            self.state = 101
             self.match(ExprParser.PARENTESIS_FINAL)
-            self.state = 77
+            self.state = 102
             self.match(ExprParser.LLAVES_INICIAL)
-            self.state = 78
+            self.state = 103
             self.bloque()
-            self.state = 79
+            self.state = 104
             self.match(ExprParser.RETURN)
-            self.state = 80
+            self.state = 105
             self.expr(0)
-            self.state = 81
+            self.state = 106
             self.match(ExprParser.PUNTO_Y_COMA)
-            self.state = 82
+            self.state = 107
             self.match(ExprParser.LLAVES_FINAL)
         except RecognitionException as re:
             localctx.exception = re
@@ -661,25 +894,25 @@ class ExprParser ( Parser ):
     def funcion_llamada(self):
 
         localctx = ExprParser.Funcion_llamadaContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 10, self.RULE_funcion_llamada)
+        self.enterRule(localctx, 16, self.RULE_funcion_llamada)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 84
+            self.state = 109
             self.match(ExprParser.VARIABLE)
-            self.state = 85
+            self.state = 110
             self.match(ExprParser.PARENTESIS_INICIAL)
-            self.state = 87
+            self.state = 112
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & 266288107520) != 0):
-                self.state = 86
+                self.state = 111
                 self.argumentos()
 
 
-            self.state = 89
+            self.state = 114
             self.match(ExprParser.PARENTESIS_FINAL)
-            self.state = 90
+            self.state = 115
             self.match(ExprParser.PUNTO_Y_COMA)
         except RecognitionException as re:
             localctx.exception = re
@@ -733,21 +966,21 @@ class ExprParser ( Parser ):
     def parametros(self):
 
         localctx = ExprParser.ParametrosContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 12, self.RULE_parametros)
+        self.enterRule(localctx, 18, self.RULE_parametros)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 92
+            self.state = 117
             self.parametro()
-            self.state = 97
+            self.state = 122
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==28:
-                self.state = 93
+                self.state = 118
                 self.match(ExprParser.COMA)
-                self.state = 94
+                self.state = 119
                 self.parametro()
-                self.state = 99
+                self.state = 124
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -797,12 +1030,12 @@ class ExprParser ( Parser ):
     def parametro(self):
 
         localctx = ExprParser.ParametroContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_parametro)
+        self.enterRule(localctx, 20, self.RULE_parametro)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 100
+            self.state = 125
             self.match(ExprParser.VARIABLE)
-            self.state = 101
+            self.state = 126
             self.tipo()
         except RecognitionException as re:
             localctx.exception = re
@@ -856,255 +1089,24 @@ class ExprParser ( Parser ):
     def argumentos(self):
 
         localctx = ExprParser.ArgumentosContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 16, self.RULE_argumentos)
+        self.enterRule(localctx, 22, self.RULE_argumentos)
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 103
+            self.state = 128
             self.expr(0)
-            self.state = 108
+            self.state = 133
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==28:
-                self.state = 104
+                self.state = 129
                 self.match(ExprParser.COMA)
-                self.state = 105
+                self.state = 130
                 self.expr(0)
-                self.state = 110
+                self.state = 135
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class Sentencia_ifContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def IF(self):
-            return self.getToken(ExprParser.IF, 0)
-
-        def bloque_condicional(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(ExprParser.Bloque_condicionalContext)
-            else:
-                return self.getTypedRuleContext(ExprParser.Bloque_condicionalContext,i)
-
-
-        def ELSE_IF(self, i:int=None):
-            if i is None:
-                return self.getTokens(ExprParser.ELSE_IF)
-            else:
-                return self.getToken(ExprParser.ELSE_IF, i)
-
-        def ELSE(self):
-            return self.getToken(ExprParser.ELSE, 0)
-
-        def bloque_de_sentencia(self):
-            return self.getTypedRuleContext(ExprParser.Bloque_de_sentenciaContext,0)
-
-
-        def getRuleIndex(self):
-            return ExprParser.RULE_sentencia_if
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSentencia_if" ):
-                listener.enterSentencia_if(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSentencia_if" ):
-                listener.exitSentencia_if(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSentencia_if" ):
-                return visitor.visitSentencia_if(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def sentencia_if(self):
-
-        localctx = ExprParser.Sentencia_ifContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 18, self.RULE_sentencia_if)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 111
-            self.match(ExprParser.IF)
-            self.state = 112
-            self.bloque_condicional()
-            self.state = 117
-            self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,6,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
-                    self.state = 113
-                    self.match(ExprParser.ELSE_IF)
-                    self.state = 114
-                    self.bloque_condicional() 
-                self.state = 119
-                self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,6,self._ctx)
-
-            self.state = 122
-            self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,7,self._ctx)
-            if la_ == 1:
-                self.state = 120
-                self.match(ExprParser.ELSE)
-                self.state = 121
-                self.bloque_de_sentencia()
-
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class Sentencia_whileContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def WHILE(self):
-            return self.getToken(ExprParser.WHILE, 0)
-
-        def bloque_condicional(self):
-            return self.getTypedRuleContext(ExprParser.Bloque_condicionalContext,0)
-
-
-        def getRuleIndex(self):
-            return ExprParser.RULE_sentencia_while
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSentencia_while" ):
-                listener.enterSentencia_while(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSentencia_while" ):
-                listener.exitSentencia_while(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSentencia_while" ):
-                return visitor.visitSentencia_while(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def sentencia_while(self):
-
-        localctx = ExprParser.Sentencia_whileContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 20, self.RULE_sentencia_while)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 124
-            self.match(ExprParser.WHILE)
-            self.state = 125
-            self.bloque_condicional()
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class Sentencia_forContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def FOR(self):
-            return self.getToken(ExprParser.FOR, 0)
-
-        def PARENTESIS_INICIAL(self):
-            return self.getToken(ExprParser.PARENTESIS_INICIAL, 0)
-
-        def declaracion(self):
-            return self.getTypedRuleContext(ExprParser.DeclaracionContext,0)
-
-
-        def expr(self):
-            return self.getTypedRuleContext(ExprParser.ExprContext,0)
-
-
-        def PUNTO_Y_COMA(self):
-            return self.getToken(ExprParser.PUNTO_Y_COMA, 0)
-
-        def actualizacion(self):
-            return self.getTypedRuleContext(ExprParser.ActualizacionContext,0)
-
-
-        def PARENTESIS_FINAL(self):
-            return self.getToken(ExprParser.PARENTESIS_FINAL, 0)
-
-        def bloque_de_sentencia(self):
-            return self.getTypedRuleContext(ExprParser.Bloque_de_sentenciaContext,0)
-
-
-        def getRuleIndex(self):
-            return ExprParser.RULE_sentencia_for
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSentencia_for" ):
-                listener.enterSentencia_for(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSentencia_for" ):
-                listener.exitSentencia_for(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSentencia_for" ):
-                return visitor.visitSentencia_for(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def sentencia_for(self):
-
-        localctx = ExprParser.Sentencia_forContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 22, self.RULE_sentencia_for)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 127
-            self.match(ExprParser.FOR)
-            self.state = 128
-            self.match(ExprParser.PARENTESIS_INICIAL)
-            self.state = 129
-            self.declaracion()
-            self.state = 130
-            self.expr(0)
-            self.state = 131
-            self.match(ExprParser.PUNTO_Y_COMA)
-            self.state = 132
-            self.actualizacion()
-            self.state = 133
-            self.match(ExprParser.PARENTESIS_FINAL)
-            self.state = 134
-            self.bloque_de_sentencia()
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
