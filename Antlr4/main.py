@@ -8,7 +8,6 @@ from antlr4.error.ErrorListener import ErrorListener
 from ExprLexer import ExprLexer
 from ExprParser import ExprParser
 from PersonalizatedVisitor import PersonalizatedVisitor
-
 from antlr4.tree.Trees import Trees
 
 # Configuración de los logs
@@ -53,8 +52,12 @@ def checkExtension(text):
 
 def main():
     try:
-        path_file = "good-input-files/if_condicionales-try.txt"
-        # path_file = "bad-input-files/bad-entero_decimal.txt"
+        # ! path_file = "good-input-files/if_condicionales-try.txt"
+        
+        # ! path_file = "good-input-files/if_condicionales-try.txt"
+        
+        path_file = "good-input-files/for_try.txt"
+        # ! path_file = "bad-input-files/bad-entero_decimal.txt"
         
         if not checkExtension(path_file):
             raise ValueError("El archivo debe tener una extensión .txt")

@@ -252,3 +252,133 @@
 2025-03-27 16:44:16,188 - INFO - Resultado de la evaluación: None
 2025-03-27 16:52:10,022 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
 2025-03-27 16:52:10,022 - INFO - Resultado de la evaluación: None
+2025-03-27 21:01:10,931 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 21:01:10,931 - INFO - Resultado de la evaluación: None
+2025-03-27 21:19:03,586 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 21:19:03,586 - INFO - Resultado de la evaluación: None
+2025-03-27 21:21:09,868 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 21:21:09,868 - INFO - Resultado de la evaluación: None
+2025-03-27 21:22:09,462 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 21:22:09,462 - INFO - Resultado de la evaluación: None
+2025-03-27 21:29:44,947 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 21:29:44,947 - INFO - Resultado de la evaluación: None
+2025-03-27 21:46:27,671 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 21:46:27,671 - INFO - Resultado de la evaluación: None
+2025-03-27 21:59:36,444 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 21:59:36,444 - INFO - Resultado de la evaluación: None
+2025-03-27 21:59:50,132 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 21:59:50,132 - INFO - Resultado de la evaluación: None
+2025-03-27 22:02:42,869 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:02:42,869 - INFO - Resultado de la evaluación: None
+2025-03-27 22:08:59,237 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:08:59,237 - INFO - Resultado de la evaluación: None
+2025-03-27 22:09:57,185 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:09:57,185 - INFO - Resultado de la evaluación: None
+2025-03-27 22:15:08,170 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:15:08,170 - INFO - Resultado de la evaluación: None
+2025-03-27 22:15:25,148 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:15:25,148 - INFO - Resultado de la evaluación: None
+2025-03-27 22:20:25,264 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:20:25,264 - INFO - Resultado de la evaluación: None
+2025-03-27 22:23:05,020 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:23:05,020 - INFO - Resultado de la evaluación: None
+2025-03-27 22:23:39,610 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:23:39,610 - INFO - Resultado de la evaluación: None
+2025-03-27 22:24:05,818 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:24:05,818 - INFO - Resultado de la evaluación: None
+2025-03-27 22:26:37,767 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:26:37,767 - INFO - Resultado de la evaluación: None
+2025-03-27 22:28:07,410 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:28:07,410 - INFO - Resultado de la evaluación: None
+2025-03-27 22:28:43,227 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:28:43,227 - INFO - Resultado de la evaluación: None
+2025-03-27 22:29:02,361 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:29:02,361 - INFO - Resultado de la evaluación: None
+2025-03-27 22:31:55,900 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:31:55,900 - INFO - Resultado de la evaluación: None
+2025-03-27 22:38:48,080 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:38:48,080 - INFO - Resultado de la evaluación: None
+2025-03-27 22:38:53,003 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:38:53,003 - INFO - Resultado de la evaluación: None
+2025-03-27 22:46:00,181 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:46:00,182 - INFO - Resultado de la evaluación: None
+2025-03-27 22:46:30,258 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:46:30,258 - INFO - Resultado de la evaluación: None
+2025-03-27 22:47:19,277 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:47:19,277 - INFO - Resultado de la evaluación: None
+2025-03-27 22:49:20,186 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:49:20,186 - INFO - Resultado de la evaluación: None
+2025-03-27 22:53:24,610 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:53:24,610 - INFO - Resultado de la evaluación: None
+2025-03-27 22:55:19,231 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:55:19,231 - INFO - Resultado de la evaluación: None
+2025-03-27 22:56:58,986 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 22:56:58,986 - INFO - Resultado de la evaluación: None
+2025-03-27 23:07:54,816 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:07:54,816 - INFO - Resultado de la evaluación: None
+2025-03-27 23:08:03,913 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:08:03,913 - INFO - Resultado de la evaluación: None
+2025-03-27 23:10:40,733 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:10:40,733 - INFO - Resultado de la evaluación: None
+2025-03-27 23:11:20,027 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:11:20,027 - INFO - Resultado de la evaluación: None
+2025-03-27 23:11:42,096 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:11:42,096 - INFO - Resultado de la evaluación: None
+2025-03-27 23:14:46,604 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:14:46,604 - INFO - Resultado de la evaluación: None
+2025-03-27 23:21:09,861 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:21:09,861 - INFO - Resultado de la evaluación: None
+2025-03-27 23:22:05,399 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:22:05,399 - INFO - Resultado de la evaluación: None
+2025-03-27 23:22:29,366 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:22:29,366 - INFO - Resultado de la evaluación: None
+2025-03-27 23:23:01,551 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:23:01,551 - INFO - Resultado de la evaluación: None
+2025-03-27 23:23:53,668 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:23:53,668 - INFO - Resultado de la evaluación: None
+2025-03-27 23:24:12,708 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:24:12,708 - INFO - Resultado de la evaluación: None
+2025-03-27 23:27:58,147 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:27:58,147 - INFO - Resultado de la evaluación: None
+2025-03-27 23:28:43,319 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:28:43,319 - INFO - Resultado de la evaluación: None
+2025-03-27 23:29:38,048 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:29:38,048 - INFO - Resultado de la evaluación: None
+2025-03-27 23:41:39,271 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:41:39,271 - INFO - Resultado de la evaluación: None
+2025-03-27 23:42:29,186 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:42:29,186 - INFO - Resultado de la evaluación: None
+2025-03-27 23:46:12,023 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:46:12,023 - INFO - Resultado de la evaluación: None
+2025-03-27 23:46:57,180 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:46:57,180 - INFO - Resultado de la evaluación: None
+2025-03-27 23:50:19,750 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:50:19,750 - INFO - Resultado de la evaluación: None
+2025-03-27 23:56:06,745 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-27 23:56:06,745 - INFO - Resultado de la evaluación: None
+2025-03-28 00:01:18,461 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:01:18,461 - INFO - Resultado de la evaluación: None
+2025-03-28 00:11:57,848 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:11:57,848 - INFO - Resultado de la evaluación: None
+2025-03-28 00:15:53,442 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:15:53,442 - INFO - Resultado de la evaluación: None
+2025-03-28 00:18:18,055 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:18:18,055 - INFO - Resultado de la evaluación: None
+2025-03-28 00:35:02,459 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:35:02,459 - INFO - Resultado de la evaluación: None
+2025-03-28 00:35:36,032 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:35:36,032 - INFO - Resultado de la evaluación: None
+2025-03-28 00:36:21,709 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:36:21,709 - INFO - Resultado de la evaluación: None
+2025-03-28 00:38:47,750 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:38:47,750 - INFO - Resultado de la evaluación: None
+2025-03-28 00:42:59,246 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:42:59,246 - INFO - Resultado de la evaluación: None
+2025-03-28 00:43:59,128 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:43:59,128 - INFO - Resultado de la evaluación: None
+2025-03-28 00:44:52,458 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:44:52,458 - INFO - Resultado de la evaluación: None
+2025-03-28 00:45:55,985 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:45:55,985 - INFO - Resultado de la evaluación: None
+2025-03-28 00:46:35,001 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
+2025-03-28 00:46:35,001 - INFO - Resultado de la evaluación: None
