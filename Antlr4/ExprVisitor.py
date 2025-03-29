@@ -123,10 +123,10 @@ class ExprVisitor(ParseTreeVisitor):
  
         if var_type == "entero":
             if not isinstance(value, int):
-                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'int' para la variable '{var_name}', pero se obtuvo {traducir_tipo(type(value))}")
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'entero' para la variable '{var_name}', pero se obtuvo {traducir_tipo(value)}")
         elif var_type == "decimal":
             if not isinstance(value, float):
-                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'float' para la variable '{var_name}', pero se obtuvo {traducir_tipo(type(value))}")
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'decimal' para la variable '{var_name}', pero se obtuvo {traducir_tipo(value)}")
         else:
             raise TypeError(f"Tipo de variable no soportado: {var_type}")
  

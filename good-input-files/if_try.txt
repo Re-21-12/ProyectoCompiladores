@@ -1,4 +1,4 @@
-program{
+hola{
     x entero = 0;
     if(x<0){
         mostrar(2);

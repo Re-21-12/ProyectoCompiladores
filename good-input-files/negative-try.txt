@@ -1,4 +1,4 @@
-program {
+hola {
     res entero = 1;
     res2 entero = -2;
     resres entero = res + res2;

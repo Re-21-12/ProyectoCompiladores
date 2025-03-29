@@ -12,20 +12,20 @@
 2025-02-23 13:07:42,035 - ERROR - Error de sintaxis en la línea 1, columna 7: mismatched input '{' expecting '='
 2025-02-23 13:07:42,037 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
 2025-02-23 13:07:42,037 - ERROR - Ocurrió un error durante el análisis: 'NoneType' object has no attribute 'accept'
-2025-02-23 13:12:41,761 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:12:41,761 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 13:12:41,763 - ERROR - Error en la evaluación: None
-2025-02-23 13:23:22,422 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:23:22,422 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 13:23:22,423 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
 2025-02-23 13:23:22,423 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
 2025-02-23 13:23:22,424 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
 2025-02-23 13:23:22,424 - ERROR - Error en la evaluación: None
-2025-02-23 13:26:01,928 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:26:01,928 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 13:26:01,930 - ERROR - Error de sintaxis en la línea 5, columna 3: missing '=' at '('
 2025-02-23 13:26:01,930 - ERROR - Error de sintaxis en la línea 5, columna 6: mismatched input '>' expecting ')'
 2025-02-23 13:26:01,931 - ERROR - Error de sintaxis en la línea 7, columna 2: mismatched input 'else' expecting <EOF>
 2025-02-23 13:26:01,931 - ERROR - Error en la evaluación: None
 2025-02-23 13:26:09,195 - ERROR - Ocurrió un error durante el análisis: [Errno 2] No such file or directory: 'input-files/for_try.txt'
-2025-02-23 13:26:35,247 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:26:35,247 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 13:26:35,248 - ERROR - Error de sintaxis en la línea 2, columna 8: missing '=' at '('
 2025-02-23 13:26:35,248 - ERROR - Error de sintaxis en la línea 2, columna 13: mismatched input 'i' expecting ')'
 2025-02-23 13:26:35,249 - ERROR - Error de sintaxis en la línea 2, columna 22: mismatched input '<' expecting '='
@@ -33,7 +33,7 @@
 2025-02-23 13:26:35,249 - ERROR - Error de sintaxis en la línea 3, columna 9: missing '=' at '('
 2025-02-23 13:26:35,250 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
 2025-02-23 13:26:35,250 - ERROR - Ocurrió un error durante el análisis: Variable no definida: var
-2025-02-23 13:26:50,746 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:26:50,746 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 13:26:50,746 - ERROR - Error de sintaxis en la línea 2, columna 8: missing '=' at '('
 2025-02-23 13:26:50,747 - ERROR - Error de sintaxis en la línea 2, columna 11: mismatched input '=' expecting ')'
 2025-02-23 13:26:50,747 - ERROR - Error de sintaxis en la línea 2, columna 18: mismatched input '<' expecting '='
@@ -41,7 +41,7 @@
 2025-02-23 13:26:50,748 - ERROR - Error de sintaxis en la línea 3, columna 9: missing '=' at '('
 2025-02-23 13:26:50,748 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
 2025-02-23 13:26:50,748 - ERROR - Error en la evaluación: None
-2025-02-23 13:57:14,727 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:57:14,727 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 13:57:14,728 - ERROR - Error de sintaxis en la línea 2, columna 8: missing '=' at '('
 2025-02-23 13:57:14,728 - ERROR - Error de sintaxis en la línea 2, columna 11: mismatched input '=' expecting ')'
 2025-02-23 13:57:14,729 - ERROR - Error de sintaxis en la línea 2, columna 18: mismatched input '<' expecting '='
@@ -50,13 +50,13 @@
 2025-02-23 13:57:14,729 - ERROR - Error de sintaxis en la línea 5, columna 0: extraneous input '}' expecting <EOF>
 2025-02-23 13:57:14,730 - ERROR - Error en la evaluación: None
 2025-02-23 13:59:09,701 - ERROR - Ocurrió un error durante el análisis: [Errno 2] No such file or directory: 'good-input-files/mostrar_try.txt'
-2025-02-23 13:59:25,960 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 13:59:25,960 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 13:59:25,961 - ERROR - Error de sintaxis en la línea 3, columna 11: missing '=' at '('
 2025-02-23 13:59:25,962 - ERROR - Error en la evaluación: None
-2025-02-23 14:04:35,726 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 14:04:35,726 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 14:04:35,728 - ERROR - Error de sintaxis en la línea 5, columna 11: missing '=' at '('
 2025-02-23 14:04:35,728 - ERROR - Error en la evaluación: None
-2025-02-23 14:09:43,261 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 14:09:43,261 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 14:09:43,262 - ERROR - Error de sintaxis en la línea 4, columna 10: missing '=' at '('
 2025-02-23 14:09:43,263 - ERROR - Error de sintaxis en la línea 4, columna 13: mismatched input '<' expecting ')'
 2025-02-23 14:09:43,263 - ERROR - Error de sintaxis en la línea 4, columna 16: mismatched input ')' expecting '='
@@ -64,7 +64,7 @@
 2025-02-23 14:09:43,264 - ERROR - Error de sintaxis en la línea 6, columna 15: missing '=' at '('
 2025-02-23 14:09:43,264 - ERROR - Error de sintaxis en la línea 8, columna 0: extraneous input '}' expecting <EOF>
 2025-02-23 14:09:43,264 - ERROR - Error en la evaluación: None
-2025-02-23 14:12:27,956 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'program' expecting '{'
+2025-02-23 14:12:27,956 - ERROR - Error de sintaxis en la línea 1, columna 0: extraneous input 'hola' expecting '{'
 2025-02-23 14:12:27,958 - ERROR - Error de sintaxis en la línea 4, columna 10: missing '=' at '('
 2025-02-23 14:12:27,958 - ERROR - Error de sintaxis en la línea 4, columna 13: mismatched input '<' expecting ')'
 2025-02-23 14:12:27,959 - ERROR - Error de sintaxis en la línea 4, columna 16: mismatched input ')' expecting '='
@@ -266,7 +266,7 @@
 2025-03-26 12:21:34,183 - ERROR - Ocurrió un error durante el análisis: ExprBaseVisitor.traducir_tipo() missing 1 required positional argument: 'tipo'
 2025-03-26 12:22:24,076 - ERROR - Ocurrió un error durante el análisis: El tipo de dato no es el correcto: None
 2025-03-26 12:37:47,765 - ERROR - Error en la evaluación: None
-2025-03-26 12:44:56,364 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'program' expecting 'MAIN'
+2025-03-26 12:44:56,364 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'hola' expecting 'MAIN'
 2025-03-26 12:44:56,370 - ERROR - Error en la evaluación: None
 2025-03-26 12:45:59,141 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'MAIN' expecting 'MAIN'
 2025-03-26 12:45:59,147 - ERROR - Error en la evaluación: None
@@ -280,11 +280,11 @@
 2025-03-26 13:06:48,473 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'MAIN' expecting 'main'
 2025-03-26 13:06:48,479 - ERROR - Error en la evaluación: None
 2025-03-26 13:07:12,245 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
-2025-03-26 13:07:12,255 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del programa
+2025-03-26 13:07:12,255 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del holaa
 2025-03-26 13:07:39,348 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
-2025-03-26 13:07:39,357 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del programa
+2025-03-26 13:07:39,357 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del holaa
 2025-03-26 13:07:52,750 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
-2025-03-26 13:07:52,756 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del programa
+2025-03-26 13:07:52,756 - ERROR - Ocurrió un error durante el análisis: Error: Se esperaba 'MAIN' al inicio del holaa
 2025-03-26 13:10:06,107 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
 2025-03-26 13:10:06,115 - ERROR - Error en la evaluación: None
 2025-03-26 13:12:21,255 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'main' expecting 'main'
@@ -342,3 +342,12 @@
 2025-03-28 00:49:26,757 - ERROR - Error en la evaluación: None
 2025-03-28 00:50:21,604 - ERROR - Ocurrió un error durante el análisis: can only concatenate str (not "int") to str
 2025-03-28 00:50:43,865 - ERROR - Error en la evaluación: None
+2025-03-28 17:04:31,583 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'hola' expecting 'hola'
+2025-03-28 17:04:31,584 - ERROR - Error en la evaluación: None
+2025-03-28 17:05:06,940 - ERROR - Error de sintaxis en la línea 1, columna 0: mismatched input 'hola' expecting 'hola'
+2025-03-28 17:05:06,942 - ERROR - Error en la evaluación: None
+2025-03-28 17:05:43,507 - ERROR - Ocurrió un error durante el análisis: El tipo de dato no es el correcto: <class 'float'>
+2025-03-28 22:04:02,042 - ERROR - Ocurrió un error durante el análisis: El tipo de dato no es el correcto: <class 'type'>
+2025-03-28 22:04:46,479 - ERROR - Ocurrió un error durante el análisis: El tipo de dato no es el correcto: <class 'float'>
+2025-03-28 22:06:26,902 - ERROR - Ocurrió un error durante el análisis: Error de tipo: Se esperaba un valor de tipo 'int' para la variable 'res', pero se obtuvo decimal
+2025-03-28 22:07:29,889 - ERROR - Ocurrió un error durante el análisis: Error de tipo: Se esperaba un valor de tipo 'entero' para la variable 'res', pero se obtuvo decimal
