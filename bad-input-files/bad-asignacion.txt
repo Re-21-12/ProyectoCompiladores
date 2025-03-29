@@ -1,0 +1,4 @@
+hola{
+    res entero = x + y;
+    mostrar(res);
+}
