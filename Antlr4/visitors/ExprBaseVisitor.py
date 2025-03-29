@@ -29,7 +29,25 @@ class ExprBaseVisitor(ParseTreeVisitor):
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         """Maneja la declaración de variables."""
         var_name = ctx.VARIABLE().getText()
+        var_type = ctx.tipo().getText()
         value = self.visit(ctx.expr())  # Obtener el valor de la expresión
+        
+        if var_type == "entero":
+            if not isinstance(value, int):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'entero' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+        elif var_type == "decimal":
+            if not isinstance(value, float):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'decimal' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+        elif var_type == "cadena":
+            if not isinstance(value, str):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'cadena' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+        elif var_type == "bool":
+            if not isinstance(value, bool):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'bool' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+       
+        else:
+            raise TypeError(f"Tipo de variable no soportado: {var_type}")
+        
         self.define_variable(var_name, value)
 
     def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
@@ -42,7 +60,7 @@ class ExprBaseVisitor(ParseTreeVisitor):
             if var_name in scope:
                 scope[var_name] = value
                 return
-        raise NameError(f"Variable no definida: {var_name}")
+        raise NameError(f"Variable no definida [BASE VISITOR]: {var_name}")
 
     def visitActualizacion(self, ctx: ExprParser.ActualizacionContext):
         """Actualizando."""

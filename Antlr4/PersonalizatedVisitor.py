@@ -86,14 +86,10 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprMath
         return self.visitChildren(ctx)
 
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
-        var_name = ctx.VARIABLE().getText()
-        value = self.visit(ctx.expr())  # Obtener el valor de la expresión
-        super().define_variable(var_name, value)
+        super().visitDeclaracion(ctx)
 
     def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
-        var_name = ctx.VARIABLE().getText()
-        value = self.visit(ctx.expr())  # Obtener el valor de la expresión
-        super().define_variable( var_name, value)
+        super().visitReasignacion(ctx)
 
     # Visit a parse tree produced by ExprParser#mostrar.
     def visitMostrar(self, ctx:ExprParser.MostrarContext):

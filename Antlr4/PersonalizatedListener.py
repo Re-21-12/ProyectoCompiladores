@@ -4,9 +4,10 @@ if "." in __name__:
     from .ExprParser import ExprParser
 else:
     from ExprParser import ExprParser
-
+from ExprListener import ExprListener
+from SymbolTable import SymbolTable
 # This class defines a complete listener for a parse tree produced by ExprParser.
-class ExprListener(ParseTreeListener, SymbolTable):
+class PersonalizatedListener(ExprListener, SymbolTable):
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.panic_mode = False  # Control para el modo pánico
@@ -127,6 +128,21 @@ class ExprListener(ParseTreeListener, SymbolTable):
     def enterDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         var_name = ctx.VARIABLE().getText()  # Obtén el nombre de la variable
         var_type = ctx.tipo().getText()  # Obtén el tipo de la variable
+        value = self.visit(ctx.expr())
+        
+        if var_type == "entero":
+            if not isinstance(value, int):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'entero' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+        elif var_type == "decimal":
+            if not isinstance(value, float):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'decimal' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+        elif var_type == "cadena":
+            if not isinstance(value, str):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'cadena' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+        elif var_type == "bool":
+            if not isinstance(value, bool):
+                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'bool' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+            
         try:
             self.symbol_table.declare_variable(var_name, var_type)
         except ValueError as e:
@@ -155,26 +171,54 @@ class ExprListener(ParseTreeListener, SymbolTable):
     def exitReasignacion(self, ctx: ExprParser.ReasignacionContext):
         pass
 
-    # Validar que las variables usadas estén declaradas
     def enterExpr(self, ctx: ExprParser.ExprContext):
-        if isinstance(ctx, ExprParser.VariableContext):
-            var_name = ctx.VARIABLE().getText()
-            if self.symbol_table.get_variable(var_name) is None:
-                print(f"Error: La variable '{var_name}' utilizada sin declarar.")
-                self.panic_mode = True  # Activar el modo pánico en caso de error
+        if ctx.getChildCount() == 3:  # Expresión binaria (ej: a + b)
+            left = ctx.getChild(0)
+            operator = ctx.getChild(1).getText()
+            right = ctx.getChild(2)
+
+            left_name = left.getText()
+            right_name = right.getText()
+
+            left_type = self.symbol_table.get_variable_type(left_name)
+            right_type = self.symbol_table.get_variable_type(right_name)
+
+            if left_type is None or right_type is None:
+                print(f"Error: Variable no declarada en la expresión '{left_name} {operator} {right_name}'")
+                self.panic_mode = True
+                return
+
+            # Reglas de validación de tipos
+            if operator in {'+', '-', '*', '/'}:
+                if left_type in {'entero', 'decimal'} and right_type in {'entero', 'decimal'}:
+                    pass  # Operación válida
+                elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
+                    pass  # Concatenación de cadenas es válida
+                else:
+                    print(f"Error: No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
+                    self.panic_mode = True
+
+            elif operator in {'==', '!=', '<', '>', '<=', '>='}:
+                if left_type == right_type:  # Comparación válida si ambos operandos son del mismo tipo
+                    pass
+                else:
+                    print(f"Error: Comparación inválida entre '{left_type}' y '{right_type}'")
+                    self.panic_mode = True
 
     # Exit a parse tree produced by ExprParser#expr.
     def exitExpr(self, ctx: ExprParser.ExprContext):
         pass
 
     # Método auxiliar para determinar el tipo de una expresión
-    def get_expression_type(self, expr_ctx):
+    def get_expression_type(self, expr_ctx:ExprParser.ExprContext):
         # Este es un método simple para obtener el tipo de una expresión, debería ser extendido para manejar más casos.
-        if isinstance(expr_ctx, ExprParser.NumeroContext):
+        if isinstance(expr_ctx, ExprParser.NUMERO):
             return 'int'
-        elif isinstance(expr_ctx, ExprParser.CadenaContext):
+        if isinstance(expr_ctx, ExprParser.DECIMAL):
+            return 'decimal'
+        elif isinstance(expr_ctx, ExprParser.CADENA):
             return 'string'
-        elif isinstance(expr_ctx, ExprParser.BooleanoContext):
+        elif isinstance(expr_ctx, ExprParser.BOOLEANO):
             return 'bool'
         # Aquí puedes agregar más lógica para determinar el tipo basado en el contexto de la expresión
         return 'unknown'
@@ -193,3 +237,15 @@ class ExprListener(ParseTreeListener, SymbolTable):
         if self.panic_mode:
             print("Modo pánico activado, intentando continuar la ejecución...")
             self.panic_mode = False  # Desactivar el modo pánico después de la recuperación
+
+    def traducir_tipo(tipo):
+        if isinstance(tipo, int):
+            return "entero"
+        elif isinstance(tipo, float):
+            return "decimal"
+        elif isinstance(tipo, str):
+            return "cadena"
+        elif isinstance(tipo, bool):
+            return "bool"
+        else:
+            raise ValueError(f"El tipo de dato no es el correcto: {tipo}")
