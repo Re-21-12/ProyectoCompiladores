@@ -1,6 +1,6 @@
 import sys
 import logging
-import traceback
+# import traceback
 from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
 from ExprLexer import ExprLexer
@@ -107,7 +107,8 @@ def main():
     
     try:
         # Definir archivo de entrada
-        path_file = "bad-input-files/bad-asignacion.txt"
+        #path_file = "bad-input-files/bad-actualizacion.txt"
+        path_file = "good-input-files/concatenacion.txt"
         
         print_section("configuración inicial")
         print(f"{Fore.WHITE}Analizando archivo: {Fore.YELLOW}{path_file}{Style.RESET_ALL}")
@@ -125,6 +126,7 @@ def main():
         parser.removeErrorListeners()
         parser.addErrorListener(PersonalizatedListener())
 
+
         print_section("análisis sintáctico")
         tree = parser.gramatica()
         
@@ -133,11 +135,16 @@ def main():
         pretty_print_tree(tree, parser)
         
         # Evaluación
-        print_section("evaluación", Fore.MAGENTA)
+        print_section("ejecución del listener", Fore.YELLOW)
+        listener = PersonalizatedListener()
+        walker = ParseTreeWalker()
+        walker.walk(listener, tree)
+        
+        print_section("evaluación visitor", Fore.MAGENTA)
         visitor = PersonalizatedVisitor()
         result = visitor.visit(tree)
+        
         print(f"\n{Fore.GREEN}✔ Análisis completado{Style.RESET_ALL}")
-        print(f"{Fore.WHITE}Resultado final: {Fore.YELLOW}{result}{Style.RESET_ALL}\n")
         
         # Logs
         success_logger.info(f"Análisis exitoso para {path_file}")
@@ -151,9 +158,9 @@ def main():
         error_msg = f"{Fore.RED}✖ Error de valor: {ve}{Style.RESET_ALL}"
         print(error_msg)
         error_logger.error(error_msg)
-    except Exception as e:
-        error_msg = f"\n{Fore.RED}✖ Error inesperado:\n{Fore.WHITE}{traceback.format_exc()}{Style.RESET_ALL}"
-        error_logger.error(f"Error inesperado: {e}\n{traceback.format_exc()}")
+    # except Exception as e:
+    #     error_msg = f"\n{Fore.RED}✖ Error inesperado:\n{Fore.WHITE}{traceback.format_exc()}{Style.RESET_ALL}"
+    #     error_logger.error(f"Error inesperado: {e}\n{traceback.format_exc()}")
 
 if __name__ == "__main__":
     main()

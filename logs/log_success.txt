@@ -29,3 +29,27 @@
 2025-03-28 17:03:05,875 - INFO - Resultado de la evaluación: None
 2025-03-28 23:43:52,423 - INFO - Análisis sintáctico completado correctamente para la expresión válida.
 2025-03-28 23:43:52,423 - INFO - Resultado de la evaluación: None
+2025-03-30 12:57:40,687 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 12:57:40,688 - INFO - Resultado: None
+2025-03-30 13:05:55,724 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:05:55,724 - INFO - Resultado: None
+2025-03-30 13:08:39,595 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:08:39,595 - INFO - Resultado: None
+2025-03-30 13:09:37,797 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:09:37,797 - INFO - Resultado: None
+2025-03-30 13:10:07,027 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:10:07,027 - INFO - Resultado: None
+2025-03-30 13:10:59,572 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:10:59,572 - INFO - Resultado: None
+2025-03-30 13:14:32,259 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:14:32,259 - INFO - Resultado: None
+2025-03-30 13:17:11,458 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:17:11,458 - INFO - Resultado: None
+2025-03-30 13:17:57,439 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:17:57,439 - INFO - Resultado: None
+2025-03-30 13:18:20,859 - INFO - Análisis exitoso para good-input-files/funcion.txt
+2025-03-30 13:18:20,859 - INFO - Resultado: None
+2025-03-30 13:40:10,497 - INFO - Análisis exitoso para good-input-files/concatenacion.txt
+2025-03-30 13:40:10,498 - INFO - Resultado: None
+2025-03-30 13:42:14,437 - INFO - Análisis exitoso para good-input-files/concatenacion.txt
+2025-03-30 13:42:14,437 - INFO - Resultado: None

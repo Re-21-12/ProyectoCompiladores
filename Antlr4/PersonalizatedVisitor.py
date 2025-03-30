@@ -1,7 +1,6 @@
 from ExprVisitor import ExprVisitor
 from ExprParser import ExprParser
 # Visitors modularizados
-from visitors.ExprMathVisitor import *
 from visitors.ExprBaseVisitor import *
 from visitors.ExprStatementVisitor import *
 from visitors.ExprVariableVisitor import *
@@ -10,7 +9,7 @@ def traducir_tipo(tipo):
     return ExprBaseVisitor.traducir_tipo(tipo)
 
 
-class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprMathVisitor):
+class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprVisitor):
     def __init__(self):
         super().__init__()
 
@@ -110,7 +109,13 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprMath
         print(f"Operador R E: {operator.getText()}")
 
         if operator.getText() == '+':
-            result = left + right
+            # Verificar si ambos operandos son cadenas
+            if isinstance(left, str) and isinstance(right, str):
+                result = left + right  # Concatenación de cadenas
+            elif isinstance(left, int) and isinstance(right, int):
+                result = left + right  # Suma numérica
+            else:
+                raise ValueError(f"Operación no permitida entre tipos {type(left)} y {type(right)} para el operador '+'")
         elif operator.getText() == '-':
             result = left - right
         elif operator.getText() == '<':
@@ -130,6 +135,7 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprMath
 
         print(f"Resultado de la evaluación: {result}")
         return result
+
 
     def visitTerm(self, ctx: ExprParser.TermContext):
         if ctx.getChildCount() == 1:

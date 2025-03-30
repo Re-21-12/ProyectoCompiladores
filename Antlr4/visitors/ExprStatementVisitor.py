@@ -89,9 +89,5 @@ class ExprStatementVisitor( ExprFunctionsVisitor):
             self.visit(ctx.bloque_de_sentencia())  # Ejecuta el bloque
             self.visit(ctx.actualizacion())  # Ejecuta la actualización
                 
-        # Visit a parse tree produced by ExprParser#mostrar.
-    def visitMostrar(self, ctx:ExprParser.MostrarContext):
-        value = self.visit(ctx.expr())
-        print(value)
-        return value  
+  
 

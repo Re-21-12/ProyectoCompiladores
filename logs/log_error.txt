@@ -472,3 +472,153 @@ Traceback (most recent call last):
     raise NameError(f"Variable '{name}' no definida.")
 NameError: Variable 'x' no definida.
 
+2025-03-30 10:24:03,123 - ERROR - Error inesperado: Variable 'x' no definida.
+Traceback (most recent call last):
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/main.py", line 138, in main
+    result = visitor.visit(tree)
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 34, in visit
+    return tree.accept(self)
+           ~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 223, in accept
+    return visitor.visitGramatica(self)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 20, in visitGramatica
+    return self.visitChildren(ctx)
+           ~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 44, in visitChildren
+    childResult = c.accept(self)
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 282, in accept
+    return visitor.visitPrograma(self)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 24, in visitPrograma
+    return self.visitChildren(ctx)
+           ~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 44, in visitChildren
+    childResult = c.accept(self)
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 339, in accept
+    return visitor.visitBloque(self)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 33, in visitBloque
+    result = self.visitChildren(ctx)
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 44, in visitChildren
+    childResult = c.accept(self)
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 428, in accept
+    return visitor.visitSentencia(self)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 45, in visitSentencia
+    return super().visitSentencia(ctx)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/visitors/ExprStatementVisitor.py", line 19, in visitSentencia
+    return self.visitDeclaracion(ctx.declaracion())
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 89, in visitDeclaracion
+    super().visitDeclaracion(ctx)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/visitors/ExprVariableVisitor.py", line 9, in visitDeclaracion
+    value = self.visit(ctx.expr())
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 34, in visit
+    return tree.accept(self)
+           ~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 1584, in accept
+    return visitor.visitExpr(self)
+           ~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 104, in visitExpr
+    left = self.visit(ctx.getChild(0))
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 34, in visit
+    return tree.accept(self)
+           ~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 1696, in accept
+    return visitor.visitTerm(self)
+           ~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 136, in visitTerm
+    return self.visit(ctx.getChild(0))
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 34, in visit
+    return tree.accept(self)
+           ~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 1797, in accept
+    return visitor.visitFactor(self)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 164, in visitFactor
+    return super().get_variable(var_name)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/visitors/ExprBaseVisitor.py", line 27, in get_variable
+    raise NameError(f"Variable '{name}' no definida.")
+NameError: Variable 'x' no definida.
+
+2025-03-30 10:30:12,149 - ERROR - Error inesperado: Variable 'x' no definida.
+Traceback (most recent call last):
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/main.py", line 138, in main
+    result = visitor.visit(tree)
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 34, in visit
+    return tree.accept(self)
+           ~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 223, in accept
+    return visitor.visitGramatica(self)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 20, in visitGramatica
+    return self.visitChildren(ctx)
+           ~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 44, in visitChildren
+    childResult = c.accept(self)
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 282, in accept
+    return visitor.visitPrograma(self)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 24, in visitPrograma
+    return self.visitChildren(ctx)
+           ~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 44, in visitChildren
+    childResult = c.accept(self)
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 339, in accept
+    return visitor.visitBloque(self)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 33, in visitBloque
+    result = self.visitChildren(ctx)
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 44, in visitChildren
+    childResult = c.accept(self)
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 428, in accept
+    return visitor.visitSentencia(self)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 45, in visitSentencia
+    return super().visitSentencia(ctx)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/visitors/ExprStatementVisitor.py", line 19, in visitSentencia
+    return self.visitDeclaracion(ctx.declaracion())
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 89, in visitDeclaracion
+    super().visitDeclaracion(ctx)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/visitors/ExprVariableVisitor.py", line 9, in visitDeclaracion
+    value = self.visit(ctx.expr())
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 34, in visit
+    return tree.accept(self)
+           ~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 1584, in accept
+    return visitor.visitExpr(self)
+           ~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 104, in visitExpr
+    left = self.visit(ctx.getChild(0))
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 34, in visit
+    return tree.accept(self)
+           ~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 1696, in accept
+    return visitor.visitTerm(self)
+           ~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 136, in visitTerm
+    return self.visit(ctx.getChild(0))
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/.venv/lib64/python3.13/site-packages/antlr4/tree/Tree.py", line 34, in visit
+    return tree.accept(self)
+           ~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/ExprParser.py", line 1797, in accept
+    return visitor.visitFactor(self)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/PersonalizatedVisitor.py", line 164, in visitFactor
+    return super().get_variable(var_name)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/vre_fedorin/ProyectoCompiladores/Antlr4/visitors/ExprBaseVisitor.py", line 27, in get_variable
+    raise NameError(f"Variable '{name}' no definida.")
+NameError: Variable 'x' no definida.
+
+2025-03-30 12:29:24,892 - ERROR - [31m✖ Archivo no encontrado: [Errno 2] No such file or directory: 'good-input-files/funciones.txt'[0m
+2025-03-30 13:41:18,687 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m

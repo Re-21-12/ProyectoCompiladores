@@ -1,0 +1,6 @@
+hola{
+    holacadena cadena = "hola";
+    mundo cadena = "mundo";
+    holamundo cadena = holacadena + mundo;
+    mostrar(holamundo);
+}
