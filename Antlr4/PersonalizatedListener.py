@@ -12,6 +12,11 @@ class PersonalizatedListener(ExprListener, SymbolTable):
         self.symbol_table = SymbolTable()
         self.panic_mode = False  # Control para el modo pánico
 
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+            # Aquí puedes manejar el error a tu manera, por ejemplo, imprimir el error
+            print(f"Error de sintaxis en la línea {line}, columna {column}: {msg}")
+            # Si deseas, puedes incluso lanzar una excepción o realizar alguna acción personalizada
+
     # Enter a parse tree produced by ExprParser#gramatica.
     def enterGramatica(self, ctx: ExprParser.GramaticaContext):
         pass
@@ -70,7 +75,18 @@ class PersonalizatedListener(ExprListener, SymbolTable):
 
     # Al entrar a una función, creamos un nuevo ámbito
     def enterDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
+        # Ingresamos al ámbito de la función
         self.symbol_table.enter_scope()
+
+        # Revisamos si existen parámetros
+        if ctx.parametros():
+            # Extraemos los parámetros y los agregamos a la tabla de símbolos
+            for param in ctx.parametros().parametro():
+                param_name = param.VARIABLE().getText()  # Nombre del parámetro
+                param_type = param.tipo().getText()  # Tipo del parámetro (dependiendo de la gramática)
+                
+                # Aquí agregamos el parámetro al símbolo con el tipo adecuado
+                self.symbol_table.define_variable(param_name, param_type)
 
     # Al salir de una función, salimos del ámbito
     def exitDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
@@ -107,14 +123,13 @@ class PersonalizatedListener(ExprListener, SymbolTable):
     # Exit a parse tree produced by ExprParser#argumentos.
     def exitArgumentos(self, ctx: ExprParser.ArgumentosContext):
         pass
-
     # Enter a parse tree produced by ExprParser#bloque_condicional.
     def enterBloque_condicional(self, ctx: ExprParser.Bloque_condicionalContext):
-        pass
+        self.symbol_table.enter_scope()
 
     # Exit a parse tree produced by ExprParser#bloque_condicional.
     def exitBloque_condicional(self, ctx: ExprParser.Bloque_condicionalContext):
-        pass
+        self.symbol_table.exit_scope()
 
     # Enter a parse tree produced by ExprParser#bloque_de_sentencia.
     def enterBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
@@ -126,28 +141,30 @@ class PersonalizatedListener(ExprListener, SymbolTable):
 
     # Enter a parse tree produced by ExprParser#declaracion.
     def enterDeclaracion(self, ctx: ExprParser.DeclaracionContext):
-        var_name = ctx.VARIABLE().getText()  # Obtén el nombre de la variable
-        var_type = ctx.tipo().getText()  # Obtén el tipo de la variable
-        value = self.visit(ctx.expr())
+        tipo = ctx.tipo().getText()
+        if tipo is None:
+            print(f"Error: Tipo desconocido '{tipo}' en la declaración.")
+            return
         
-        if var_type == "entero":
-            if not isinstance(value, int):
-                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'entero' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
-        elif var_type == "decimal":
-            if not isinstance(value, float):
-                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'decimal' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
-        elif var_type == "cadena":
-            if not isinstance(value, str):
-                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'cadena' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
-        elif var_type == "bool":
-            if not isinstance(value, bool):
-                raise TypeError(f"Error de tipo: Se esperaba un valor de tipo 'bool' para la variable '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+        variable = ctx.VARIABLE()
+        if variable is None:
+            print("Error: Variable no encontrada en la declaración.")
+            return
+        
+        nombre_variable = variable.getText()
+        if self.symbol_table.get_variable(nombre_variable) is not None:
+            print(f"Error: Variable '{nombre_variable}' ya declarada.")
+            return
+        
+        # Validar asignación si existe
+        if ctx.ASIGNACION():
             
-        try:
-            self.symbol_table.declare_variable(var_name, var_type)
-        except ValueError as e:
-            print(f"Error: {e}")
-            self.panic_mode = True  # Activar el modo pánico en caso de error
+            if tipo is None:
+                self.report_error(ctx, f"Error: No se pudo determinar el tipo de la expresión en la asignación de '{nombre_variable}'.")
+                return
+
+
+        self.symbol_table.define_variable(nombre_variable, tipo)
 
     # Exit a parse tree produced by ExprParser#declaracion.
     def exitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
@@ -155,18 +172,12 @@ class PersonalizatedListener(ExprListener, SymbolTable):
 
     # Cuando entras a una asignación
     def enterReasignacion(self, ctx: ExprParser.ReasignacionContext):
-        var_name = ctx.VARIABLE().getText()
-        var_type = self.symbol_table.get_variable(var_name)
-        
-        if var_type is None:
-            print(f"Error: La variable '{var_name}' no ha sido declarada.")
-            self.panic_mode = True  # Activar el modo pánico en caso de error
-        else:
-            assigned_type = self.get_expression_type(ctx.expr())
-            if assigned_type != var_type:
-                print(f"Error: Asignación de tipo incompatible a '{var_name}'. Esperado: {var_type}, Encontrado: {assigned_type}")
-                self.panic_mode = True  # Activar el modo pánico en caso de error
-
+        nombre_variable = ctx.VARIABLE().getText()
+        print(f'[WARN]: Reasignando variable {nombre_variable}')
+        if self.symbol_table.get_variable(nombre_variable) is None:
+            self.report_error(ctx,f"Error: Variable '{nombre_variable}' no declarada antes de su uso.")
+            return
+  
     # Exit a parse tree produced by ExprParser#reasignacion.
     def exitReasignacion(self, ctx: ExprParser.ReasignacionContext):
         pass
@@ -184,45 +195,94 @@ class PersonalizatedListener(ExprListener, SymbolTable):
             right_type = self.symbol_table.get_variable_type(right_name)
 
             if left_type is None or right_type is None:
-                print(f"Error: Variable no declarada en la expresión '{left_name} {operator} {right_name}'")
+                self.report_error(ctx, f"Error: Variable no declarada {left_name, right_name} en la expresión '{left_name} {operator} {right_name}'")
                 self.panic_mode = True
                 return
 
             # Reglas de validación de tipos
-            if operator in {'+', '-', '*', '/'}:
-                if left_type in {'entero', 'decimal'} and right_type in {'entero', 'decimal'}:
+            if operator in {'+', '-'}:
+                if self.traducir_tipo(left_type) in {'entero', 'entero'} and self.traducir_tipo(right_type) in {'entero', 'entero'}:
                     pass  # Operación válida
-                elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
+                elif self.traducir_tipo(left_type) in {'decimal', 'decimal'} and self.traducir_tipo(right_type) in {'decimal', 'decimal'}:
+                    pass  # Operación válida
+                elif operator == '+' and self.traducir_tipo(left_type) == 'cadena' and self.traducir_tipo(right_type) == 'cadena':
                     pass  # Concatenación de cadenas es válida
                 else:
-                    print(f"Error: No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
+                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{self.traducir_tipo(left_type)}' y '{self.traducir_tipo(right_type)}'")
                     self.panic_mode = True
 
             elif operator in {'==', '!=', '<', '>', '<=', '>='}:
                 if left_type == right_type:  # Comparación válida si ambos operandos son del mismo tipo
                     pass
                 else:
-                    print(f"Error: Comparación inválida entre '{left_type}' y '{right_type}'")
+                    self.report_error(ctx, f"Comparación inválida entre '{left_type}' y '{right_type}'")
+                    
                     self.panic_mode = True
 
     # Exit a parse tree produced by ExprParser#expr.
     def exitExpr(self, ctx: ExprParser.ExprContext):
         pass
 
-    # Método auxiliar para determinar el tipo de una expresión
-    def get_expression_type(self, expr_ctx:ExprParser.ExprContext):
-        # Este es un método simple para obtener el tipo de una expresión, debería ser extendido para manejar más casos.
-        if isinstance(expr_ctx, ExprParser.NUMERO):
-            return 'int'
-        if isinstance(expr_ctx, ExprParser.DECIMAL):
-            return 'decimal'
-        elif isinstance(expr_ctx, ExprParser.CADENA):
-            return 'string'
-        elif isinstance(expr_ctx, ExprParser.BOOLEANO):
-            return 'bool'
-        # Aquí puedes agregar más lógica para determinar el tipo basado en el contexto de la expresión
-        return 'unknown'
+    def enterTerm(self, ctx:ExprParser.TermContext):
+          if ctx.getChildCount() == 3:  # Expresión binaria (ej: a * b)
+            left = ctx.getChild(0)
+            operator = ctx.getChild(1).getText()
+            right = ctx.getChild(2)
 
+            left_name = left.getText()
+            right_name = right.getText()
+
+            left_type = self.symbol_table.get_variable_type(left_name)
+            right_type = self.symbol_table.get_variable_type(right_name)
+
+            if left_type is None or right_type is None:
+                self.report_error(ctx,f"Error: Variable no declarada {left_name, right_name} en la expresión '{left_name} {operator} {right_name}'")
+                self.panic_mode = True
+                return
+
+
+            # Reglas de validación de tipos
+            if operator in {'*', '/'}:
+                if self.traducir_tipo(left_type) in {'entero', 'entero'} and self.traducir_tipo(right_type) in {'entero', 'entero'}:
+                    pass  # Operación válida
+                elif self.traducir_tipo(left_type) in {'decimal', 'decimal'} and self.traducir_tipo(right_type) in {'decimal', 'decimal'}:
+                    pass  # Operación válida
+                elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
+                    pass  # Concatenación de cadenas es válida
+                else:
+                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{self.traducir_tipo(left_type)}' y '{self.traducir_tipo(right_type)}'")
+                    self.panic_mode = True
+
+
+    # Exit a parse tree produced by ExprParser#term.
+    def exitTerm(self, ctx:ExprParser.TermContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#factor.
+    def enterFactor(self, ctx:ExprParser.FactorContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#factor.
+    def exitFactor(self, ctx:ExprParser.FactorContext):
+        pass
+    
+    # Enter a parse tree produced by ExprParser#actualizacion.
+    def enterActualizacion(self, ctx:ExprParser.ActualizacionContext):
+        nombre_variable = ctx.VARIABLE().getText()
+        tipo = self.symbol_table.get_variable_type(nombre_variable)
+        valor_variable = self.symbol_table.get_variable(nombre_variable)
+        print(f"[WARN] Actualizando variable: {nombre_variable}")
+
+        if tipo is None :
+            self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' por que aun no ha sido declarada")
+        if valor_variable is not int:
+            self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque no es numérica")
+            
+
+    # Exit a parse tree produced by ExprParser#actualizacion.
+    def exitActualizacion(self, ctx:ExprParser.ActualizacionContext):
+        pass
     # Control de los alcances (scopes) y validación de variables
     def enterScope(self):
         """Crear un nuevo ámbito (nuevo diccionario en la pila)."""
@@ -238,14 +298,12 @@ class PersonalizatedListener(ExprListener, SymbolTable):
             print("Modo pánico activado, intentando continuar la ejecución...")
             self.panic_mode = False  # Desactivar el modo pánico después de la recuperación
 
-    def traducir_tipo(tipo):
-        if isinstance(tipo, int):
-            return "entero"
-        elif isinstance(tipo, float):
-            return "decimal"
-        elif isinstance(tipo, str):
-            return "cadena"
-        elif isinstance(tipo, bool):
-            return "bool"
-        else:
-            raise ValueError(f"El tipo de dato no es el correcto: {tipo}")
+    def traducir_tipo(self, tipo):
+        tipos = {"int": "entero", "float": "decimal", "str": "cadena", "bool": "bool"}
+        return tipos.get(tipo, None)
+
+        
+    def report_error(self, ctx, message):
+        line = ctx.start.line if ctx.start else "unknown"
+        print(f"Error en línea {line}: {message}")
+        exit(1)

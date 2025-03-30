@@ -42,7 +42,31 @@ class ExprVariableVisitor(ExprBaseVisitor):
         return new_value
 
     def visitActualizacion(self, ctx: ExprParser.ActualizacionContext):
-        return super().visitActualizacion(ctx)
+        """Actualizando."""
+        
+        var_name = ctx.VARIABLE().getText()
+        print(f"Actualizando variable: {var_name}")
+
+        # Buscar la variable en los ámbitos
+        for scope in reversed(self.ambitos):
+            if var_name in scope:
+                if not isinstance(scope[var_name], (int, float)):
+                    raise TypeError(f"Error: No se puede actualizar la variable '{var_name}' porque no es numérica")
+
+                if ctx.MASMAS():
+                    print(f"Incrementando {var_name}")
+                    scope[var_name] += 1
+                elif ctx.MENOSMENOS():
+                    print(f"Decrementando {var_name}")
+                    scope[var_name] -= 1
+                elif ctx.expr():
+                    new_value = self.visit(ctx.expr())
+                    scope[var_name] = new_value  # Asigna el nuevo valor
+
+                print(f"Nuevo valor de {var_name}: {scope[var_name]}")
+                return scope[var_name]
+
+        raise NameError(f"Variable '{var_name}' no definida.")
 
     def traducir_tipo(self, value):
         """Devuelve una representación de tipo para los errores."""
