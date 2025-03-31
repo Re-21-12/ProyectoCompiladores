@@ -8,6 +8,7 @@ from ExprParser import ExprParser
 from ExprListener import ExprListener
 from PersonalizatedListener import PersonalizatedListener
 from PersonalizatedVisitor import PersonalizatedVisitor
+from ASTVisitor import ASTVisitor
 from antlr4.tree.Trees import Trees
 from colorama import init, Fore, Back, Style
 import pyfiglet
@@ -144,12 +145,14 @@ def main():
         visitor = PersonalizatedVisitor()
         result = visitor.visit(tree)
         
+        ast_visitor = ASTVisitor()
+        ast_result = ast_visitor.visit(tree)
         print(f"\n{Fore.GREEN}✔ Análisis completado{Style.RESET_ALL}")
         
         # Logs
         success_logger.info(f"Análisis exitoso para {path_file}")
-        success_logger.info(f"Resultado: {result}")
-
+        print_section("AST generado", Fore.CYAN)
+        print(ast_result)
     except FileNotFoundError as fnf_error:
         error_msg = f"{Fore.RED}✖ Archivo no encontrado: {fnf_error}{Style.RESET_ALL}"
         print(error_msg)
