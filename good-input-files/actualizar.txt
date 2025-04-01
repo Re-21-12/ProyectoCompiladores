@@ -1,5 +1,5 @@
 hola {
     x entero = 1;
-    x++;
+    x++
     mostrar(x);
 }

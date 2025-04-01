@@ -110,7 +110,7 @@ def main():
     try:
         # Definir archivo de entrada
         #path_file = "bad-input-files/bad-actualizacion.txt"
-        path_file = "good-input-files/concatenacion.txt"
+        path_file = "good-input-files/actualizar.txt"
         
         print_section("configuración inicial")
         print(f"{Fore.WHITE}Analizando archivo: {Fore.YELLOW}{path_file}{Style.RESET_ALL}")
@@ -158,8 +158,9 @@ def main():
         logging.info("Generando código LLVM...")
         llvm_generator = LLVMGenerator()
         llvm_code = llvm_generator.generate(ast_result)
-        llvm_code.save_to_file()
-        logging.info("Código LLVM generado (output.ll):")
+        output_file = llvm_generator.save_to_file()
+        print(f"IR generado y guardado en: {output_file}")
+        logging.info("Código LLVM generado :")
         print(llvm_code)
     
     except FileNotFoundError as fnf_error:
