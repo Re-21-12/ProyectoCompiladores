@@ -1,8 +1,11 @@
 from llvmlite import ir
+import platform
 
 class LLVMGenerator:
     def __init__(self):
         self.module = ir.Module(name="module")
+        self._set_target_platform()
+        
         self.builder = None
         self.funcs = {}
         self.variables = {}
@@ -11,15 +14,40 @@ class LLVMGenerator:
         self.string_constants = {}
         self.string_counter = 0
 
-    def generate(self, ast):
-        # Procesar declaraciones globales primero
-        self.process_global_declarations(ast)
+
+    def _set_target_platform(self):
+        """Configura la plataforma objetivo según el sistema operativo"""
+        system = platform.system().lower()
+        machine = platform.machine().lower()
         
-        # Crear función main si no hay funciones definidas
-        if not self.funcs:
-            self.create_main_function(ast)
+        if system == "linux":
+            self.module.triple = f"{machine}-pc-linux-gnu"
+            self.module.data_layout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+        elif system == "darwin":  # macOS
+            self.module.triple = f"{machine}-apple-darwin"
+            self.module.data_layout = "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+        elif system == "windows":
+            self.module.triple = f"{machine}-pc-windows-msvc"
+            self.module.data_layout = "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+        else:
+            self.module.triple = "x86_64-unknown-linux-gnu"  # Valor por defecto
+            self.module.data_layout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+        
+
+    def generate(self, ast):
+        """Genera el código LLVM a partir del AST"""
+        try:
+            # Procesar declaraciones globales primero
+            self.process_global_declarations(ast)
             
-        return self.module
+            # Crear función main si no hay funciones definidas
+            if not self.funcs:
+                self.create_main_function(ast)
+                
+            return self.module
+        except Exception as e:
+            print(e)
+            raise
 
     def save_to_file(self, filename="output.ll"):
         """Guarda el módulo LLVM en un archivo"""

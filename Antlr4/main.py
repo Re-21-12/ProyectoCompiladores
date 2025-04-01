@@ -13,6 +13,8 @@ from PersonalizatedLlvmlite import LLVMGenerator
 from antlr4.tree.Trees import Trees
 from colorama import init, Fore, Back, Style
 import pyfiglet
+import subprocess
+from pathlib import Path
 
 # Inicializar colorama
 init(autoreset=True)
@@ -97,6 +99,83 @@ def pretty_print_tree(tree, parser, indent=0, last=True, prefix=''):
 
 def check_extension(text):
     return text.endswith('.txt')
+def compile_and_run(llvm_ir):
+    """Compila y ejecuta el código LLVM generado"""
+    try:
+        # Crear directorio de salida si no existe
+        output_dir = Path("outputs")
+        output_dir.mkdir(exist_ok=True)
+        
+        # 1. Guardar el IR LLVM
+        ll_file = output_dir/"output.ll"
+        with open(ll_file, "w") as f:
+            f.write(str(llvm_ir))
+        print(f"{Fore.GREEN}✔ IR LLVM guardado en: {ll_file}{Style.RESET_ALL}")
+        
+        # 2. Compilar a código objeto
+        obj_file = output_dir/"output.o"
+        subprocess.run(
+            ["llc", "-filetype=obj", str(ll_file), "-o", str(obj_file)],
+            check=True,
+            stderr=subprocess.PIPE
+        )
+        print(f"{Fore.GREEN}✔ Objeto compilado en: {obj_file}{Style.RESET_ALL}")
+        
+        # 3. Generar ensamblador (opcional)
+        asm_file = output_dir/"output.s"
+        subprocess.run(
+            ["llc", "-march=x86-64", str(ll_file), "-o", str(asm_file)],
+            check=True,
+            stderr=subprocess.PIPE
+        )
+        print(f"{Fore.GREEN}✔ Ensamblador generado en: {asm_file}{Style.RESET_ALL}")
+        
+        # 4. Optimizar (opcional)
+        opt_file = output_dir/"optimized.ll"
+        subprocess.run(
+            ["opt", "-O3", "-S", str(ll_file), "-o", str(opt_file)],
+            check=True,
+            stderr=subprocess.PIPE
+        )
+        print(f"{Fore.GREEN}✔ Versión optimizada en: {opt_file}{Style.RESET_ALL}")
+        
+        # 5. Enlazar y crear ejecutable
+        exec_file = output_dir/"program"
+        subprocess.run(
+            ["clang", str(obj_file), "-o", str(exec_file)],
+            check=True,
+            stderr=subprocess.PIPE
+        )
+        print(f"{Fore.GREEN}✔ Ejecutable creado en: {exec_file}{Style.RESET_ALL}")
+        
+        # 6. Ejecutar el programa
+        print(f"\n{Fore.YELLOW}═"*50)
+        print(f"{Fore.CYAN}  EJECUCIÓN DEL PROGRAMA  ")
+        print(f"{Fore.YELLOW}═"*50 + Style.RESET_ALL)
+        
+        result = subprocess.run(
+            [str(exec_file)],
+            capture_output=True,
+            text=True
+        )
+        
+        if result.stdout:
+            print(f"{Fore.GREEN}Salida:\n{result.stdout}{Style.RESET_ALL}")
+        if result.stderr:
+            print(f"{Fore.RED}Errores:\n{result.stderr}{Style.RESET_ALL}")
+            
+        return True
+        
+    except subprocess.CalledProcessError as e:
+        error_msg = f"{Fore.RED}✖ Error en compilación: {e.stderr}{Style.RESET_ALL}"
+        print(error_msg)
+        error_logger.error(error_msg)
+        return False
+    except Exception as e:
+        error_msg = f"{Fore.RED}✖ Error inesperado: {str(e)}{Style.RESET_ALL}"
+        print(error_msg)
+        error_logger.error(error_msg)
+        return False
 """
 ==========================================
 ==========================================
@@ -163,7 +242,9 @@ def main():
         logging.info("Código LLVM generado :")
         print(llvm_code)
         
-
+        logging.info("Compilando y Corriendo...")
+        if not compile_and_run(str(llvm_code)):
+            print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
     
     except FileNotFoundError as fnf_error:
         error_msg = f"{Fore.RED}✖ Archivo no encontrado: {fnf_error}{Style.RESET_ALL}"
