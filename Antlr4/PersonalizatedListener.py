@@ -268,17 +268,24 @@ class PersonalizatedListener(ExprListener, SymbolTable):
         pass
     
     # Enter a parse tree produced by ExprParser#actualizacion.
-    def enterActualizacion(self, ctx:ExprParser.ActualizacionContext):
-        nombre_variable = ctx.VARIABLE().getText()
-        tipo = self.symbol_table.get_variable_type(nombre_variable)
-        valor_variable = self.symbol_table.get_variable(nombre_variable)
-        print(f"[WARN] Actualizando variable: {nombre_variable}")
+def enterActualizacion(self, ctx: ExprParser.ActualizacionContext):
+    nombre_variable = ctx.VARIABLE().getText()
+    tipo = self.symbol_table.get_variable_type(nombre_variable)
+    valor_variable = self.symbol_table.get_variable(nombre_variable)
+    print(f"[WARN] Actualizando variable: {nombre_variable}")
 
-        if tipo is None :
-            self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' por que aun no ha sido declarada")
-        if valor_variable is not int:
-            self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque no es numérica")
-            
+    if tipo is None:
+        self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque aún no ha sido declarada")
+        return
+
+    try:
+        valor_variable = int(valor_variable)  # Intenta convertirlo a número
+    except (ValueError, TypeError):
+        self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque no es numérica (actual: {type(valor_variable).__name__})")
+        return
+
+    # Aquí puedes continuar con la actualización porque `valor_variable` es un número
+       
 
     # Exit a parse tree produced by ExprParser#actualizacion.
     def exitActualizacion(self, ctx:ExprParser.ActualizacionContext):
