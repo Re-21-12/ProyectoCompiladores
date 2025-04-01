@@ -10,10 +10,12 @@ class LLVMGenerator:
         return self.visit(ast)
     
     def visit(self, node):
+        if node is None:
+            return
         method_name = f'visit_{node.type}'
         method = getattr(self, method_name, self.generic_visit)
         return method(node)
-    
+        
     def generic_visit(self, node):
         raise Exception(f'No visit_{node.type} method')
     
@@ -150,6 +152,8 @@ class LLVMGenerator:
         args = [self.visit(arg) for arg in node.children]
         return self.builder.call(func, args)
     
+    def visit_Tipo(self, node):
+        pass
     def save_to_file(self, filename="output.ll"):
         with open(filename, "w") as f:
             f.write(str(self.module))

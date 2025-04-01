@@ -62,3 +62,6 @@
 2025-03-31 21:15:15,833 - INFO - Análisis exitoso para good-input-files/concatenacion.txt
 2025-03-31 21:15:59,107 - INFO - Análisis exitoso para good-input-files/concatenacion.txt
 2025-03-31 21:16:49,299 - INFO - Análisis exitoso para good-input-files/concatenacion.txt
+2025-03-31 21:18:10,684 - INFO - Análisis exitoso para good-input-files/concatenacion.txt
+2025-03-31 21:19:53,956 - INFO - Análisis exitoso para good-input-files/concatenacion.txt
+2025-03-31 21:22:35,491 - INFO - Análisis exitoso para good-input-files/concatenacion.txt
