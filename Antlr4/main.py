@@ -162,6 +162,8 @@ def main():
         print(f"IR generado y guardado en: {output_file}")
         logging.info("Código LLVM generado :")
         print(llvm_code)
+        
+
     
     except FileNotFoundError as fnf_error:
         error_msg = f"{Fore.RED}✖ Archivo no encontrado: {fnf_error}{Style.RESET_ALL}"
