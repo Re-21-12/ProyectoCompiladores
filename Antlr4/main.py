@@ -9,6 +9,7 @@ from ExprListener import ExprListener
 from PersonalizatedListener import PersonalizatedListener
 from PersonalizatedVisitor import PersonalizatedVisitor
 from ASTVisitor import ASTVisitor
+from PersonalizatedLlvmlite import LLVMGenerator
 from antlr4.tree.Trees import Trees
 from colorama import init, Fore, Back, Style
 import pyfiglet
@@ -153,6 +154,14 @@ def main():
         success_logger.info(f"Análisis exitoso para {path_file}")
         print_section("AST generado", Fore.CYAN)
         print(ast_result)
+    
+        logging.info("Generando código LLVM...")
+        llvm_generator = LLVMGenerator()
+        llvm_code = llvm_generator.generate(ast_result)
+        llvm_code.save_to_file()
+        logging.info("Código LLVM generado (output.ll):")
+        print(llvm_code)
+    
     except FileNotFoundError as fnf_error:
         error_msg = f"{Fore.RED}✖ Archivo no encontrado: {fnf_error}{Style.RESET_ALL}"
         print(error_msg)

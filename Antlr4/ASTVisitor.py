@@ -26,9 +26,8 @@ class ASTVisitor(ExprVisitor):
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
         cond = self.visit(ctx.bloque_condicional().expr())
         bloque = self.visit(ctx.bloque_de_sentencia())
-        else_ifs = [self.visit(child) for child in ctx.ELSE_IF()]
         else_block = self.visit(ctx.bloque_de_sentencia()) if ctx.ELSE() else None
-        return ASTNode("If", children=[cond, bloque] + else_ifs + [else_block])
+        return ASTNode("If", children=[cond, bloque] + [else_block] if else_block else [])
 
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         cond = self.visit(ctx.bloque_condicional().expr())
@@ -55,6 +54,21 @@ class ASTVisitor(ExprVisitor):
         argumentos = [self.visit(arg) for arg in ctx.argumentos().expr()]
         return ASTNode("FuncionLlamada", children=argumentos, value=nombre)
 
+    def visitParametros(self, ctx: ExprParser.ParametrosContext):
+        return ASTNode("Parametros", children=[self.visit(child) for child in ctx.children])
+
+    def visitParametro(self, ctx: ExprParser.ParametroContext):
+        return ASTNode("Parametro", children=[self.visit(child) for child in ctx.children])
+
+    def visitArgumentos(self, ctx: ExprParser.ArgumentosContext):
+        return ASTNode("Argumentos", children=[self.visit(arg) for arg in ctx.expr()])
+
+    def visitBloque_condicional(self, ctx: ExprParser.Bloque_condicionalContext):
+        return ASTNode("BloqueCondicional", children=[self.visit(child) for child in ctx.children])
+
+    def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
+        return ASTNode("BloqueSentencia", children=[self.visit(child) for child in ctx.children])
+
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         tipo = self.visit(ctx.tipo())
         nombre = ctx.VARIABLE().getText()
@@ -66,6 +80,13 @@ class ASTVisitor(ExprVisitor):
         valor = self.visit(ctx.expr())
         return ASTNode("Reasignacion", children=[valor], value=nombre)
 
+    def visitTipo(self, ctx: ExprParser.TipoContext):
+        return ASTNode("Tipo", value=ctx.getText())
+
+    def visitMostrar(self, ctx: ExprParser.MostrarContext):
+        expr = self.visit(ctx.expr())
+        return ASTNode("Mostrar", children=[expr])
+
     def visitExpr(self, ctx: ExprParser.ExprContext):
         if ctx.getChildCount() == 1:
             return self.visit(ctx.getChild(0))
@@ -73,6 +94,9 @@ class ASTVisitor(ExprVisitor):
         operator = ctx.getChild(1).getText()
         right = self.visit(ctx.getChild(2))
         return ASTNode("Expr", children=[left, right], value=operator)
+
+    def visitTerm(self, ctx: ExprParser.TermContext):
+        return ASTNode("Term", children=[self.visit(child) for child in ctx.children])
 
     def visitFactor(self, ctx: ExprParser.FactorContext):
         if ctx.NUMERO():
@@ -82,11 +106,10 @@ class ASTVisitor(ExprVisitor):
         elif ctx.PARENTESIS_INICIAL():
             return self.visit(ctx.expr())
 
-    def visitMostrar(self, ctx: ExprParser.MostrarContext):
-        expr = self.visit(ctx.expr())
-        return ASTNode("Mostrar", children=[expr])
+    def visitActualizacion(self, ctx: ExprParser.ActualizacionContext):
+        return ASTNode("Actualizacion", children=[self.visit(child) for child in ctx.children])
 
-# Funcion para generar el AST
+# Función para generar el AST
 def generar_ast(parse_tree):
     visitor = ASTVisitor()
     return visitor.visit(parse_tree)
