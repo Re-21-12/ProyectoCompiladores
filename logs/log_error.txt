@@ -622,3 +622,4 @@ NameError: Variable 'x' no definida.
 
 2025-03-30 12:29:24,892 - ERROR - [31m✖ Archivo no encontrado: [Errno 2] No such file or directory: 'good-input-files/funciones.txt'[0m
 2025-03-30 13:41:18,687 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-03-31 23:50:45,315 - ERROR - [31m✖ Error en compilación: b"llc: error: unable to get target for 'unknown-unknown-unknown', see --version and --triple."[0m
