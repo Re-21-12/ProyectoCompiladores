@@ -80,15 +80,6 @@ class ExprVisitor(ParseTreeVisitor):
                 print("Ejecutando bloque ELSE")
                 self.visit(ctx.bloque_de_sentencia())
 
-    # Visit a parse tree produced by ExprParser#sentencia_if.
-    def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
-        if ctx.sentencia():
-            for sentencia in ctx.sentencia():
-                self.visit(sentencia)
-        elif ctx.getChildCount() == 1:
-            self.visit(ctx.getChild(0))
-
-
     # Visit a parse tree produced by ExprParser#sentencia_while.
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         while self.visit(ctx.bloque_condicional().expr()):
