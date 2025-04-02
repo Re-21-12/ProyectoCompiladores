@@ -73,25 +73,23 @@ class ExprStatementVisitor( ExprFunctionsVisitor, ExprVariableVisitor):
                 self.visit(ctx.bloque_de_sentencia())
 
     # Visit a parse tree produced by ExprParser#sentencia_if.
-    def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
-        if ctx.sentencia():
-            for sentencia in ctx.sentencia():
-                self.visit(sentencia)
-        elif ctx.getChildCount() == 1:
-            self.visit(ctx.getChild(0))
+    def visitBloque_de_sentencia(self, ctx:ExprParser.Bloque_de_sentenciaContext):
+        return self.visitChildren(ctx)
 
+
+    def visitBloque_condicional(self, ctx:ExprParser.Bloque_condicionalContext):
+        return self.visitChildren(ctx)
+    
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         while self.visit(ctx.bloque_condicional().expr()):
             self.visit(ctx.bloque_condicional().bloque_de_sentencia())
 
+    # Visit a parse tree produced by ExprParser#sentencia_for.
     def visitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        print("Visita de declaracion del for")
-        self.visit(ctx.declaracion())  # Visita la declaración
-        print(f"Condición de for: {ctx.expr()}")
-        while self.visit(ctx.expr()):  # Evalúa la condición del ciclo
-            print(f"Ejecutando bloque del for: {ctx.bloque_de_sentencia()}")
-            self.visit(ctx.bloque_de_sentencia())  # Ejecuta el bloque
-            self.visit(ctx.actualizacion())  # Ejecuta la actualización
+        self.visit(ctx.declaracion())
+        while self.visit(ctx.expr()):
+            self.visit(ctx.bloque_de_sentencia())
+            self.visit(ctx.actualizacion())
                 
     def visitMostrar(self, ctx:ExprParser.MostrarContext):
         value = self.visit(ctx.expr())

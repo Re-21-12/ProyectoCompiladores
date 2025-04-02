@@ -70,7 +70,7 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
         return super().visitSentencia_for( ctx)
 
     def visitBloque_condicional(self, ctx:ExprParser.Bloque_condicionalContext):
-        return self.visitChildren(ctx)
+        return super().visitBloque_condicional(ctx)
 
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         super().visitDeclaracion(ctx)
