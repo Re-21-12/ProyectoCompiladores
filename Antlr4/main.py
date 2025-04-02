@@ -52,7 +52,7 @@ def checkExtension(text):
 def main():
     try:
         #path_file = "good-input-files/if_condicionales-try.txt"
-        path_file = "bad-input-files/bad-entero_decimal.txt"
+        path_file = "good-input-files/if_else.txt"
         
         if not checkExtension(path_file):
             raise ValueError("El archivo debe tener una extensión .txt")

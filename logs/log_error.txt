@@ -351,3 +351,6 @@
 2025-03-28 22:04:46,479 - ERROR - Ocurrió un error durante el análisis: El tipo de dato no es el correcto: <class 'float'>
 2025-03-28 22:06:26,902 - ERROR - Ocurrió un error durante el análisis: Error de tipo: Se esperaba un valor de tipo 'int' para la variable 'res', pero se obtuvo decimal
 2025-03-28 22:07:29,889 - ERROR - Ocurrió un error durante el análisis: Error de tipo: Se esperaba un valor de tipo 'entero' para la variable 'res', pero se obtuvo decimal
+2025-04-01 23:09:37,368 - ERROR - Ocurrió un error durante el análisis: Error de tipo: Se esperaba un valor de tipo 'entero' para la variable 'res', pero se obtuvo decimal
+2025-04-01 23:10:12,056 - ERROR - Error en la evaluación: None
+2025-04-01 23:11:49,611 - ERROR - Error en la evaluación: None
