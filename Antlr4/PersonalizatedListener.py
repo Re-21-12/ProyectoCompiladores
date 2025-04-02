@@ -67,7 +67,21 @@ class PersonalizatedListener(ExprListener, SymbolTable):
 
     # Enter a parse tree produced by ExprParser#sentencia_for.
     def enterSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        pass
+        declaracion = ctx.declaracion()  
+        
+        if declaracion:
+            tipo = declaracion.tipo().getText()
+            nombre_variable = declaracion.VARIABLE().getText()
+
+            # Verificar si la variable ya está declarada
+            if self.symbol_table.get_variable(nombre_variable):
+                self.report_error(ctx, f"Error: La variable '{nombre_variable}' ya ha sido declarada.")
+                return
+
+            # Registrar la variable en la tabla de símbolos
+            self.symbol_table.define_variable(nombre_variable, tipo)
+        else:
+            self.report_error(ctx, "Error: No se ha declarado una variable de iteración en el for.")
 
     # Exit a parse tree produced by ExprParser#sentencia_for.
     def exitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
@@ -191,33 +205,66 @@ class PersonalizatedListener(ExprListener, SymbolTable):
             left_name = left.getText()
             right_name = right.getText()
 
-            left_type = self.symbol_table.get_variable_type(left_name)
-            right_type = self.symbol_table.get_variable_type(right_name)
+            # Determinar tipos (variables y literales)
+            left_type = self._get_operand_type(left_name)
+            right_type = self._get_operand_type(right_name)
 
-            if left_type is None or right_type is None:
-                self.report_error(ctx, f"Error: Variable no declarada {left_name, right_name} en la expresión '{left_name} {operator} {right_name}'")
+            # Verificar si hay variables no declaradas
+            if left_type == "no_declarada" or right_type == "no_declarada":
+                undeclared = []
+                if left_type == "no_declarada" and left_name.isidentifier():
+                    undeclared.append(left_name)
+                if right_type == "no_declarada" and right_name.isidentifier():
+                    undeclared.append(right_name)
+                self.report_error(ctx, f"Error: Variable(s) no declarada(s) {tuple(undeclared)} en la expresión '{left_name} {operator} {right_name}'")
                 self.panic_mode = True
                 return
 
             # Reglas de validación de tipos
             if operator in {'+', '-'}:
-                if self.traducir_tipo(left_type) in {'entero', 'entero'} and self.traducir_tipo(right_type) in {'entero', 'entero'}:
+                # Operaciones aritméticas
+                if left_type in {'entero', 'decimal'} and right_type in {'entero', 'decimal'}:
                     pass  # Operación válida
-                elif self.traducir_tipo(left_type) in {'decimal', 'decimal'} and self.traducir_tipo(right_type) in {'decimal', 'decimal'}:
-                    pass  # Operación válida
-                elif operator == '+' and self.traducir_tipo(left_type) == 'cadena' and self.traducir_tipo(right_type) == 'cadena':
-                    pass  # Concatenación de cadenas es válida
+                elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
+                    pass  # Concatenación de cadenas válida
                 else:
-                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{self.traducir_tipo(left_type)}' y '{self.traducir_tipo(right_type)}'")
+                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
                     self.panic_mode = True
 
             elif operator in {'==', '!=', '<', '>', '<=', '>='}:
-                if left_type == right_type:  # Comparación válida si ambos operandos son del mismo tipo
-                    pass
+                # Operaciones de comparación
+                if left_type == right_type and left_type in {'entero', 'decimal'}:
+                    pass  # Comparación válida (números)
+                elif operator in {'==', '!='} and left_type == right_type:
+                    pass  # Comparación de igualdad válida para cualquier tipo igual
                 else:
                     self.report_error(ctx, f"Comparación inválida entre '{left_type}' y '{right_type}'")
-                    
                     self.panic_mode = True
+
+    def _get_operand_type(self, operand_name):
+            """Determina el tipo de un operando (variable o literal)"""
+            if operand_name.isidentifier():
+                # Es una variable - buscar en tabla de símbolos
+                var_type = self.symbol_table.get_variable_type(operand_name)
+                return var_type if var_type is not None else "no_declarada"
+            else:
+                # Es un literal - determinar su tipo
+                return self._determine_literal_type(operand_name)        
+
+    def _determine_literal_type(self, value):
+            """Determina el tipo de un literal"""
+            if value.isdigit():
+                return 'entero'
+            try:
+                float(value)
+                return 'decimal'
+            except ValueError:
+                if (value.startswith('"') and value.endswith('"')) or \
+                (value.startswith("'") and value.endswith("'")):
+                    return 'cadena'
+                elif value.lower() in {'verdadero', 'falso'}:
+                    return 'bool'
+            return 'desconocido'
 
     # Exit a parse tree produced by ExprParser#expr.
     def exitExpr(self, ctx: ExprParser.ExprContext):
@@ -231,11 +278,15 @@ class PersonalizatedListener(ExprListener, SymbolTable):
 
             left_name = left.getText()
             right_name = right.getText()
-
+            print(left_name)
+            print(right_name)
+            
             left_type = self.symbol_table.get_variable_type(left_name)
             right_type = self.symbol_table.get_variable_type(right_name)
-
-            if left_type is None or right_type is None:
+            print(left_type)
+            print(right_type)
+            
+            if left_type and right_type not in {"entero", "decimal"}:
                 self.report_error(ctx,f"Error: Variable no declarada {left_name, right_name} en la expresión '{left_name} {operator} {right_name}'")
                 self.panic_mode = True
                 return
@@ -243,9 +294,9 @@ class PersonalizatedListener(ExprListener, SymbolTable):
 
             # Reglas de validación de tipos
             if operator in {'*', '/'}:
-                if self.traducir_tipo(left_type) in {'entero', 'entero'} and self.traducir_tipo(right_type) in {'entero', 'entero'}:
+                if left_type in {'entero', 'entero'} and right_type in {'entero', 'entero'}:
                     pass  # Operación válida
-                elif self.traducir_tipo(left_type) in {'decimal', 'decimal'} and self.traducir_tipo(right_type) in {'decimal', 'decimal'}:
+                elif left_type in {'decimal', 'decimal'} and right_type in {'decimal', 'decimal'}:
                     pass  # Operación válida
                 elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
                     pass  # Concatenación de cadenas es válida
@@ -268,21 +319,15 @@ class PersonalizatedListener(ExprListener, SymbolTable):
         pass
     
     # Enter a parse tree produced by ExprParser#actualizacion.
-def enterActualizacion(self, ctx: ExprParser.ActualizacionContext):
-    nombre_variable = ctx.VARIABLE().getText()
-    tipo = self.symbol_table.get_variable_type(nombre_variable)
-    valor_variable = self.symbol_table.get_variable(nombre_variable)
-    print(f"[WARN] Actualizando variable: {nombre_variable}")
-
-    if tipo is None:
-        self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque aún no ha sido declarada")
-        return
-
-    try:
-        valor_variable = int(valor_variable)  # Intenta convertirlo a número
-    except (ValueError, TypeError):
-        self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque no es numérica (actual: {type(valor_variable).__name__})")
-        return
+    def enterActualizacion(self, ctx: ExprParser.ActualizacionContext):
+        nombre_variable = ctx.VARIABLE().getText()
+        tipo = self.symbol_table.get_variable_type(nombre_variable)
+        # valor_variable = self.symbol_table.get_variable(nombre_variable)
+        print(f"[WARN] Actualizando variable: {nombre_variable}")
+        print(tipo)
+        if tipo is None:
+            self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque aún no ha sido declarada")
+            return
 
     # Aquí puedes continuar con la actualización porque `valor_variable` es un número
        
@@ -314,3 +359,9 @@ def enterActualizacion(self, ctx: ExprParser.ActualizacionContext):
         line = ctx.start.line if ctx.start else "unknown"
         print(f"Error en línea {line}: {message}")
         exit(1)
+        
+    def reportAttemptingFullContext(self, recognizer, dfa, startIndex, stopIndex, conflictingAlts, configs):
+        pass  # Puedes imprimir un mensaje si lo deseas, pero dejarlo vacío evita el error.
+
+    def reportContextSensitivity(self, recognizer, dfa, startIndex, stopIndex, prediction, configs):
+        pass  # Lo mismo aquí, si quieres registrar algo, usa print()

@@ -38,8 +38,9 @@ class SymbolTable:
     def get_variable_type(self, name):
         """Devuelve el tipo de una variable si existe, de lo contrario, retorna None."""
         value = self.get_variable(name)
-        return type(value).__name__ if value is not None else None
-    
+        print(value)
+        return value
+        
     def get_function_params(self, nombre_funcion):
         """Obtiene los parámetros de una función, si existen en el ámbito local."""
         if nombre_funcion in self.funciones:

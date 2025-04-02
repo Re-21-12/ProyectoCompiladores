@@ -149,7 +149,6 @@ def compile_and_run(llvm_ir):
         print(f"{Fore.GREEN}✔ Ejecutable creado en: {exec_file}{Style.RESET_ALL}")
         
         # 6. Ejecutar el programa
-        print(f"\n{Fore.YELLOW}═"*50)
         print(f"{Fore.CYAN}  EJECUCIÓN DEL PROGRAMA  ")
         print(f"{Fore.YELLOW}═"*50 + Style.RESET_ALL)
         
@@ -176,6 +175,53 @@ def compile_and_run(llvm_ir):
         print(error_msg)
         error_logger.error(error_msg)
         return False
+    
+def show_file_menu():
+    """Muestra un menú interactivo para seleccionar archivos de prueba"""
+    import os
+    from pathlib import Path
+    # Lista de archivos de prueba disponibles
+    input_dirs = [
+        "good-input-files",
+        "bad-input-files"
+    ]
+    
+    # Verificar qué archivos existen realmente
+    available_files = []
+    for input_dir in input_dirs:
+        if os.path.exists(input_dir) and os.path.isdir(input_dir):
+            for file in os.listdir(input_dir):
+                if file.endswith('.txt'):
+                    full_path = str(Path(input_dir) / file)
+                    available_files.append(full_path)
+    
+    if not available_files:
+        print(f"{Fore.RED}No se encontraron archivos .txt en los directorios de entrada{Style.RESET_ALL}")
+        return None
+    
+    available_files.sort()
+    
+    # Mostrar menú
+    print(f"\n{Fore.CYAN}=== ARCHIVOS DE PRUEBA DISPONIBLES ==={Style.RESET_ALL}")
+    print(f"{Fore.RED}\t Presione [q] para salir.{Style.RESET_ALL}")
+    
+    for i, file in enumerate(available_files, 1):
+        print(f"{Fore.YELLOW}{i:2d}.{Style.RESET_ALL} {file}")
+    
+    # Selección del usuario
+    while True:
+        try:
+            choice = input(f"\n{Fore.GREEN}Seleccione un archivo (1-{len(available_files)}): {Style.RESET_ALL}")
+            if choice.lower() == 'q':
+                return None
+                
+            choice_idx = int(choice) - 1
+            if 0 <= choice_idx < len(available_files):
+                return available_files[choice_idx]
+            print(f"{Fore.RED}¡Selección inválida! Intente nuevamente.{Style.RESET_ALL}")
+        except ValueError:
+            print(f"{Fore.RED}¡Ingrese un número válido!{Style.RESET_ALL}")
+    
 """
 ==========================================
 ==========================================
@@ -189,7 +235,10 @@ def main():
     try:
         # Definir archivo de entrada
         #path_file = "bad-input-files/bad-actualizacion.txt"
-        path_file = "good-input-files/actualizar.txt"
+        path_file = show_file_menu()
+        if not path_file:
+            print(f"{Fore.YELLOW}Operación cancelada por el usuario.{Style.RESET_ALL}")
+            return
         
         print_section("configuración inicial")
         print(f"{Fore.WHITE}Analizando archivo: {Fore.YELLOW}{path_file}{Style.RESET_ALL}")
@@ -254,9 +303,7 @@ def main():
         error_msg = f"{Fore.RED}✖ Error de valor: {ve}{Style.RESET_ALL}"
         print(error_msg)
         error_logger.error(error_msg)
-    # except Exception as e:
-    #     error_msg = f"\n{Fore.RED}✖ Error inesperado:\n{Fore.WHITE}{traceback.format_exc()}{Style.RESET_ALL}"
-    #     error_logger.error(f"Error inesperado: {e}\n{traceback.format_exc()}")
+
 
 if __name__ == "__main__":
     main()

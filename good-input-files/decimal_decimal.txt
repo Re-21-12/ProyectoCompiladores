@@ -1,6 +1,6 @@
 hola{
     x decimal = 12.5;
-    y entero = 2;
+    y decimal = 2.0;
     res decimal = x / y; 
     for(i entero = 0; i < 5; i++){
     mostrar(res);

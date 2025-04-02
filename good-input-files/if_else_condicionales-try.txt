@@ -1,0 +1,8 @@
+hola{
+    x entero = 1;
+    if(x == 0){
+        mostrar("Nose");
+    }else{
+        mostrar("si se");
+    }
+}

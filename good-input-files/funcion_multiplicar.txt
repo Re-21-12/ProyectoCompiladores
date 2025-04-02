@@ -1,7 +1,8 @@
 hola{
     
     funcion primerafuncion entero (numerouno entero, numerodos entero ){
-            retorna numerouno + numerodos;
+            mostrar("holamnudo");
+            retorna numerouno * numerodos;
         }
     primerafuncion(3,4);
 }

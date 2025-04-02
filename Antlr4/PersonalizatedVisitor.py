@@ -3,13 +3,12 @@ from ExprParser import ExprParser
 # Visitors modularizados
 from visitors.ExprBaseVisitor import *
 from visitors.ExprStatementVisitor import *
-from visitors.ExprVariableVisitor import *
 
 def traducir_tipo(tipo):
     return ExprBaseVisitor.traducir_tipo(tipo)
 
 
-class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprVisitor):
+class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
     def __init__(self):
         super().__init__()
 
@@ -21,10 +20,6 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprVisi
     # Visit a parse tree produced by ExprParser#programa.
     def visitPrograma(self, ctx: ExprParser.ProgramaContext):
         return self.visitChildren(ctx)
-
-    def visitMostrar(self, ctx: ExprParser.MostrarContext):
-        return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by ExprParser#bloque.
     def visitBloque(self, ctx:ExprParser.BloqueContext):
@@ -66,14 +61,7 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVariableVisitor, ExprVisi
         return super().visitSentencia_if( ctx)
 
     def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
-        if ctx.sentencia():
-            result = None
-            for sentencia in ctx.sentencia():
-                result = self.visit(sentencia)
-            return result
-        elif ctx.getChildCount() == 1:
-            return self.visit(ctx.getChild(0))
-        return None
+        return super().visitBloque_de_sentencia(ctx)
 
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         return super().visitSentencia_while( ctx)
