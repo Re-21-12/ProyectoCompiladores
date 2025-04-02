@@ -55,10 +55,12 @@ class ASTVisitor(ExprVisitor):
         return ASTNode("Sentencia", children=children)
 
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
-        cond = self.visit(ctx.bloque_condicional().expr())
+        # Get the first bloque_condicional (there should be only one in an if statement)
+        bloque_condicional = ctx.bloque_condicional()[0]
+        cond = self.visit(bloque_condicional.expr())
         bloque = self.visit(ctx.bloque_de_sentencia())
         else_block = self.visit(ctx.bloque_de_sentencia()) if ctx.ELSE() else None
-        return ASTNode("If", children=[cond, bloque] + [else_block] if else_block else [])
+        return ASTNode("If", children=[cond, bloque] + ([else_block] if else_block else []))
 
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         cond = self.visit(ctx.bloque_condicional().expr())

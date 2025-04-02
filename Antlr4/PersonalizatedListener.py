@@ -196,6 +196,33 @@ class PersonalizatedListener(ExprListener, SymbolTable):
     def exitReasignacion(self, ctx: ExprParser.ReasignacionContext):
         pass
 
+
+
+    def _get_operand_type(self, operand_name):
+            """Determina el tipo de un operando (variable o literal)"""
+            if operand_name.isidentifier():
+                # Es una variable - buscar en tabla de símbolos
+                var_type = self.symbol_table.get_variable_type(operand_name)
+                return var_type if var_type is not None else "no_declarada"
+            else:
+                # Es un literal - determinar su tipo
+                return self._determine_literal_type(operand_name)        
+
+    def _determine_literal_type(self, value):
+            """Determina el tipo de un literal"""
+            if value.isdigit():
+                return 'entero'
+            try:
+                float(value)
+                return 'decimal'
+            except ValueError:
+                if (value.startswith('"') and value.endswith('"')) or \
+                (value.startswith("'") and value.endswith("'")):
+                    return 'cadena'
+                elif value.lower() in {'verdadero', 'falso'}:
+                    return 'bool'
+            return 'desconocido'
+        
     def enterExpr(self, ctx: ExprParser.ExprContext):
         if ctx.getChildCount() == 3:  # Expresión binaria (ej: a + b)
             left = ctx.getChild(0)
@@ -240,32 +267,7 @@ class PersonalizatedListener(ExprListener, SymbolTable):
                 else:
                     self.report_error(ctx, f"Comparación inválida entre '{left_type}' y '{right_type}'")
                     self.panic_mode = True
-
-    def _get_operand_type(self, operand_name):
-            """Determina el tipo de un operando (variable o literal)"""
-            if operand_name.isidentifier():
-                # Es una variable - buscar en tabla de símbolos
-                var_type = self.symbol_table.get_variable_type(operand_name)
-                return var_type if var_type is not None else "no_declarada"
-            else:
-                # Es un literal - determinar su tipo
-                return self._determine_literal_type(operand_name)        
-
-    def _determine_literal_type(self, value):
-            """Determina el tipo de un literal"""
-            if value.isdigit():
-                return 'entero'
-            try:
-                float(value)
-                return 'decimal'
-            except ValueError:
-                if (value.startswith('"') and value.endswith('"')) or \
-                (value.startswith("'") and value.endswith("'")):
-                    return 'cadena'
-                elif value.lower() in {'verdadero', 'falso'}:
-                    return 'bool'
-            return 'desconocido'
-
+                    
     # Exit a parse tree produced by ExprParser#expr.
     def exitExpr(self, ctx: ExprParser.ExprContext):
         pass
@@ -291,9 +293,8 @@ class PersonalizatedListener(ExprListener, SymbolTable):
                 self.panic_mode = True
                 return
 
-
             # Reglas de validación de tipos
-            if operator in {'*', '/'}:
+            if operator in {'*', '/', "+", "-"}:
                 if left_type in {'entero', 'entero'} and right_type in {'entero', 'entero'}:
                     pass  # Operación válida
                 elif left_type in {'decimal', 'decimal'} and right_type in {'decimal', 'decimal'}:
@@ -301,7 +302,7 @@ class PersonalizatedListener(ExprListener, SymbolTable):
                 elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
                     pass  # Concatenación de cadenas es válida
                 else:
-                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{self.traducir_tipo(left_type)}' y '{self.traducir_tipo(right_type)}'")
+                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
                     self.panic_mode = True
 
 
