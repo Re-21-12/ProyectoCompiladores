@@ -1,225 +1,206 @@
-class ASTNode:
-    def __init__(self, type, children=None, value=None):
-        self.type = type
-        self.children = children if children else []
-        self.value = value
-
-    def __repr__(self):
-        return f"ASTNode(type={self.type}, value={self.value}, children={self.children})"
-
-from ExprParser import ExprParser
 from ExprVisitor import ExprVisitor
+class ASTNode:
+    def __init__(self, node_type, children=None, value=None, line=None, column=None):
+        self.type = node_type
+        self.children = children if children is not None else []
+        self.value = value
+        self.line = line
+        self.column = column
+
+    def __repr__(self, level=0):
+        ret = "  " * level + f"{self.type}"
+        if self.value is not None:
+            ret += f": {self.value}"
+        ret += "\n"
+        for child in self.children:
+            if isinstance(child, ASTNode):
+                ret += child.__repr__(level + 1)
+            else:
+                ret += "  " * (level + 1) + f"{child}\n"
+        return ret
 
 class ASTVisitor(ExprVisitor):
     def __init__(self):
+        super().__init__()
         self.current_scope = None
-    def visitGramatica(self, ctx: ExprParser.GramaticaContext):
-        if not ctx:
-            return None
-        children = []
-        for child in ctx.children:
-            visited = self.visit(child)
-            if visited is not None:  # Filtrar nodos None
-                children.append(visited)
-        return ASTNode("Gramatica", children=children)
-
-    def visitPrograma(self, ctx: ExprParser.ProgramaContext):
-        if not ctx:
-            return None
-        children = []
-        for child in ctx.children:
-            visited = self.visit(child)
-            if visited is not None:
-                children.append(visited)
-        return ASTNode("Programa", children=children)
-
-
-    def visitBloque(self, ctx: ExprParser.BloqueContext):
-        if not ctx:
-            return None
-        children = []
-        for child in ctx.children:
-            visited = self.visit(child)
-            if visited is not None:
-                children.append(visited)
-        return ASTNode("Bloque", children=children)
-
-    def visitSentencia(self, ctx: ExprParser.SentenciaContext):
-        if not ctx:
-            return None
-        children = []
-        for child in ctx.children:
-            visited = self.visit(child)
-            if visited is not None:
-                children.append(visited)
-        return ASTNode("Sentencia", children=children)
-
-    def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
-        # Get the first bloque_condicional (there should be only one in an if statement)
-        bloque_condicional = ctx.bloque_condicional()[0]
-        cond = self.visit(bloque_condicional.expr())
-        bloque = self.visit(ctx.bloque_de_sentencia())
-        else_block = self.visit(ctx.bloque_de_sentencia()) if ctx.ELSE() else None
-        return ASTNode("If", children=[cond, bloque] + ([else_block] if else_block else []))
-
-    def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
-        cond = self.visit(ctx.bloque_condicional().expr())
-        bloque = self.visit(ctx.bloque_de_sentencia())
-        return ASTNode("While", children=[cond, bloque])
-
-    def visitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        inicio = self.visit(ctx.declaracion()) if ctx.declaracion() else None
-        cond = self.visit(ctx.expr())
-        actualizacion = self.visit(ctx.actualizacion())
-        bloque = self.visit(ctx.bloque_de_sentencia())
-        return ASTNode("For", children=[inicio, cond, actualizacion, bloque])
-
-    def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
-        if not ctx:
-            return None
-            
-        tipo_node = self.visit(ctx.tipo()) if ctx.tipo() else None
-        if not tipo_node:
-            return None
-            
-        nombre = ctx.VARIABLE().getText() if ctx.VARIABLE() else None
-        if not nombre:
-            return None
-            
-        valor_node = self.visit(ctx.expr()) if ctx.expr() else None
+    
+    def visitGramatica(self, ctx):
+        program = self.visit(ctx.programa())
+        return ASTNode('Program', children=[program])
+    
+    def visitPrograma(self, ctx):
+        block = self.visit(ctx.bloque())
+        return ASTNode('MainFunction', children=[block])
+    
+    def visitBloque(self, ctx):
+        statements = [self.visit(child) for child in ctx.sentencia()]
+        return ASTNode('Block', children=statements)
+    
+    def visitSentencia(self, ctx):
+        # Get the first non-null child (declaration, if, while, etc.)
+        return self.visit(ctx.getChild(0))
+    
+    def visitSentencia_if(self, ctx):
+        if_blocks = []
+        conditions = []
         
-        # Manejar cadenas vacías
-        if valor_node is None and tipo_node.value == 'cadena':
-            valor_node = ASTNode("Literal", value="")
-            
-        return ASTNode("Declaracion", 
-                     children=[tipo_node, valor_node] if valor_node is not None else [tipo_node],
-                     value=nombre)
-
-    def visitFuncion_llamada(self, ctx: ExprParser.Funcion_llamadaContext):
-        nombre = ctx.VARIABLE().getText()
-        argumentos = [self.visit(arg) for arg in ctx.argumentos().expr()]
-        return ASTNode("FuncionLlamada", children=argumentos, value=nombre)
-
-    def visitParametros(self, ctx: ExprParser.ParametrosContext):
-        return ASTNode("Parametros", children=[self.visit(child) for child in ctx.children])
-
-    def visitParametro(self, ctx: ExprParser.ParametroContext):
-        return ASTNode("Parametro", children=[self.visit(child) for child in ctx.children])
-
-    def visitArgumentos(self, ctx: ExprParser.ArgumentosContext):
-        return ASTNode("Argumentos", children=[self.visit(arg) for arg in ctx.expr()])
-
-    def visitBloque_condicional(self, ctx: ExprParser.Bloque_condicionalContext):
-        return ASTNode("BloqueCondicional", children=[self.visit(child) for child in ctx.children])
-
-    def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
-        return ASTNode("BloqueSentencia", children=[self.visit(child) for child in ctx.children])
-
-    def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
-        tipo = self.visit(ctx.tipo())
-        nombre = ctx.VARIABLE().getText()
-        valor = self.visit(ctx.expr()) if ctx.expr() else None
-        return ASTNode("Declaracion", children=[tipo, valor], value=nombre)
-
-    def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
-        nombre = ctx.VARIABLE().getText()
-        valor = self.visit(ctx.expr())
-        return ASTNode("Reasignacion", children=[valor], value=nombre)
-
-    def visitTipo(self, ctx: ExprParser.TipoContext):
-        if not ctx:
-            return None
-            
-        tipo = ctx.getText()
-        if not tipo:
-            return None
-            
-        return ASTNode("Tipo", value=tipo)
-
-    def visitMostrar(self, ctx: ExprParser.MostrarContext):
-        if not ctx or not ctx.expr():
-            return None
-            
-        expr_node = self.visit(ctx.expr())
-        if not expr_node:
-            return None
-            
-        return ASTNode("Mostrar", children=[expr_node])
-
-    def visitExpr(self, ctx: ExprParser.ExprContext):
-        if not ctx:
-            return None
-            
+        # Process all if/else if blocks
+        for cond_block in ctx.bloque_condicional():
+            condition = self.visit(cond_block.expr())
+            block = self.visit(cond_block.bloque_de_sentencia())
+            conditions.append(condition)
+            if_blocks.append(block)
+        
+        # Process else block if exists
+        else_block = None
+        if ctx.ELSE():
+            else_block = self.visit(ctx.bloque_de_sentencia())
+        
+        return ASTNode('IfStatement', 
+                     children=[ASTNode('Conditions', children=conditions),
+                               ASTNode('IfBlocks', children=if_blocks),
+                               else_block] if else_block else 
+                               [ASTNode('Conditions', children=conditions),
+                                ASTNode('IfBlocks', children=if_blocks)])
+    
+    def visitSentencia_while(self, ctx):
+        condition = self.visit(ctx.expr())
+        body = self.visit(ctx.bloque_de_sentencia())
+        return ASTNode('WhileLoop', children=[condition, body])
+    
+    def visitSentencia_for(self, ctx):
+        init = self.visit(ctx.declaracion())
+        condition = self.visit(ctx.expr())
+        update = self.visit(ctx.actualizacion())
+        body = self.visit(ctx.bloque_de_sentencia())
+        return ASTNode('ForLoop', children=[init, condition, update, body])
+    
+    def visitDeclaracion_funcion(self, ctx):
+        name = ctx.VARIABLE().getText()
+        return_type = self.visit(ctx.tipo())
+        
+        # Process parameters
+        params = []
+        if ctx.parametros():
+            params = [self.visit(param) for param in ctx.parametros().parametro()]
+        
+        body = self.visit(ctx.bloque())
+        return_expr = self.visit(ctx.expr())
+        
+        return ASTNode('FunctionDecl',
+                      children=[return_type, 
+                                ASTNode('Parameters', children=params),
+                                body,
+                                return_expr],
+                      value=name)
+    
+    def visitFuncion_llamada(self, ctx):
+        name = ctx.VARIABLE().getText()
+        args = []
+        if ctx.argumentos():
+            args = [self.visit(arg) for arg in ctx.argumentos().expr()]
+        return ASTNode('FunctionCall', children=args, value=name)
+    
+    def visitParametro(self, ctx):
+        name = ctx.VARIABLE().getText()
+        param_type = self.visit(ctx.tipo())
+        return ASTNode('Parameter', children=[param_type], value=name)
+    
+    def visitBloque_condicional(self, ctx):
+        # This is handled directly in visitSentencia_if
+        pass
+    
+    def visitBloque_de_sentencia(self, ctx):
+        if ctx.sentencia():
+            return self.visit(ctx.sentencia())
+        else:
+            return self.visit(ctx.bloque())
+    
+    def visitDeclaracion(self, ctx):
+        var_name = ctx.VARIABLE().getText()
+        var_type = self.visit(ctx.tipo())
+        value = self.visit(ctx.expr())
+        return ASTNode('VariableDecl', children=[var_type, value], value=var_name)
+    
+    def visitReasignacion(self, ctx):
+        var_name = ctx.VARIABLE().getText()
+        value = self.visit(ctx.expr())
+        return ASTNode('Assignment', children=[value], value=var_name)
+    
+    def visitTipo(self, ctx):
+        return ASTNode('Type', value=ctx.getText())
+    
+    def visitMostrar(self, ctx):
+        expr = self.visit(ctx.expr())
+        return ASTNode('PrintStatement', children=[expr])
+    
+    def visitExpr(self, ctx):
         if ctx.getChildCount() == 1:
-            return self.visit(ctx.getChild(0))
-            
-        left = self.visit(ctx.getChild(0))
-        operator = ctx.getChild(1).getText() if ctx.getChildCount() > 1 else None
-        right = self.visit(ctx.getChild(2)) if ctx.getChildCount() > 2 else None
+            return self.visit(ctx.term(0))
         
-        if not left or not operator or not right:
-            return None
-            
-        return ASTNode("Expr", children=[left, right], value=operator)
-
-    def visitTerm(self, ctx: ExprParser.TermContext):
-        if not ctx:
-            return None
-            
-        children = []
-        for child in ctx.children:
-            visited = self.visit(child)
-            if visited is not None:
-                children.append(visited)
-                
-        if not children:
-            return None
-            
-        return ASTNode("Term", children=children)
-
-    def visitFactor(self, ctx: ExprParser.FactorContext):
-        if not ctx:
-            return None
-            
+        # Handle comparisons
+        if ctx.MENOR_QUE() or ctx.MAYOR_QUE() or ctx.MENOR_IGUAL_QUE() or ctx.MAYOR_IGUAL_QUE() or ctx.IGUAL() or ctx.DIFERENTE():
+            left = self.visit(ctx.expr(0))
+            right = self.visit(ctx.expr(1))
+            op = ctx.getChild(1).getText()
+            return ASTNode('BinaryOp', children=[left, right], value=op)
+        
+        # Handle addition/subtraction
+        if ctx.MAS() or ctx.MENOS():
+            left = self.visit(ctx.term(0))
+            right = self.visit(ctx.term(1))
+            op = ctx.getChild(1).getText()
+            return ASTNode('BinaryOp', children=[left, right], value=op)
+        
+        return None
+    
+    def visitTerm(self, ctx):
+        if ctx.getChildCount() == 1:
+            return self.visit(ctx.factor(0))
+        
+        # Handle multiplication/division
+        if ctx.MULTIPLICACION() or ctx.DIVISION():
+            left = self.visit(ctx.factor(0))
+            right = self.visit(ctx.factor(1))
+            op = ctx.getChild(1).getText()
+            return ASTNode('BinaryOp', children=[left, right], value=op)
+        
+        return None
+    
+    def visitFactor(self, ctx):
         if ctx.NUMERO():
-            try:
-                value = int(ctx.NUMERO().getText())
-                return ASTNode("Literal", value=value)
-            except:
-                return None
-                
+            return ASTNode('Literal', value=int(ctx.NUMERO().getText()))
+        elif ctx.DECIMAL():
+            return ASTNode('Literal', value=float(ctx.DECIMAL().getText()))
+        elif ctx.BOOLEANO():
+            return ASTNode('Literal', value=ctx.BOOLEANO().getText() == "verdadero")
+        elif ctx.CADENA():
+            return ASTNode('Literal', value=ctx.CADENA().getText()[1:-1])  # Remove quotes
         elif ctx.VARIABLE():
-            return ASTNode("Variable", value=ctx.VARIABLE().getText())
-            
+            return ASTNode('Variable', value=ctx.VARIABLE().getText())
         elif ctx.PARENTESIS_INICIAL() and ctx.expr():
             return self.visit(ctx.expr())
-            
-        elif ctx.CADENA():
-            try:
-                cadena = ctx.CADENA().getText()[1:-1]  # Eliminar comillas
-                return ASTNode("Literal", value=cadena)
-            except:
-                return None
-                
+        elif ctx.MENOS() and ctx.factor():
+            operand = self.visit(ctx.factor())
+            return ASTNode('UnaryOp', children=[operand], value="-")
+        elif ctx.VARIABLE() and (ctx.MASMAS() or ctx.MENOSMENOS()):
+            op = ctx.getChild(1).getText()
+            return ASTNode('UnaryOp', 
+                         children=[ASTNode('Variable', value=ctx.VARIABLE().getText())],
+                         value=op)
         return None
-
-    def visitActualizacion(self, ctx: ExprParser.ActualizacionContext):
-        if not ctx:
-            return None
-            
-        variable = ctx.VARIABLE().getText() if ctx.VARIABLE() else None
-        if not variable:
-            return None
-            
-        operador = ctx.MASMAS().getText() if ctx.MASMAS() else (
-                  ctx.MENOSMENOS().getText() if ctx.MENOSMENOS() else None)
+    
+    def visitActualizacion(self, ctx):
+        var_name = ctx.VARIABLE().getText()
         
-        return ASTNode("Actualizacion", 
-                     children=[ASTNode("Variable", value=variable)],
-                     value=operador)
-
-# Función para generar el AST
-def generar_ast(parse_tree):
-    visitor = ASTVisitor()
-    return visitor.visit(parse_tree)
+        if ctx.MASMAS() or ctx.MENOSMENOS():
+            op = ctx.getChild(1).getText()
+            return ASTNode('UnaryOp',
+                         children=[ASTNode('Variable', value=var_name)],
+                         value=op)
+        elif ctx.expr():
+            expr = self.visit(ctx.expr())
+            return ASTNode('Assignment',
+                          children=[expr],
+                          value=var_name)
+        return None

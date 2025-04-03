@@ -209,102 +209,111 @@ class PersonalizatedListener(ExprListener, SymbolTable):
                 return self._determine_literal_type(operand_name)        
 
     def _determine_literal_type(self, value):
-            """Determina el tipo de un literal"""
-            if value.isdigit():
-                return 'entero'
-            try:
-                float(value)
-                return 'decimal'
-            except ValueError:
-                if (value.startswith('"') and value.endswith('"')) or \
-                (value.startswith("'") and value.endswith("'")):
-                    return 'cadena'
-                elif value.lower() in {'verdadero', 'falso'}:
-                    return 'bool'
-            return 'desconocido'
+        """Determina el tipo de un literal"""
+        if value.isdigit():
+            return 'entero'
+        try:
+            float(value)
+            return 'decimal' if '.' in value else 'entero'
+        except ValueError:
+            if (value.startswith('"') and value.endswith('"')) or \
+            (value.startswith("'") and value.endswith("'")):
+                return 'cadena'
+            elif value.lower() in {'verdadero', 'falso'}:
+                return 'bool'
+        return 'desconocido'
         
     def enterExpr(self, ctx: ExprParser.ExprContext):
-        if ctx.getChildCount() == 3:  # Expresión binaria (ej: a + b)
+        if ctx.getChildCount() == 3:  # Binary expression like a + b
+            left = ctx.getChild(0)
+            operator = ctx.getChild(1).getText()
+            right = ctx.getChild(2)
+
+            # Get types from children (terms or factors)
+            left_type = getattr(left, 'type', None)
+            right_type = getattr(right, 'type', None)
+            
+            # Fallback to operand type if no type was set
+            if left_type is None:
+                left_type = self._get_operand_type(left.getText())
+            if right_type is None:
+                right_type = self._get_operand_type(right.getText())
+            
+            # Debug output
+            print(f"Expr operation: {left.getText()}({left_type}) {operator} {right.getText()}({right_type})")
+
+            # Check for undeclared variables
+            if left_type == "no_declarada" or right_type == "no_declarada":
+                undeclared = []
+                if left_type == "no_declarada" and left.getText().isidentifier():
+                    undeclared.append(left.getText())
+                if right_type == "no_declarada" and right.getText().isidentifier():
+                    undeclared.append(right.getText())
+                self.report_error(ctx, f"Error: Variable(s) no declarada(s) {tuple(undeclared)}")
+                return
+
+            # Type validation
+            if operator in {'+', '-'}:
+                if left_type in {'entero', 'decimal'} and right_type in {'entero', 'decimal'}:
+                    # Set the result type for the expression
+                    if left_type == 'decimal' or right_type == 'decimal':
+                        ctx.type = 'decimal'
+                    else:
+                        ctx.type = 'entero'
+                    print(f"Expr result type set to: {ctx.type}")
+                elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
+                    ctx.type = 'cadena'
+                else:
+                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
+                        
+    # Exit a parse tree produced by ExprParser#expr.
+    def exitExpr(self, ctx: ExprParser.ExprContext):
+        pass
+
+    def enterTerm(self, ctx:ExprParser.TermContext):
+        if ctx.getChildCount() == 3:  # Binary operation like a * b
             left = ctx.getChild(0)
             operator = ctx.getChild(1).getText()
             right = ctx.getChild(2)
 
             left_name = left.getText()
             right_name = right.getText()
-
-            # Determinar tipos (variables y literales)
+            
+            # Get types - handle both variables and literals
             left_type = self._get_operand_type(left_name)
             right_type = self._get_operand_type(right_name)
-
-            # Verificar si hay variables no declaradas
+            
+            # Debug output
+            print(f"Term operation: {left_name}({left_type}) {operator} {right_name}({right_type})")
+            
+            # Check for undeclared variables
             if left_type == "no_declarada" or right_type == "no_declarada":
                 undeclared = []
                 if left_type == "no_declarada" and left_name.isidentifier():
                     undeclared.append(left_name)
                 if right_type == "no_declarada" and right_name.isidentifier():
                     undeclared.append(right_name)
-                self.report_error(ctx, f"Error: Variable(s) no declarada(s) {tuple(undeclared)} en la expresión '{left_name} {operator} {right_name}'")
-                self.panic_mode = True
+                self.report_error(ctx, f"Error: Variable(s) no declarada(s) {tuple(undeclared)}")
                 return
 
-            # Reglas de validación de tipos
-            if operator in {'+', '-'}:
-                # Operaciones aritméticas
-                if left_type in {'entero', 'decimal'} and right_type in {'entero', 'decimal'}:
-                    pass  # Operación válida
-                elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
-                    pass  # Concatenación de cadenas válida
-                else:
+            # Type validation for arithmetic operations
+            if operator in {'*', '/'}:
+                if left_type not in {'entero', 'decimal'} or right_type not in {'entero', 'decimal'}:
                     self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
-                    self.panic_mode = True
-
-            elif operator in {'==', '!=', '<', '>', '<=', '>='}:
-                # Operaciones de comparación
-                if left_type == right_type and left_type in {'entero', 'decimal'}:
-                    pass  # Comparación válida (números)
-                elif operator in {'==', '!='} and left_type == right_type:
-                    pass  # Comparación de igualdad válida para cualquier tipo igual
+                    return
+                
+                # Set the result type for the term
+                if left_type == 'decimal' or right_type == 'decimal':
+                    ctx.type = 'decimal'
                 else:
-                    self.report_error(ctx, f"Comparación inválida entre '{left_type}' y '{right_type}'")
-                    self.panic_mode = True
-                    
-    # Exit a parse tree produced by ExprParser#expr.
-    def exitExpr(self, ctx: ExprParser.ExprContext):
-        pass
-
-    def enterTerm(self, ctx:ExprParser.TermContext):
-          if ctx.getChildCount() == 3:  # Expresión binaria (ej: a * b)
-            left = ctx.getChild(0)
-            operator = ctx.getChild(1).getText()
-            right = ctx.getChild(2)
-
-            left_name = left.getText()
-            right_name = right.getText()
-            print(left_name)
-            print(right_name)
-            
-            left_type = self.symbol_table.get_variable_type(left_name)
-            right_type = self.symbol_table.get_variable_type(right_name)
-            print(left_type)
-            print(right_type)
-            
-            if left_type and right_type not in {"entero", "decimal"}:
-                self.report_error(ctx,f"Error: Variable no declarada {left_name, right_name} en la expresión '{left_name} {operator} {right_name}'")
-                self.panic_mode = True
-                return
-
-            # Reglas de validación de tipos
-            if operator in {'*', '/', "+", "-"}:
-                if left_type in {'entero', 'entero'} and right_type in {'entero', 'entero'}:
-                    pass  # Operación válida
-                elif left_type in {'decimal', 'decimal'} and right_type in {'decimal', 'decimal'}:
-                    pass  # Operación válida
-                elif operator == '+' and left_type == 'cadena' and right_type == 'cadena':
-                    pass  # Concatenación de cadenas es válida
-                else:
-                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
-                    self.panic_mode = True
-
+                    ctx.type = 'entero'
+                print(f"Term result type set to: {ctx.type}")
+        else:
+            # Handle single factor terms (variables or literals)
+            factor = ctx.getChild(0)
+            factor_name = factor.getText()
+            ctx.type = self._get_operand_type(factor_name)
+            print(f"Single term type: {factor_name} -> {ctx.type}")
 
     # Exit a parse tree produced by ExprParser#term.
     def exitTerm(self, ctx:ExprParser.TermContext):
@@ -366,3 +375,4 @@ class PersonalizatedListener(ExprListener, SymbolTable):
 
     def reportContextSensitivity(self, recognizer, dfa, startIndex, stopIndex, prediction, configs):
         pass  # Lo mismo aquí, si quieres registrar algo, usa print()
+

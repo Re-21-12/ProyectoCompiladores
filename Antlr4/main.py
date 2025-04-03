@@ -285,11 +285,12 @@ def main():
     
         logging.info("Generando código LLVM...")
         llvm_generator = LLVMGenerator()
-        llvm_code = llvm_generator.generate(ast_result)
-        output_file = llvm_generator.save_to_file()
-        print(f"IR generado y guardado en: {output_file}")
+        llvm_code = llvm_generator.generate_code(ast_result)
+        with open("outputs/output.ll", "w") as f:
+            f.write(str(llvm_code))
+        print(f"IR generado y guardado en: output.ll")
         logging.info("Código LLVM generado :")
-        print(llvm_code)
+        print(str(llvm_code))
         
         logging.info("Compilando y Corriendo...")
         if not compile_and_run(str(llvm_code)):

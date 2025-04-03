@@ -1,282 +1,445 @@
 from llvmlite import ir
-import platform
-
+from llvmlite.ir import Constant, IRBuilder
+import llvmlite.binding as llvm
+from llvmlite.ir._utils import DuplicatedNameError  # Agrega esta importación
 class LLVMGenerator:
     def __init__(self):
-        self.module = ir.Module(name="module")
-        self._set_target_platform()
+        # Initialize LLVM components
+        self.module = ir.Module(name="main_module")
+        self.module.triple = llvm.get_default_triple()
         
         self.builder = None
-        self.funcs = {}
-        self.variables = {}
-        self.global_vars = {}
+        self.functions = {}
+        self.symbol_table = {}
         self.current_function = None
-        self.string_constants = {}
-        self.string_counter = 0
-
-
-    def _set_target_platform(self):
-        """Configura la plataforma objetivo según el sistema operativo"""
-        system = platform.system().lower()
-        machine = platform.machine().lower()
-        
-        if system == "linux":
-            self.module.triple = f"{machine}-pc-linux-gnu"
-            self.module.data_layout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
-        elif system == "darwin":  # macOS
-            self.module.triple = f"{machine}-apple-darwin"
-            self.module.data_layout = "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
-        elif system == "windows":
-            self.module.triple = f"{machine}-pc-windows-msvc"
-            self.module.data_layout = "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
-        else:
-            self.module.triple = "x86_64-unknown-linux-gnu"  # Valor por defecto
-            self.module.data_layout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
-        
-
-    def generate(self, ast):
-        """Genera el código LLVM a partir del AST"""
-        try:
-            # Procesar declaraciones globales primero
-            self.process_global_declarations(ast)
-            
-            # Crear función main si no hay funciones definidas
-            if not self.funcs:
-                self.create_main_function(ast)
-                
-            return self.module
-        except Exception as e:
-            print(e)
-            raise
-
-    def save_to_file(self, filename="output.ll"):
-        """Guarda el módulo LLVM en un archivo"""
-        with open(filename, "w") as f:
-            f.write(str(self.module))
-        return filename
-
-    def process_global_declarations(self, ast):
-        if ast and ast.type == "Programa":
-            for child in ast.children:
-                if child and child.type == "Declaracion":
-                    self.visit_Declaracion(child)
-
-    def create_main_function(self, ast):
-        # Crear función main
-        func_type = ir.FunctionType(ir.IntType(32), [])
-        func = ir.Function(self.module, func_type, name="main")
-        block = func.append_basic_block(name="entry")
-        self.builder = ir.IRBuilder(block)
-        self.funcs["main"] = func
-        self.current_function = func
-        
-        # Procesar el contenido del programa
-        if ast and ast.type == "Programa":
-            for child in ast.children:
-                if child and child.type not in ["DeclaracionFuncion", "Declaracion"]:
-                    self.visit(child)
-        
-        # Finalizar la función main
-        if self.builder.block.terminator is None:
-            self.builder.ret(ir.Constant(ir.IntType(32), 0))
-
-    def visit(self, node):
-        if node is None:
-            return None
-            
-        method_name = f'visit_{node.type}'
-        method = getattr(self, method_name, self.generic_visit)
-        return method(node)
-        
-    def generic_visit(self, node):
-        for child in node.children:
-            self.visit(child)
-        return None
-
-    def visit_Programa(self, node):
-        for child in node.children:
-            self.visit(child)
-        return self.module
-
-    def visit_DeclaracionFuncion(self, node):
-        return_type = self.get_llvm_type(node.children[0].value)
-        param_types = [self.get_llvm_type(child.children[0].value) for child in node.children[1:-2] if child.type == "Parametro"]
-        
-        func_type = ir.FunctionType(return_type, param_types)
-        func = ir.Function(self.module, func_type, name=node.value)
-        block = func.append_basic_block(name="entry")
-        self.builder = ir.IRBuilder(block)
-        self.funcs[node.value] = func
-        self.current_function = func
-        
-        for i, arg in enumerate(func.args):
-            arg.name = node.children[1+i].value
-            alloca = self.builder.alloca(arg.type, name=arg.name)
-            self.builder.store(arg, alloca)
-            self.variables[arg.name] = alloca
-        
-        self.visit(node.children[-2])  # Bloque de código
-        
-        if not self.builder.block.terminator:
-            if return_type == ir.VoidType():
-                self.builder.ret_void()
-            else:
-                self.builder.ret(ir.Constant(return_type, 0))
-        
-        return func
-
-    def visit_Declaracion(self, node):
-        var_type = self.get_llvm_type(node.children[0].value)
-        name = node.value
-        
-        if self.current_function:  # Variable local
-            alloca = self.builder.alloca(var_type, name=name)
-            self.variables[name] = alloca
-            if len(node.children) > 1:
-                value = self.visit(node.children[1])
-                self.builder.store(value, alloca)
-        else:  # Variable global
-            gvar = ir.GlobalVariable(self.module, var_type, name=name)
-            gvar.linkage = 'internal'
-            if len(node.children) > 1:
-                init_val = self.get_constant_value(node.children[1])
-                gvar.initializer = init_val
-            else:
-                gvar.initializer = ir.Constant(var_type, 0)
-            self.global_vars[name] = gvar
-
-    def visit_Expr(self, node):
-        if len(node.children) == 1:
-            return self.visit(node.children[0])
-        
-        left = self.visit(node.children[0])
-        right = self.visit(node.children[1])
-        
-        if node.value == '+':
-            return self.builder.add(left, right, name="addtmp")
-        elif node.value == '-':
-            return self.builder.sub(left, right, name="subtmp")
-        elif node.value == '*':
-            return self.builder.mul(left, right, name="multmp")
-        elif node.value == '/':
-            return self.builder.sdiv(left, right, name="divtmp")
-
-    def visit_Reasignacion(self, node):
-        value = self.visit(node.children[0])
-        ptr = self.variables.get(node.value) or self.global_vars.get(node.value)
-        self.builder.store(value, ptr)
-
-    def visit_Sentencia_if(self, node):
-        cond = self.visit(node.children[0])
-        
-        func = self.builder.function
-        then_block = func.append_basic_block(name="then")
-        else_block = func.append_basic_block(name="else") if len(node.children) > 2 else None
-        merge_block = func.append_basic_block(name="ifcont")
-        
-        self.builder.cbranch(cond, then_block, else_block if else_block else merge_block)
-        
-        self.builder.position_at_end(then_block)
-        self.visit(node.children[1])
-        if not self.builder.block.terminator:
-            self.builder.branch(merge_block)
-        
-        if else_block:
-            self.builder.position_at_end(else_block)
-            self.visit(node.children[2])
-            if not self.builder.block.terminator:
-                self.builder.branch(merge_block)
-        
-        self.builder.position_at_end(merge_block)
-
-    def visit_Actualizacion(self, node):
-        var_name = node.children[0].value
-        ptr = self.variables.get(var_name) or self.global_vars.get(var_name)
-        current_val = self.builder.load(ptr, name=f"{var_name}_val")
-        
-        if node.value == "++":
-            new_val = self.builder.add(current_val, ir.Constant(ir.IntType(32), 1), name=f"{var_name}_inc")
-        elif node.value == "--":
-            new_val = self.builder.sub(current_val, ir.Constant(ir.IntType(32), 1), name=f"{var_name}_dec")
-            
-        self.builder.store(new_val, ptr)
-        return new_val
-
-    def visit_Mostrar(self, node):
-        value = self.visit(node.children[0])
-        
-        # Configurar printf
+        # Add printf declaration for print statements
         voidptr_ty = ir.IntType(8).as_pointer()
         printf_ty = ir.FunctionType(ir.IntType(32), [voidptr_ty], var_arg=True)
         printf = ir.Function(self.module, printf_ty, name="printf")
+        self.printf = printf
         
-        # Determinar el formato según el tipo
-        if isinstance(value.type, ir.IntType):
-            fmt = "%d\n\0" if value.type.width == 32 else "%d\n\0"
-        elif isinstance(value.type, ir.FloatType):
-            fmt = "%f\n\0"
-        else:
-            fmt = "%d\n\0"
-        
-        # Crear constante de formato
-        c_fmt = ir.Constant(ir.ArrayType(ir.IntType(8), len(fmt)), bytearray(fmt.encode("utf8")))
-        global_fmt = ir.GlobalVariable(self.module, c_fmt.type, name="fstr")
-        global_fmt.linkage = 'internal'
-        global_fmt.global_constant = True
-        global_fmt.initializer = c_fmt
-        
-        # Llamar a printf
-        fmt_arg = self.builder.bitcast(global_fmt, voidptr_ty)
-        self.builder.call(printf, [fmt_arg, value])
-        return value
-
-    def visit_Variable(self, node):
-        ptr = self.variables.get(node.value) or self.global_vars.get(node.value)
-        return self.builder.load(ptr, name=node.value)
-
-    def visit_Literal(self, node):
-        if isinstance(node.value, bool):
-            return ir.Constant(ir.IntType(1), int(node.value))
-        elif isinstance(node.value, int):
-            return ir.Constant(ir.IntType(32), node.value)
-        elif isinstance(node.value, float):
-            return ir.Constant(ir.DoubleType(), node.value)
-        elif isinstance(node.value, str):
-            return self.create_string_constant(node.value)
-        return ir.Constant(ir.IntType(32), 0)
-
-    def create_string_constant(self, str_val):
-        name = f".str.{self.string_counter}"
-        self.string_counter += 1
-        
-        array_type = ir.ArrayType(ir.IntType(8), len(str_val)+1)
-        constant = ir.Constant(array_type, bytearray((str_val + "\0").encode("utf8")))
-        
-        gvar = ir.GlobalVariable(self.module, array_type, name=name)
-        gvar.linkage = 'internal'
-        gvar.global_constant = True
-        gvar.initializer = constant
-        
-        return self.builder.bitcast(gvar, ir.IntType(8).as_pointer())
-
-    def get_llvm_type(self, type_str):
-        type_map = {
+        # Add standard types
+        self.type_map = {
             'entero': ir.IntType(32),
-            'int': ir.IntType(32),
-            'float': ir.FloatType(),
-            'double': ir.DoubleType(),
+            'decimal': ir.DoubleType(),
             'bool': ir.IntType(1),
-            'void': ir.VoidType(),
             'cadena': ir.IntType(8).as_pointer()
         }
-        return type_map.get(type_str, ir.IntType(32))
-
-    def get_constant_value(self, node):
-        if node.type == "Literal":
-            if isinstance(node.value, bool):
-                return ir.Constant(ir.IntType(1), int(node.value))
-            elif isinstance(node.value, int):
-                return ir.Constant(ir.IntType(32), node.value)
-            elif isinstance(node.value, float):
-                return ir.Constant(ir.DoubleType(), node.value)
-        return ir.Constant(ir.IntType(32), 0)
+    
+    def generate_code(self, ast_node):
+        # Create main function
+        main_func_type = ir.FunctionType(ir.IntType(32), [])
+        main_func = ir.Function(self.module, main_func_type, name="main")
+        main_block = main_func.append_basic_block(name="entry")
+        self.builder = IRBuilder(main_block)
+        
+        # Generate code for the main function body
+        self.visit(ast_node)
+        
+        # Add return 0 at the end of main
+        self.builder.ret(Constant(ir.IntType(32), 0))
+        
+        return self.module
+    
+    def visit(self, node):
+        method_name = f'visit_{node.type}'
+        visitor = getattr(self, method_name, self.generic_visit)
+        return visitor(node)
+    
+    def generic_visit(self, node):
+        for child in node.children:
+            self.visit(child)
+    
+    def visit_Program(self, node):
+        self.visit(node.children[0])
+    
+    def visit_MainFunction(self, node):
+        for child in node.children:
+            self.visit(child)
+    
+    def visit_Block(self, node):
+        for stmt in node.children:
+            self.visit(stmt)
+    
+    def visit_VariableDecl(self, node):
+        var_name = node.value
+        var_type = self.visit(node.children[0])
+        value = self.visit(node.children[1]) if len(node.children) > 1 else None
+        
+        # Allocate space for the variable
+        ptr = self.builder.alloca(var_type, name=var_name)
+        self.symbol_table[var_name] = ptr
+        
+        # Store initial value if exists
+        if value is not None:
+            self.builder.store(value, ptr)
+    
+    def visit_Type(self, node):
+        return self.type_map[node.value]
+    
+    def visit_Literal(self, node):
+        if isinstance(node.value, bool):
+            return Constant(ir.IntType(1), int(node.value))
+        elif isinstance(node.value, int):
+            return Constant(ir.IntType(32), node.value)
+        elif isinstance(node.value, float):
+            return Constant(ir.DoubleType(), node.value)
+        elif isinstance(node.value, str):
+            # Create global string constant
+            str_val = bytearray((node.value + '\00').encode('utf-8'))
+            str_const = ir.Constant(ir.ArrayType(ir.IntType(8), len(str_val)), str_val)
+            global_str = ir.GlobalVariable(
+                self.module, 
+                str_const.type, 
+                name=f"str.{len(self.module.global_values)}"
+            )
+            global_str.linkage = 'internal'
+            global_str.global_constant = True
+            global_str.initializer = str_const
+            
+            # Get pointer to the string
+            zero = Constant(ir.IntType(32), 0)
+            return self.builder.gep(global_str, [zero, zero], name=f"strptr.{len(self.module.global_values)}")
+    
+    def visit_Variable(self, node):
+        var_name = node.value
+        if var_name not in self.symbol_table:
+            raise NameError(f"Variable '{var_name}' not defined")
+        ptr = self.symbol_table[var_name]
+        return self.builder.load(ptr, name=var_name)
+    
+    def visit_Assignment(self, node):
+        var_name = node.value
+        value = self.visit(node.children[0])
+        
+        if var_name not in self.symbol_table:
+            raise NameError(f"Variable '{var_name}' not defined")
+        
+        ptr = self.symbol_table[var_name]
+        self.builder.store(value, ptr)
+        return value
+    
+    def visit_BinaryOp(self, node):
+        left = self.visit(node.children[0])
+        right = self.visit(node.children[1])
+        
+        op = node.value
+        
+        if op in ('+', '-', '*', '/'):
+            if isinstance(left.type, ir.IntType) and isinstance(right.type, ir.IntType):
+                if op == '+':
+                    return self.builder.add(left, right, name="addtmp")
+                elif op == '-':
+                    return self.builder.sub(left, right, name="subtmp")
+                elif op == '*':
+                    return self.builder.mul(left, right, name="multmp")
+                elif op == '/':
+                    return self.builder.sdiv(left, right, name="divtmp")
+            elif isinstance(left.type, ir.DoubleType) or isinstance(right.type, ir.DoubleType):
+                # Promote integers to doubles if needed
+                if isinstance(left.type, ir.IntType):
+                    left = self.builder.sitofp(left, ir.DoubleType(), name="sitofp")
+                if isinstance(right.type, ir.IntType):
+                    right = self.builder.sitofp(right, ir.DoubleType(), name="sitofp")
+                
+                if op == '+':
+                    return self.builder.fadd(left, right, name="faddtmp")
+                elif op == '-':
+                    return self.builder.fsub(left, right, name="fsubtmp")
+                elif op == '*':
+                    return self.builder.fmul(left, right, name="fmultmp")
+                elif op == '/':
+                    return self.builder.fdiv(left, right, name="fdivtmp")
+        
+        elif op in ('<', '>', '<=', '>=', '==', '!='):
+            if isinstance(left.type, ir.IntType) and isinstance(right.type, ir.IntType):
+                if op == '<':
+                    return self.builder.icmp_signed('<', left, right, name="cmptmp")
+                elif op == '<=':
+                    return self.builder.icmp_signed('<=', left, right, name="cmptmp")
+                elif op == '>':
+                    return self.builder.icmp_signed('>', left, right, name="cmptmp")
+                elif op == '>=':
+                    return self.builder.icmp_signed('>=', left, right, name="cmptmp")
+                elif op == '==':
+                    return self.builder.icmp_signed('==', left, right, name="cmptmp")
+                elif op == '!=':
+                    return self.builder.icmp_signed('!=', left, right, name="cmptmp")
+            elif isinstance(left.type, ir.DoubleType) or isinstance(right.type, ir.DoubleType):
+                if op == '<':
+                    return self.builder.fcmp_ordered('<', left, right, name="cmptmp")
+                elif op == '<=':
+                    return self.builder.fcmp_ordered('<=', left, right, name="cmptmp")
+                elif op == '>':
+                    return self.builder.fcmp_ordered('>', left, right, name="cmptmp")
+                elif op == '>=':
+                    return self.builder.fcmp_ordered('>=', left, right, name="cmptmp")
+                elif op == '==':
+                    return self.builder.fcmp_ordered('==', left, right, name="cmptmp")
+                elif op == '!=':
+                    return self.builder.fcmp_ordered('!=', left, right, name="cmptmp")
+        
+        raise ValueError(f"Unknown binary operator: {op}")
+    
+    def visit_UnaryOp(self, node):
+        operand = self.visit(node.children[0])
+        op = node.value
+        
+        if op == '-':
+            if isinstance(operand.type, ir.IntType):
+                return self.builder.neg(operand, name="negtmp")
+            elif isinstance(operand.type, ir.DoubleType):
+                return self.builder.fneg(operand, name="fnegtmp")
+        elif op == '++':
+            # Increment operation
+            one = Constant(operand.type, 1)
+            new_val = self.builder.add(operand, one, name="incrtmp")
+            self.builder.store(new_val, self.symbol_table[node.children[0].value])
+            return new_val
+        elif op == '--':
+            # Decrement operation
+            one = Constant(operand.type, 1)
+            new_val = self.builder.sub(operand, one, name="decrtmp")
+            self.builder.store(new_val, self.symbol_table[node.children[0].value])
+            return new_val
+        
+        raise ValueError(f"Unknown unary operator: {op}")
+    
+    def visit_PrintStatement(self, node):
+        value = self.visit(node.children[0])
+        
+        # Determine format string based on type
+        if isinstance(value.type, ir.IntType) and value.type.width == 32:
+            fmt_str = "%d\n\00"
+        elif isinstance(value.type, ir.DoubleType):
+            fmt_str = "%f\n\00"
+        elif isinstance(value.type, ir.IntType) and value.type.width == 1:
+            fmt_str = "%s\n\00"
+            # Convert bool to string
+            true_str = "true\00"
+            false_str = "false\00"
+            
+            true_const = ir.Constant(ir.ArrayType(ir.IntType(8), len(true_str)), bytearray(true_str.encode('utf-8')))
+            false_const = ir.Constant(ir.ArrayType(ir.IntType(8), len(false_str)), bytearray(false_str.encode('utf-8')))
+            
+            true_global = ir.GlobalVariable(self.module, true_const.type, name=f"true_str.{len(self.module.global_values)}")
+            true_global.linkage = 'internal'
+            true_global.global_constant = True
+            true_global.initializer = true_const
+            
+            false_global = ir.GlobalVariable(self.module, false_const.type, name=f"false_str.{len(self.module.global_values)}")
+            false_global.linkage = 'internal'
+            false_global.global_constant = True
+            false_global.initializer = false_const
+            
+            zero = Constant(ir.IntType(32), 0)
+            true_ptr = self.builder.gep(true_global, [zero, zero], name="trueptr")
+            false_ptr = self.builder.gep(false_global, [zero, zero], name="falseptr")
+            
+            value = self.builder.select(value, true_ptr, false_ptr, name="boolstr")
+        elif isinstance(value.type, ir.PointerType) and isinstance(value.type.pointee, ir.IntType) and value.type.pointee.width == 8:
+            fmt_str = "%s\n\00"
+        else:
+            raise ValueError(f"Unsupported type for print: {value.type}")
+        
+        # Create format string constant
+        fmt_const = ir.Constant(ir.ArrayType(ir.IntType(8), len(fmt_str)), bytearray(fmt_str.encode('utf-8')))
+        fmt_global = ir.GlobalVariable(self.module, fmt_const.type, name=f"fmt.{len(self.module.global_values)}")
+        fmt_global.linkage = 'internal'
+        fmt_global.global_constant = True
+        fmt_global.initializer = fmt_const
+        
+        zero = Constant(ir.IntType(32), 0)
+        fmt_ptr = self.builder.gep(fmt_global, [zero, zero], name="fmtptr")
+        
+        # Call printf
+        self.builder.call(self.printf, [fmt_ptr, value])
+    
+    def visit_IfStatement(self, node):
+        conditions = node.children[0].children
+        blocks = node.children[1].children
+        else_block = node.children[2] if len(node.children) > 2 else None
+        
+        # Create basic blocks
+        current_block = self.builder.block
+        func = current_block.parent
+        
+        # Store references to else blocks we create
+        else_blocks = []
+        
+        # Handle all if/else if blocks
+        for i, (cond, block) in enumerate(zip(conditions, blocks)):
+            # Create blocks
+            then_block = func.append_basic_block(f"then.{i}")
+            merge_block = func.append_basic_block(f"ifcont.{i}")
+            
+            # Create else block if needed
+            if i < len(conditions)-1 or else_block:
+                else_block_bb = func.append_basic_block(f"else.{i}")
+                else_blocks.append(else_block_bb)
+            
+            # Generate condition
+            cond_val = self.visit(cond)
+            
+            # If this isn't the first condition, we need to branch from the previous else block
+            if i > 0:
+                self.builder.branch(then_block)
+            
+            # Set insert point to current block for the condition
+            self.builder.position_at_end(current_block)
+            self.builder.cbranch(
+                cond_val, 
+                then_block, 
+                merge_block if i == len(conditions)-1 and not else_block else else_blocks[i]
+            )
+            
+            # Generate then block
+            self.builder.position_at_end(then_block)
+            self.visit(block)
+            self.builder.branch(merge_block)
+            
+            # Next condition starts at the else block
+            if i < len(conditions)-1 or else_block:
+                current_block = else_blocks[i]
+            else:
+                current_block = merge_block
+        
+        # Handle else block if exists
+        if else_block:
+            else_block_bb = func.append_basic_block("else")
+            self.builder.position_at_end(current_block)
+            self.builder.branch(else_block_bb)
+            
+            self.builder.position_at_end(else_block_bb)
+            self.visit(else_block)
+            self.builder.branch(merge_block)
+        
+        # Set insert point to merge block
+        if len(conditions) > 0 or else_block:
+            self.builder.position_at_end(merge_block)
+    
+    def visit_WhileLoop(self, node):
+        cond = node.children[0]
+        body = node.children[1]
+        
+        func = self.builder.block.parent
+        cond_block = func.append_basic_block("while.cond")
+        body_block = func.append_basic_block("while.body")
+        end_block = func.append_basic_block("while.end")
+        
+        # Branch to condition block
+        self.builder.branch(cond_block)
+        
+        # Generate condition
+        self.builder.position_at_end(cond_block)
+        cond_val = self.visit(cond)
+        self.builder.cbranch(cond_val, body_block, end_block)
+        
+        # Generate body
+        self.builder.position_at_end(body_block)
+        self.visit(body)
+        self.builder.branch(cond_block)  # Loop back to condition
+        
+        # Continue after loop
+        self.builder.position_at_end(end_block)
+    
+    def visit_ForLoop(self, node):
+        init = node.children[0]
+        cond = node.children[1]
+        update = node.children[2]
+        body = node.children[3]
+        
+        # Generate initialization
+        self.visit(init)
+        
+        func = self.builder.block.parent
+        cond_block = func.append_basic_block("for.cond")
+        body_block = func.append_basic_block("for.body")
+        update_block = func.append_basic_block("for.update")
+        end_block = func.append_basic_block("for.end")
+        
+        # Branch to condition block
+        self.builder.branch(cond_block)
+        
+        # Generate condition
+        self.builder.position_at_end(cond_block)
+        cond_val = self.visit(cond)
+        self.builder.cbranch(cond_val, body_block, end_block)
+        
+        # Generate body
+        self.builder.position_at_end(body_block)
+        self.visit(body)
+        self.builder.branch(update_block)
+        
+        # Generate update
+        self.builder.position_at_end(update_block)
+        self.visit(update)
+        self.builder.branch(cond_block)  # Loop back to condition
+        
+        # Continue after loop
+        self.builder.position_at_end(end_block)
+    
+    def visit_FunctionDecl(self, node):
+        func_name = node.value
+        return_type = self.visit(node.children[0])
+        params = node.children[1].children
+        
+        # Create parameter types
+        param_types = []
+        for param in params:
+            param_type = self.visit(param.children[0])
+            param_types.append(param_type)
+        
+        # Create function type
+        func_type = ir.FunctionType(return_type, param_types)
+        func = ir.Function(self.module, func_type, name=func_name)
+        self.functions[func_name] = func
+        
+        # Create entry block
+        entry_block = func.append_basic_block(name="entry")
+        self.builder = IRBuilder(entry_block)
+        
+        # Store parameters in symbol table
+        for i, param in enumerate(params):
+            param_name = param.value
+            param_var = func.args[i]
+            param_var.name = param_name
+            
+            # Allocate space for parameter
+            ptr = self.builder.alloca(param_types[i], name=param_name)
+            self.builder.store(param_var, ptr)
+            self.symbol_table[param_name] = ptr
+        
+        # Generate function body
+        self.visit(node.children[2])
+        
+        # Generate return statement
+        ret_val = self.visit(node.children[3])
+        self.builder.ret(ret_val)
+        
+        # Reset builder to main function
+        main_func = self.module.get_global('main')
+        if main_func:
+            # Instead of creating an empty block, return to the main block
+            self.builder.position_at_end(main_func.entry_basic_block)
+        else:
+            # If no main function exists, just create a new builder without adding it to the module
+            self.builder = IRBuilder(ir.Block(self.module.context, "dummy_block"))
+            
+    def visit_FunctionCall(self, node):
+        func_name = node.value
+        args = [self.visit(arg) for arg in node.children]
+        
+        if func_name not in self.functions:
+            raise NameError(f"Function '{func_name}' not defined")
+        
+        func = self.functions[func_name]
+        return self.builder.call(func, args, name=f"call.{func_name}")
+    
+    def visit_Parameter(self, node):
+        # Parameters are handled in FunctionDecl visitor
+        pass
+    
+    def save_to_file(self, llvm_module, filename="output.ll"):
+        with open(filename, "w") as f:
+            f.write(str(llvm_module))
