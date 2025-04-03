@@ -133,3 +133,15 @@
 2025-04-02 23:46:21,077 - INFO - Análisis exitoso para good-input-files/funcion_suma.txt
 2025-04-02 23:48:05,892 - INFO - Análisis exitoso para good-input-files/funcion_suma.txt
 2025-04-02 23:50:26,732 - INFO - Análisis exitoso para good-input-files/if_try.txt
+2025-04-02 23:52:57,659 - INFO - Análisis exitoso para good-input-files/funcion_multiplicar.txt
+2025-04-02 23:53:10,452 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 00:09:30,356 - INFO - Análisis exitoso para good-input-files/str_bool.txt
+2025-04-03 00:10:20,417 - INFO - Análisis exitoso para good-input-files/if_try.txt
+2025-04-03 00:12:07,514 - INFO - Análisis exitoso para good-input-files/if_try.txt
+2025-04-03 00:15:00,392 - INFO - Análisis exitoso para good-input-files/negative-try3.txt
+2025-04-03 00:18:34,948 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 00:19:28,352 - INFO - Análisis exitoso para good-input-files/if_try.txt
+2025-04-03 00:25:39,694 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 00:25:56,170 - INFO - Análisis exitoso para good-input-files/if_try.txt
+2025-04-03 00:28:16,439 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 00:32:30,460 - INFO - Análisis exitoso para good-input-files/if_try.txt

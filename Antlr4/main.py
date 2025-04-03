@@ -221,14 +221,16 @@ def show_file_menu():
             print(f"{Fore.RED}¡Selección inválida! Intente nuevamente.{Style.RESET_ALL}")
         except ValueError:
             print(f"{Fore.RED}¡Ingrese un número válido!{Style.RESET_ALL}")
+            
     
 """
 ==========================================
 ==========================================
-==============MAIN=======================
+==============MAIN========================
 ==========================================
 ==========================================
 """
+
 def main():
     print_banner()
     

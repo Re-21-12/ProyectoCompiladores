@@ -1,4 +1,4 @@
-program {
+hola {
 x entero = 10;
 y entero = 20;
 z entero = x + y * 2;

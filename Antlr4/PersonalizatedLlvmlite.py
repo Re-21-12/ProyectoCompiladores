@@ -264,6 +264,9 @@ class LLVMGenerator:
         current_block = self.builder.block
         func = current_block.parent
         
+        # Create merge block
+        merge_block = func.append_basic_block("ifcont")
+        
         # Store references to else blocks we create
         else_blocks = []
         
@@ -271,53 +274,35 @@ class LLVMGenerator:
         for i, (cond, block) in enumerate(zip(conditions, blocks)):
             # Create blocks
             then_block = func.append_basic_block(f"then.{i}")
-            merge_block = func.append_basic_block(f"ifcont.{i}")
+            
+            # Generate condition
+            cond_val = self.visit(cond)
             
             # Create else block if needed
             if i < len(conditions)-1 or else_block:
                 else_block_bb = func.append_basic_block(f"else.{i}")
                 else_blocks.append(else_block_bb)
-            
-            # Generate condition
-            cond_val = self.visit(cond)
-            
-            # If this isn't the first condition, we need to branch from the previous else block
-            if i > 0:
-                self.builder.branch(then_block)
-            
-            # Set insert point to current block for the condition
-            self.builder.position_at_end(current_block)
-            self.builder.cbranch(
-                cond_val, 
-                then_block, 
-                merge_block if i == len(conditions)-1 and not else_block else else_blocks[i]
-            )
+                self.builder.cbranch(cond_val, then_block, else_block_bb)
+            else:
+                self.builder.cbranch(cond_val, then_block, merge_block)
             
             # Generate then block
             self.builder.position_at_end(then_block)
             self.visit(block)
             self.builder.branch(merge_block)
             
-            # Next condition starts at the else block
+            # Set insert point to else block for next condition
             if i < len(conditions)-1 or else_block:
-                current_block = else_blocks[i]
-            else:
-                current_block = merge_block
+                self.builder.position_at_end(else_blocks[i])
         
         # Handle else block if exists
         if else_block:
-            else_block_bb = func.append_basic_block("else")
-            self.builder.position_at_end(current_block)
-            self.builder.branch(else_block_bb)
-            
-            self.builder.position_at_end(else_block_bb)
             self.visit(else_block)
             self.builder.branch(merge_block)
         
         # Set insert point to merge block
-        if len(conditions) > 0 or else_block:
-            self.builder.position_at_end(merge_block)
-    
+        self.builder.position_at_end(merge_block)
+        
     def visit_WhileLoop(self, node):
         cond = node.children[0]
         body = node.children[1]
