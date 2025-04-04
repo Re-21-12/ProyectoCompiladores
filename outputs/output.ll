@@ -8,30 +8,19 @@ define i32 @"main"()
 {
 entry:
   %"x" = alloca i32
-  store i32 0, i32* %"x"
+  store i32 5, i32* %"x"
+  %"y" = alloca i32
+  store i32 3, i32* %"y"
   %"x.1" = load i32, i32* %"x"
-  %"cmptmp" = icmp slt i32 %"x.1", 0
-  br i1 %"cmptmp", label %"then.0", label %"else.0"
-ifcont:
-  ret i32 0
-then.0:
+  %"y.1" = load i32, i32* %"y"
+  %"multmp" = mul i32 %"y.1", 2
+  %"addtmp" = add i32 %"x.1", %"multmp"
+  %"z" = alloca i32
+  store i32 %"addtmp", i32* %"z"
+  %"z.1" = load i32, i32* %"z"
   %"fmtptr" = getelementptr [4 x i8], [4 x i8]* @"fmt.2", i32 0, i32 0
-  %".4" = call i32 (i8*, ...) @"printf"(i8* %"fmtptr", i32 2)
-  br label %"ifcont"
-else.0:
-  %"x.2" = load i32, i32* %"x"
-  %"cmptmp.1" = icmp slt i32 1, %"x.2"
-  br i1 %"cmptmp.1", label %"then.1", label %"else.1"
-then.1:
-  %"fmtptr.1" = getelementptr [4 x i8], [4 x i8]* @"fmt.3", i32 0, i32 0
-  %".7" = call i32 (i8*, ...) @"printf"(i8* %"fmtptr.1", i32 3)
-  br label %"ifcont"
-else.1:
-  %"fmtptr.2" = getelementptr [4 x i8], [4 x i8]* @"fmt.4", i32 0, i32 0
-  %".9" = call i32 (i8*, ...) @"printf"(i8* %"fmtptr.2", i32 4)
-  br label %"ifcont"
+  %".5" = call i32 (i8*, ...) @"printf"(i8* %"fmtptr", i32 %"z.1")
+  ret i32 0
 }
 
 @"fmt.2" = internal constant [4 x i8] c"%d\0a\00"
-@"fmt.3" = internal constant [4 x i8] c"%d\0a\00"
-@"fmt.4" = internal constant [4 x i8] c"%d\0a\00"

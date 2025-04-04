@@ -145,3 +145,9 @@
 2025-04-03 00:25:56,170 - INFO - Análisis exitoso para good-input-files/if_try.txt
 2025-04-03 00:28:16,439 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
 2025-04-03 00:32:30,460 - INFO - Análisis exitoso para good-input-files/if_try.txt
+2025-04-03 21:40:20,674 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 22:03:30,463 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 22:45:26,559 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 22:58:41,850 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 23:16:42,605 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
+2025-04-03 23:16:49,838 - INFO - Análisis exitoso para good-input-files/first_try.txt
