@@ -285,6 +285,17 @@ class PersonalizatedListener(ExprListener, SymbolTable):
                 return
 
             # Validación de tipos para operaciones aritméticas
+            if operator == '+':
+            
+                if left_type == 'cadena' and right_type == 'cadena':
+                    ctx.type = 'cadena'
+                    print(f"Concatenación result: {ctx.type}")
+                    return
+                    
+                if not (self._is_numeric_type(left_type) and self._is_numeric_type(right_type)):
+                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
+                    return
+            
             if operator in {'+', '-'}:
                 if not (self._is_numeric_type(left_type) and self._is_numeric_type(right_type)):
                     self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
@@ -389,7 +400,7 @@ class PersonalizatedListener(ExprListener, SymbolTable):
 
     def _is_numeric_type(self, type_str):
         """Verifica si el tipo es numérico (entero o decimal)"""
-        return type_str in {'entero', 'decimal', 'int', 'float'}
+        return type_str in {'entero', 'decimal', 'int', 'float', 'cadena','str'}
 
     def _get_operand_type(self, operand_name):
         """Determina el tipo de un operando (variable o literal)"""
