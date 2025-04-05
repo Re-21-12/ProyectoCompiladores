@@ -191,3 +191,5 @@
 2025-04-04 01:18:40,639 - INFO - Análisis exitoso para good-input-files/decimal_decimal.txt
 2025-04-04 01:18:54,116 - INFO - Análisis exitoso para good-input-files/decimal_decimal.txt
 2025-04-04 01:18:59,455 - INFO - Análisis exitoso para good-input-files/first_try.txt
+2025-04-04 01:19:44,201 - INFO - Análisis exitoso para good-input-files/actualizar.txt
+2025-04-04 01:20:01,757 - INFO - Análisis exitoso para good-input-files/if_else_condicionales-try.txt
