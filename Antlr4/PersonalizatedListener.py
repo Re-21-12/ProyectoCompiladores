@@ -333,6 +333,8 @@ class PersonalizatedListener(ExprListener, SymbolTable):
             if operand_name.isidentifier():
                 var_info = self.symbol_table.get_variable(operand_name)
                 if var_info is None:
+                    print( f"[Error]: variable no declarada ")
+                    exit(1)
                     return "no_declarada"
                 return 'entero' if var_info == 'int' else 'decimal' if var_info == 'float' else var_info
                 
@@ -416,6 +418,8 @@ class PersonalizatedListener(ExprListener, SymbolTable):
             # Es una variable - buscar en tabla de símbolos
             var_info = self.symbol_table.get_variable(operand_name)
             if var_info is None:
+                print( f"[Error]: variable no declarada ")
+                exit(1)
                 return "no_declarada"
             # Normalizar tipos
             if var_info == 'int':

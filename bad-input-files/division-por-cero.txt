@@ -1,0 +1,6 @@
+hola{
+    numero1 decimal = 0.0;
+    numero2 decimal = 0.0;
+    resultado decimal = numero1 / numero2;
+
+}

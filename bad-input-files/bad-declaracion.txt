@@ -1,0 +1,3 @@
+hola{
+    res decimal = 1;
+}
