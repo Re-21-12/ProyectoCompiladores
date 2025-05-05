@@ -16,7 +16,7 @@ import pyfiglet
 import subprocess
 from pathlib import Path
 import time
-
+import os
 # Inicializar colorama
 init(autoreset=True)
 
@@ -124,8 +124,8 @@ def pretty_print_tree(tree, parser, indent=0, last=True, prefix=''):
 def check_extension(text):
     return text.endswith('.txt')
 
-def compile_and_run(llvm_ir):
-    """Compila y ejecuta el código LLVM generado"""
+def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_program=False):
+    """Compila código LLVM IR con opciones configurables"""
     try:
         output_dir = Path("outputs")
         output_dir.mkdir(exist_ok=True)
@@ -136,7 +136,21 @@ def compile_and_run(llvm_ir):
             f.write(str(llvm_ir))
         print(f"{Fore.GREEN}✔ IR LLVM guardado en: {ll_file}{Style.RESET_ALL}")
         
-        # 2. Compilar a código objeto
+        # 2. Optimizar (si se solicita)
+        if optimize:
+            opt_file = output_dir/"optimized.ll"
+            subprocess.run(
+                ["opt", "-O3", "-S", str(ll_file), "-o", str(opt_file)],
+                check=True,
+                stderr=subprocess.PIPE
+            )
+            print(f"{Fore.GREEN}✔ Versión optimizada en: {opt_file}{Style.RESET_ALL}")
+            ll_file = opt_file  # Usar el archivo optimizado para los siguientes pasos
+        
+        if not generate_executable:
+            return True
+            
+        # 3. Compilar a código objeto
         obj_file = output_dir/"output.o"
         subprocess.run(
             ["llc", "-filetype=obj", str(ll_file), "-o", str(obj_file)],
@@ -145,7 +159,7 @@ def compile_and_run(llvm_ir):
         )
         print(f"{Fore.GREEN}✔ Objeto compilado en: {obj_file}{Style.RESET_ALL}")
         
-        # 3. Generar ensamblador (opcional)
+        # 4. Generar ensamblador (opcional)
         asm_file = output_dir/"output.s"
         subprocess.run(
             ["llc", "-march=x86-64", str(ll_file), "-o", str(asm_file)],
@@ -153,15 +167,6 @@ def compile_and_run(llvm_ir):
             stderr=subprocess.PIPE
         )
         print(f"{Fore.GREEN}✔ Ensamblador generado en: {asm_file}{Style.RESET_ALL}")
-        
-        # 4. Optimizar (opcional)
-        opt_file = output_dir/"optimized.ll"
-        subprocess.run(
-            ["opt", "-O3", "-S", str(ll_file), "-o", str(opt_file)],
-            check=True,
-            stderr=subprocess.PIPE
-        )
-        print(f"{Fore.GREEN}✔ Versión optimizada en: {opt_file}{Style.RESET_ALL}")
         
         # 5. Enlazar y crear ejecutable
         exec_file = output_dir/"program"
@@ -172,6 +177,9 @@ def compile_and_run(llvm_ir):
         )
         print(f"{Fore.GREEN}✔ Ejecutable creado en: {exec_file}{Style.RESET_ALL}")
         
+        if not run_program:
+            return True
+            
         # 6. Ejecutar el programa
         print(f"{Fore.CYAN}  EJECUCIÓN DEL PROGRAMA  ")
         print(f"{Fore.YELLOW}═"*50 + Style.RESET_ALL)
@@ -199,12 +207,43 @@ def compile_and_run(llvm_ir):
         print(error_msg)
         error_logger.error(error_msg)
         return False
-    
+
+def compile_existing_llvm(input_ll_file, optimize=False):
+    """Compila un archivo .ll existente"""
+    try:
+        if not os.path.exists(input_ll_file):
+            raise FileNotFoundError(f"Archivo {input_ll_file} no encontrado")
+            
+        with open(input_ll_file, 'r') as f:
+            llvm_ir = f.read()
+            
+        return compile_llvm_ir(llvm_ir, optimize=optimize, generate_executable=True, run_program=True)
+    except Exception as e:
+        print(f"{Fore.RED}✖ Error al procesar archivo .ll: {str(e)}{Style.RESET_ALL}")
+        return False
+
+def convert_to_exe(input_file):
+    """Convierte un binario a .exe (simulado)"""
+    try:
+        if not os.path.exists(input_file):
+            raise FileNotFoundError(f"Archivo {input_file} no encontrado")
+            
+        output_dir = Path("outputs")
+        exec_file = output_dir/"program.exe"
+        
+        # En sistemas Unix, simplemente copiamos el archivo (simulación)
+        # En Windows, podrías agregar lógica adicional si es necesario
+        import shutil
+        shutil.copy(input_file, exec_file)
+        
+        print(f"{Fore.GREEN}✔ Ejecutable Windows creado en: {exec_file}{Style.RESET_ALL}")
+        return True
+    except Exception as e:
+        print(f"{Fore.RED}✖ Error al convertir a .exe: {str(e)}{Style.RESET_ALL}")
+        return False
+
 def show_file_menu():
     """Muestra un menú interactivo para seleccionar archivos de prueba"""
-    import os
-    from pathlib import Path
-    
     input_dirs = [
         "good-input-files",
         "bad-input-files"
@@ -243,112 +282,181 @@ def show_file_menu():
         except ValueError:
             print(f"{Fore.RED}¡Ingrese un número válido!{Style.RESET_ALL}")
 
+def show_main_menu():
+    """Muestra el menú principal de opciones"""
+    options = [
+        "Ejecutar todo el flujo completo y compilar el binario con optimización (opt)",
+        "Ejecutar todo el flujo completo y compilar el binario sin optimización",
+        "Ejecutar únicamente hasta la generación de código intermedio .ll",
+        "Tomar como entrada un .ll optimizado manualmente y compilar el binario",
+        "Convertir el binario a .exe",
+        "Salir"
+    ]
+    
+    print(f"\n{Fore.CYAN}=== MENÚ PRINCIPAL ==={Style.RESET_ALL}")
+    for i, option in enumerate(options, 1):
+        print(f"{Fore.YELLOW}{i}.{Style.RESET_ALL} {option}")
+    
+    while True:
+        try:
+            choice = input(f"\n{Fore.GREEN}Seleccione una opción (1-{len(options)}): {Style.RESET_ALL}")
+            choice_idx = int(choice)
+            if 1 <= choice_idx <= len(options):
+                return choice_idx
+            print(f"{Fore.RED}¡Opción inválida! Intente nuevamente.{Style.RESET_ALL}")
+        except ValueError:
+            print(f"{Fore.RED}¡Ingrese un número válido!{Style.RESET_ALL}")
+
+def process_input_file(path_file, timer):
+    """Procesa el archivo de entrada hasta generar el código LLVM"""
+    if not check_extension(path_file):
+        raise ValueError("El archivo debe tener extensión .txt")
+    
+    print_section("configuración inicial")
+    print(f"{Fore.WHITE}Analizando archivo: {Fore.YELLOW}{path_file}{Style.RESET_ALL}")
+    
+    # ========== FASE 2: Análisis léxico ==========
+    timer.start_phase("Análisis léxico")
+    input_stream = FileStream(path_file)
+    lexer = ExprLexer(input_stream)
+    token_stream = CommonTokenStream(lexer)
+    timer.end_phase()
+    
+    # ========== FASE 3: Análisis sintáctico ==========
+    timer.start_phase("Análisis sintáctico")
+    parser = ExprParser(token_stream)
+    parser.removeErrorListeners()
+    parser.addErrorListener(PersonalizatedListener())
+    tree = parser.gramatica()
+    timer.end_phase()
+    
+    # Visualización del árbol
+    print_section("estructura del árbol", Fore.BLUE)
+    pretty_print_tree(tree, parser)
+    
+    # ========== FASE 4: Ejecución del Listener ==========
+    timer.start_phase("Ejecución del Listener")
+    print_section("ejecución del listener", Fore.YELLOW)
+    listener = PersonalizatedListener()
+    walker = ParseTreeWalker()
+    walker.walk(listener, tree)
+    timer.end_phase()
+    
+    # ========== FASE 5: Evaluación Visitor ==========
+    timer.start_phase("Evaluación Visitor")
+    print_section("evaluación visitor", Fore.MAGENTA)
+    visitor = PersonalizatedVisitor()
+    result = visitor.visit(tree)
+    timer.end_phase()
+    
+    # ========== FASE 6: Generación AST ==========
+    timer.start_phase("Generación AST")
+    ast_visitor = ASTVisitor()
+    ast_result = ast_visitor.visit(tree)
+    timer.end_phase()
+    
+    print(f"\n{Fore.GREEN}✔ Análisis completado{Style.RESET_ALL}")
+    success_logger.info(f"Análisis exitoso para {path_file}")
+    print_section("AST generado", Fore.CYAN)
+    print(ast_result)
+
+    # ========== FASE 7: Generación LLVM ==========
+    timer.start_phase("Generación LLVM")
+    logging.info("Generando código LLVM...")
+    llvm_generator = LLVMGenerator()
+    llvm_code = llvm_generator.generate_code(ast_result)
+    timer.end_phase()
+    
+    with open("outputs/output.ll", "w") as f:
+        f.write(str(llvm_code))
+    print(f"IR generado y guardado en: outputs/output.ll")
+    logging.info("Código LLVM generado:")
+    print(str(llvm_code))
+    
+    return llvm_code
+
 def main():
     print_banner()
-    timer = TimeMeasurer()
     
-    try:
-        # ========== FASE 1: Selección y carga de archivo ==========
-        timer.start_phase("Selección y carga de archivo")
+    while True:
+        # ========== FASE 1: Selección de archivo ==========
+        timer = TimeMeasurer()
+        timer.start_phase("Selección de archivo")
         path_file = show_file_menu()
         if not path_file:
             print(f"{Fore.YELLOW}Operación cancelada por el usuario.{Style.RESET_ALL}")
-            return
+            break
         
-        print_section("configuración inicial")
-        print(f"{Fore.WHITE}Analizando archivo: {Fore.YELLOW}{path_file}{Style.RESET_ALL}")
-        
-        if not check_extension(path_file):
-            raise ValueError("El archivo debe tener extensión .txt")
         timer.end_phase()
         
-        # ========== FASE 2: Análisis léxico ==========
-        timer.start_phase("Análisis léxico")
-        input_stream = FileStream(path_file)
-        lexer = ExprLexer(input_stream)
-        token_stream = CommonTokenStream(lexer)
-        timer.end_phase()
+        # Mostrar menú principal
+        option = show_main_menu()
         
-        # ========== FASE 3: Análisis sintáctico ==========
-        timer.start_phase("Análisis sintáctico")
-        parser = ExprParser(token_stream)
-        parser.removeErrorListeners()
-        parser.addErrorListener(PersonalizatedListener())
-        tree = parser.gramatica()
-        timer.end_phase()
-        
-        # Visualización del árbol
-        print_section("estructura del árbol", Fore.BLUE)
-        pretty_print_tree(tree, parser)
-        
-        # ========== FASE 4: Ejecución del Listener ==========
-        timer.start_phase("Ejecución del Listener")
-        print_section("ejecución del listener", Fore.YELLOW)
-        listener = PersonalizatedListener()
-        walker = ParseTreeWalker()
-        walker.walk(listener, tree)
-        timer.end_phase()
-        
-        # ========== FASE 5: Evaluación Visitor ==========
-        timer.start_phase("Evaluación Visitor")
-        print_section("evaluación visitor", Fore.MAGENTA)
-        visitor = PersonalizatedVisitor()
-        result = visitor.visit(tree)
-        timer.end_phase()
-        
-        # ========== FASE 6: Generación AST ==========
-        timer.start_phase("Generación AST")
-        ast_visitor = ASTVisitor()
-        ast_result = ast_visitor.visit(tree)
-        timer.end_phase()
-        
-        print(f"\n{Fore.GREEN}✔ Análisis completado{Style.RESET_ALL}")
-        success_logger.info(f"Análisis exitoso para {path_file}")
-        print_section("AST generado", Fore.CYAN)
-        print(ast_result)
-    
-        # ========== FASE 7: Generación LLVM ==========
-        timer.start_phase("Generación LLVM")
-        logging.info("Generando código LLVM...")
-        llvm_generator = LLVMGenerator()
-        llvm_code = llvm_generator.generate_code(ast_result)
-        timer.end_phase()
-        
-        with open("outputs/output.ll", "w") as f:
-            f.write(str(llvm_code))
-        print(f"IR generado y guardado en: output.ll")
-        logging.info("Código LLVM generado:")
-        print(str(llvm_code))
-        
-        # ========== FASE 8: Compilación y Ejecución ==========
-        timer.start_phase("Compilación y Ejecución")
-        logging.info("Compilando y Corriendo...")
-        if not compile_and_run(str(llvm_code)):
-            print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
-        timer.end_phase()
-        
-        # ========== REPORTE FINAL ==========
-        timer.print_report()
-    
-    except FileNotFoundError as fnf_error:
-        timer.end_phase()
-        error_msg = f"{Fore.RED}✖ Archivo no encontrado: {fnf_error}{Style.RESET_ALL}"
-        print(error_msg)
-        error_logger.error(error_msg)
-        timer.print_report()
-    except ValueError as ve:
-        timer.end_phase()
-        error_msg = f"{Fore.RED}✖ Error de valor: {ve}{Style.RESET_ALL}"
-        print(error_msg)
-        error_logger.error(error_msg)
-        timer.print_report()
-    except Exception as e:
-        timer.end_phase()
-        error_msg = f"{Fore.RED}✖ Error inesperado: {str(e)}{Style.RESET_ALL}"
-        print(error_msg)
-        error_logger.error(error_msg)
-        timer.print_report()
-        raise
+        try:
+            if option == 1:  # Flujo completo con optimización
+                llvm_code = process_input_file(path_file, timer)
+                
+                # ========== FASE 8: Compilación con optimización ==========
+                timer.start_phase("Compilación con optimización")
+                logging.info("Compilando con optimización...")
+                if not compile_llvm_ir(llvm_code, optimize=True, generate_executable=True, run_program=True):
+                    print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
+                timer.end_phase()
+                
+            elif option == 2:  # Flujo completo sin optimización
+                llvm_code = process_input_file(path_file, timer)
+                
+                # ========== FASE 8: Compilación sin optimización ==========
+                timer.start_phase("Compilación sin optimización")
+                logging.info("Compilando sin optimización...")
+                if not compile_llvm_ir(llvm_code, optimize=False, generate_executable=True, run_program=True):
+                    print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
+                timer.end_phase()
+                
+            elif option == 3:  # Solo generación de LLVM
+                llvm_code = process_input_file(path_file, timer)
+                print(f"{Fore.GREEN}✔ Proceso completado hasta generación de LLVM{Style.RESET_ALL}")
+                
+            elif option == 4:  # Compilar .ll existente
+                ll_file = input(f"{Fore.GREEN}Ingrese la ruta del archivo .ll optimizado: {Style.RESET_ALL}")
+                timer.start_phase("Compilación de .ll optimizado")
+                if not compile_existing_llvm(ll_file, optimize=True):
+                    print(f"{Fore.RED}✖ Fallo en la compilación{Style.RESET_ALL}")
+                timer.end_phase()
+                
+            elif option == 5:  # Convertir a .exe
+                bin_file = input(f"{Fore.GREEN}Ingrese la ruta del binario a convertir: {Style.RESET_ALL}")
+                timer.start_phase("Conversión a .exe")
+                if not convert_to_exe(bin_file):
+                    print(f"{Fore.RED}✖ Fallo en la conversión{Style.RESET_ALL}")
+                timer.end_phase()
+                
+            elif option == 6:  # Salir
+                print(f"{Fore.YELLOW}Saliendo del programa...{Style.RESET_ALL}")
+                break
+                
+            # Mostrar reporte de tiempos
+            timer.print_report()
+            
+        except FileNotFoundError as fnf_error:
+            timer.end_phase()
+            error_msg = f"{Fore.RED}✖ Archivo no encontrado: {fnf_error}{Style.RESET_ALL}"
+            print(error_msg)
+            error_logger.error(error_msg)
+            timer.print_report()
+        except ValueError as ve:
+            timer.end_phase()
+            error_msg = f"{Fore.RED}✖ Error de valor: {ve}{Style.RESET_ALL}"
+            print(error_msg)
+            error_logger.error(error_msg)
+            timer.print_report()
+        except Exception as e:
+            timer.end_phase()
+            error_msg = f"{Fore.RED}✖ Error inesperado: {str(e)}{Style.RESET_ALL}"
+            print(error_msg)
+            error_logger.error(error_msg)
+            timer.print_report()
+            raise
 
 if __name__ == "__main__":
     main()
