@@ -15,6 +15,7 @@ from colorama import init, Fore, Back, Style
 import pyfiglet
 import subprocess
 from pathlib import Path
+import time
 
 # Inicializar colorama
 init(autoreset=True)
@@ -57,6 +58,33 @@ error_logger.addHandler(console_handler)
 success_logger.setLevel(logging.INFO)
 error_logger.setLevel(logging.ERROR)
 
+class TimeMeasurer:
+    def __init__(self):
+        self.phases = {}
+        self.current_phase = None
+        self.start_time = None
+    
+    def start_phase(self, phase_name):
+        if self.current_phase is not None:
+            self.end_phase()
+        self.current_phase = phase_name
+        self.start_time = time.time()
+        print(f"\n{Fore.YELLOW}▶ Iniciando fase: {phase_name}{Style.RESET_ALL}")
+    
+    def end_phase(self):
+        if self.current_phase is None:
+            return
+        elapsed = time.time() - self.start_time
+        self.phases[self.current_phase] = elapsed
+        print(f"{Fore.CYAN}⏱  Tiempo {self.current_phase}: {elapsed:.4f} segundos{Style.RESET_ALL}")
+        self.current_phase = None
+    
+    def print_report(self):
+        print(f"\n{Fore.YELLOW}=== REPORTE DE TIEMPOS ===")
+        for phase, elapsed in self.phases.items():
+            print(f"{Fore.CYAN}{phase}: {elapsed:.4f} segundos")
+        total = sum(self.phases.values())
+        print(f"\n{Fore.GREEN}TOTAL: {total:.4f} segundos{Style.RESET_ALL}")
 
 def print_banner():
     banner = pyfiglet.figlet_format("Expr Analyzer", font="slant")
@@ -72,26 +100,22 @@ def print_section(title, color=Fore.GREEN):
 
 def pretty_print_tree(tree, parser, indent=0, last=True, prefix=''):
     """Imprime el árbol de análisis con formato visual mejorado"""
-    # Obtener el texto del nodo
     if isinstance(tree, TerminalNode):
         text = tree.getText()
         symbol_type = parser.symbolicNames[tree.getSymbol().type]
         print(f"{prefix}{'└── ' if last else '├── '}{Fore.CYAN}{text} ({symbol_type}){Style.RESET_ALL}")
         return
     
-    # Para nodos no terminales
     rule_name = parser.ruleNames[tree.getRuleIndex()]
     
     if indent == 0:
         print(f"{Fore.YELLOW}Árbol de Análisis Sintáctico:{Style.RESET_ALL}")
     
-    # Determinar el prefijo y símbolo de rama
     branch = '└── ' if last else '├── '
     new_prefix = prefix + ("    " if last else "│   ")
     
     print(f"{prefix}{branch}{Fore.GREEN}{rule_name}{Style.RESET_ALL}")
     
-    # Recorrer hijos - convertimos el generador a lista
     children = list(tree.getChildren())
     if children:
         for i, child in enumerate(children):
@@ -99,10 +123,10 @@ def pretty_print_tree(tree, parser, indent=0, last=True, prefix=''):
 
 def check_extension(text):
     return text.endswith('.txt')
+
 def compile_and_run(llvm_ir):
     """Compila y ejecuta el código LLVM generado"""
     try:
-        # Crear directorio de salida si no existe
         output_dir = Path("outputs")
         output_dir.mkdir(exist_ok=True)
         
@@ -180,13 +204,12 @@ def show_file_menu():
     """Muestra un menú interactivo para seleccionar archivos de prueba"""
     import os
     from pathlib import Path
-    # Lista de archivos de prueba disponibles
+    
     input_dirs = [
         "good-input-files",
         "bad-input-files"
     ]
     
-    # Verificar qué archivos existen realmente
     available_files = []
     for input_dir in input_dirs:
         if os.path.exists(input_dir) and os.path.isdir(input_dir):
@@ -201,14 +224,12 @@ def show_file_menu():
     
     available_files.sort()
     
-    # Mostrar menú
     print(f"\n{Fore.CYAN}=== ARCHIVOS DE PRUEBA DISPONIBLES ==={Style.RESET_ALL}")
     print(f"{Fore.RED}\t Presione [q] para salir.{Style.RESET_ALL}")
     
     for i, file in enumerate(available_files, 1):
         print(f"{Fore.YELLOW}{i:2d}.{Style.RESET_ALL} {file}")
     
-    # Selección del usuario
     while True:
         try:
             choice = input(f"\n{Fore.GREEN}Seleccione un archivo (1-{len(available_files)}): {Style.RESET_ALL}")
@@ -221,22 +242,14 @@ def show_file_menu():
             print(f"{Fore.RED}¡Selección inválida! Intente nuevamente.{Style.RESET_ALL}")
         except ValueError:
             print(f"{Fore.RED}¡Ingrese un número válido!{Style.RESET_ALL}")
-            
-    
-"""
-==========================================
-==========================================
-==============MAIN========================
-==========================================
-==========================================
-"""
 
 def main():
     print_banner()
+    timer = TimeMeasurer()
     
     try:
-        # Definir archivo de entrada
-        #path_file = "bad-input-files/bad-actualizacion.txt"
+        # ========== FASE 1: Selección y carga de archivo ==========
+        timer.start_phase("Selección y carga de archivo")
         path_file = show_file_menu()
         if not path_file:
             print(f"{Fore.YELLOW}Operación cancelada por el usuario.{Style.RESET_ALL}")
@@ -247,66 +260,95 @@ def main():
         
         if not check_extension(path_file):
             raise ValueError("El archivo debe tener extensión .txt")
+        timer.end_phase()
         
-        # Procesamiento del input
+        # ========== FASE 2: Análisis léxico ==========
+        timer.start_phase("Análisis léxico")
         input_stream = FileStream(path_file)
         lexer = ExprLexer(input_stream)
         token_stream = CommonTokenStream(lexer)
+        timer.end_phase()
+        
+        # ========== FASE 3: Análisis sintáctico ==========
+        timer.start_phase("Análisis sintáctico")
         parser = ExprParser(token_stream)
-
-        # Añadir listener de errores
         parser.removeErrorListeners()
         parser.addErrorListener(PersonalizatedListener())
-
-
-        print_section("análisis sintáctico")
         tree = parser.gramatica()
+        timer.end_phase()
         
         # Visualización del árbol
         print_section("estructura del árbol", Fore.BLUE)
         pretty_print_tree(tree, parser)
         
-        # Evaluación
+        # ========== FASE 4: Ejecución del Listener ==========
+        timer.start_phase("Ejecución del Listener")
         print_section("ejecución del listener", Fore.YELLOW)
         listener = PersonalizatedListener()
         walker = ParseTreeWalker()
         walker.walk(listener, tree)
+        timer.end_phase()
         
+        # ========== FASE 5: Evaluación Visitor ==========
+        timer.start_phase("Evaluación Visitor")
         print_section("evaluación visitor", Fore.MAGENTA)
         visitor = PersonalizatedVisitor()
         result = visitor.visit(tree)
+        timer.end_phase()
         
+        # ========== FASE 6: Generación AST ==========
+        timer.start_phase("Generación AST")
         ast_visitor = ASTVisitor()
         ast_result = ast_visitor.visit(tree)
-        print(f"\n{Fore.GREEN}✔ Análisis completado{Style.RESET_ALL}")
+        timer.end_phase()
         
-        # Logs
+        print(f"\n{Fore.GREEN}✔ Análisis completado{Style.RESET_ALL}")
         success_logger.info(f"Análisis exitoso para {path_file}")
         print_section("AST generado", Fore.CYAN)
         print(ast_result)
     
+        # ========== FASE 7: Generación LLVM ==========
+        timer.start_phase("Generación LLVM")
         logging.info("Generando código LLVM...")
         llvm_generator = LLVMGenerator()
         llvm_code = llvm_generator.generate_code(ast_result)
+        timer.end_phase()
+        
         with open("outputs/output.ll", "w") as f:
             f.write(str(llvm_code))
         print(f"IR generado y guardado en: output.ll")
-        logging.info("Código LLVM generado :")
+        logging.info("Código LLVM generado:")
         print(str(llvm_code))
         
+        # ========== FASE 8: Compilación y Ejecución ==========
+        timer.start_phase("Compilación y Ejecución")
         logging.info("Compilando y Corriendo...")
         if not compile_and_run(str(llvm_code)):
             print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
+        timer.end_phase()
+        
+        # ========== REPORTE FINAL ==========
+        timer.print_report()
     
     except FileNotFoundError as fnf_error:
+        timer.end_phase()
         error_msg = f"{Fore.RED}✖ Archivo no encontrado: {fnf_error}{Style.RESET_ALL}"
         print(error_msg)
         error_logger.error(error_msg)
+        timer.print_report()
     except ValueError as ve:
+        timer.end_phase()
         error_msg = f"{Fore.RED}✖ Error de valor: {ve}{Style.RESET_ALL}"
         print(error_msg)
         error_logger.error(error_msg)
-
+        timer.print_report()
+    except Exception as e:
+        timer.end_phase()
+        error_msg = f"{Fore.RED}✖ Error inesperado: {str(e)}{Style.RESET_ALL}"
+        print(error_msg)
+        error_logger.error(error_msg)
+        timer.print_report()
+        raise
 
 if __name__ == "__main__":
     main()

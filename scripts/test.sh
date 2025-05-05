@@ -7,6 +7,8 @@ ls -l outputs/
 # 2. Mostrar IR LLVM
 echo -e "\n=== Código LLVM ==="
 head -n 20 outputs/output.ll
+    # Exit a parse tree produced by ExprParser#sentencia_for.
+    def exitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
 
 # 3. Ejecutar programa
 echo -e "\n=== Ejecución ==="

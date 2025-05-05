@@ -92,9 +92,9 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
         operator = ctx.getChild(1)
         right = self.visit(ctx.getChild(2))
 
-        print(f"Variable L E: {left}")
-        print(f"Variable R E: {right}")
-        print(f"Operador R E: {operator.getText()}")
+        # print(f"Variable L E: {left}")
+        # print(f"Variable R E: {right}")
+        # print(f"Operador R E: {operator.getText()}")
 
         if operator.getText() == '+':
             # Verificar si ambos operandos son cadenas
@@ -121,7 +121,7 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
         else:
             raise ValueError(f"Operador desconocido {operator.getText()}")
 
-        print(f"Resultado de la evaluación: {result}")
+        # print(f"Resultado de la evaluación: {result}")
         return result
 
 
@@ -133,8 +133,8 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
         operator = ctx.getChild(1)
         right = self.visit(ctx.getChild(2))
 
-        print(f" Variable L T: {left}")
-        print(f" Variable R T: {right}")
+        # print(f" Variable L T: {left}")
+        # print(f" Variable R T: {right}")
         if operator.getText() == '*':
             return left * right
         elif operator.getText() == '/':

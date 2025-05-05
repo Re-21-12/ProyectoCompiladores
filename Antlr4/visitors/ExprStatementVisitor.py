@@ -17,7 +17,7 @@ class ExprStatementVisitor( ExprFunctionsVisitor, ExprVariableVisitor):
         elif ctx.declaracion():
             return self.visitDeclaracion(ctx.declaracion())
         elif ctx.mostrar():
-            print("mostrando mostrar")
+            # print("mostrando mostrar")
             return self.visitMostrar(ctx.mostrar())
         elif ctx.actualizacion():
             return self.visitActualizacion(ctx.actualizacion())

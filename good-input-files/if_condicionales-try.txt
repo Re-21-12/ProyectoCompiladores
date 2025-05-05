@@ -2,9 +2,8 @@ hola {
     x entero = 1;
     y entero = 2;
     z entero = x + y * 5;
-
     if(z > 10){
-    for (i entero = 0; i < 10; i++) {
+    for (i entero = 0; i < 10000000; i++) {
         mostrar(i);
         }   
     }
