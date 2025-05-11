@@ -89,3 +89,6 @@
 2025-03-31 23:55:46,282 - INFO - Análisis exitoso para good-input-files/actualizar.txt
 2025-04-01 00:01:16,884 - INFO - Análisis exitoso para good-input-files/actualizar.txt
 2025-04-01 00:01:46,830 - INFO - Análisis exitoso para good-input-files/actualizar.txt
+2025-05-11 09:48:15,843 - INFO - Análisis exitoso para good-input-files/actualizar.txt
+2025-05-11 09:49:27,566 - INFO - Análisis exitoso para good-input-files/actualizar.txt
+2025-05-11 09:49:38,247 - INFO - Análisis exitoso para good-input-files/actualizar.txt

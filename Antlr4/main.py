@@ -189,7 +189,7 @@ def main():
     try:
         # Definir archivo de entrada
         #path_file = "bad-input-files/bad-actualizacion.txt"
-        path_file = "good-input-files/actualizar.txt"
+        path_file = "good-input-files/funcion.txt"
         
         print_section("configuración inicial")
         print(f"{Fore.WHITE}Analizando archivo: {Fore.YELLOW}{path_file}{Style.RESET_ALL}")
