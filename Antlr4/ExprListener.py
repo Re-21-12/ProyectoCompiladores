@@ -89,6 +89,24 @@ class ExprListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExprParser#funcion_llamada_expr.
+    def enterFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#funcion_llamada_expr.
+    def exitFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#retorna.
+    def enterRetorna(self, ctx:ExprParser.RetornaContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#retorna.
+    def exitRetorna(self, ctx:ExprParser.RetornaContext):
+        pass
+
+
     # Enter a parse tree produced by ExprParser#parametros.
     def enterParametros(self, ctx:ExprParser.ParametrosContext):
         pass
@@ -140,6 +158,15 @@ class ExprListener(ParseTreeListener):
 
     # Exit a parse tree produced by ExprParser#declaracion.
     def exitDeclaracion(self, ctx:ExprParser.DeclaracionContext):
+        pass
+
+
+    # Enter a parse tree produced by ExprParser#declaracion_sin_asignacion.
+    def enterDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#declaracion_sin_asignacion.
+    def exitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
         pass
 
 

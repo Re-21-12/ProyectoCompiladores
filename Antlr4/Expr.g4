@@ -8,6 +8,7 @@ programa: MAIN LLAVES_INICIAL bloque LLAVES_FINAL;
 
 bloque: sentencia*;  // Un bloque puede contener cero o más sentencias
 
+//TODO: Aqui deberia ir el retorna 
 // Reglas de sentencias
 sentencia: 
    sentencia_if  
@@ -15,10 +16,12 @@ sentencia:
   | sentencia_for 
   | reasignacion  
   | mostrar 
+  | declaracion_sin_asignacion
   | declaracion  
   | actualizacion
   | declaracion_funcion
   | funcion_llamada
+  | retorna
 ;
 
 sentencia_if:
@@ -36,11 +39,17 @@ sentencia_for:
 ;  
 
 declaracion_funcion:
-  FUNCION VARIABLE tipo PARENTESIS_INICIAL parametros? PARENTESIS_FINAL LLAVES_INICIAL bloque RETURN expr PUNTO_Y_COMA LLAVES_FINAL
+  FUNCION VARIABLE tipo PARENTESIS_INICIAL parametros? PARENTESIS_FINAL LLAVES_INICIAL bloque (retorna)? LLAVES_FINAL
 ;
 funcion_llamada:
     VARIABLE PARENTESIS_INICIAL argumentos? PARENTESIS_FINAL PUNTO_Y_COMA
 ;
+funcion_llamada_expr:
+    VARIABLE PARENTESIS_INICIAL argumentos? PARENTESIS_FINAL
+;
+retorna:
+RETURN expr PUNTO_Y_COMA
+; 
 
 parametros:
 parametro (COMA parametro)* 
@@ -64,6 +73,10 @@ bloque_de_sentencia:
 declaracion:
   VARIABLE tipo ASIGNACION expr PUNTO_Y_COMA
 ;  // Una declaración es una variable asignada a una expresión seguida de un punto y coma
+
+declaracion_sin_asignacion:
+VARIABLE tipo PUNTO_Y_COMA
+;
 
 reasignacion:
   VARIABLE ASIGNACION expr PUNTO_Y_COMA
@@ -95,6 +108,7 @@ factor:
   | BOOLEANO                   // Valor booleano ('verdadero' o 'falso')
   | CADENA                     // Cadena de texto entre comillas
   | VARIABLE                   // Variable
+  | funcion_llamada_expr
 ;
 
 actualizacion:

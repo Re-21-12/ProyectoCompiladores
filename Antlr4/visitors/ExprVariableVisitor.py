@@ -3,6 +3,12 @@ from visitors.ExprBaseVisitor import *
 
 class ExprVariableVisitor(ExprBaseVisitor):
 
+    # Visit a parse tree produced by ExprParser#declaracion_sin_asignacion.
+    def visitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
+
+        return self.visitChildren(ctx)
+
+
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         var_name = ctx.VARIABLE().getText()
         var_type = ctx.tipo().getText()

@@ -78,6 +78,15 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
     def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
         super().visitReasignacion(ctx)
 
+    def visitFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
+        return super().visitChildren(ctx) 
+
+    def visitRetorna(self, ctx:ExprParser.RetornaContext):
+        super().visitRetorna(ctx)
+
+    def visitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
+        super().visitChildren(ctx)
+
     # Visit a parse tree produced by ExprParser#mostrar.
     def visitMostrar(self, ctx:ExprParser.MostrarContext):
         value = self.visit(ctx.expr())
@@ -160,5 +169,7 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
             return self.visit(ctx.getChild(1))
         elif ctx.MENOS():
             return -self.visit(ctx.getChild(1))
+        elif ctx.funcion_llamada_expr():  # Llamada a función como expresión
+            return self.visit(ctx.funcion_llamada_expr())        
         else:
             raise ValueError("Operación no soportada")

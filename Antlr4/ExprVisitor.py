@@ -54,6 +54,16 @@ class ExprVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ExprParser#funcion_llamada_expr.
+    def visitFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExprParser#retorna.
+    def visitRetorna(self, ctx:ExprParser.RetornaContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ExprParser#parametros.
     def visitParametros(self, ctx:ExprParser.ParametrosContext):
         return self.visitChildren(ctx)
@@ -81,6 +91,11 @@ class ExprVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExprParser#declaracion.
     def visitDeclaracion(self, ctx:ExprParser.DeclaracionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExprParser#declaracion_sin_asignacion.
+    def visitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
         return self.visitChildren(ctx)
 
 

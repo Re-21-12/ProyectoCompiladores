@@ -1,0 +1,19 @@
+hola {
+  funcion fibonacci entero(n entero) {
+    if (n == 0) {
+      retorna 0;
+    } else if (n == 1) {
+      retorna 1;
+    } else {
+      retorna fibonacci(n - 1) + fibonacci(n - 2);
+    }
+  }
+
+  entero i = 0;
+  entero limite = 10;
+
+  while (i < limite) {
+    mostrar(fibonacci(i));
+    i++;
+  }
+}

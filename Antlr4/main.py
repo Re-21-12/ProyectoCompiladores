@@ -35,6 +35,8 @@ class ColoredFormatter(logging.Formatter):
         return color + message
 
 # Configuración de los logs
+log_dir = os.path.join("..", "logs")
+
 success_handler = logging.FileHandler("logs/log_success.txt")
 error_handler = logging.FileHandler("logs/log_error.txt")
 console_handler = logging.StreamHandler()
