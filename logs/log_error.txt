@@ -686,3 +686,11 @@ NameError: Variable 'x' no definida.
 2025-05-11 22:41:07,548 - ERROR - [31m✖ Error inesperado: 'ExprContext' object has no attribute 'PARENTESIS_INICIAL'[0m
 2025-05-11 22:47:21,368 - ERROR - [31m✖ Error inesperado: list index out of range[0m
 2025-05-11 22:53:15,625 - ERROR - [31m✖ Error en compilación: b"opt: outputs/output.ll:27:7: error: value doesn't match function result type 'i32'\n  ret void\n      ^\n"[0m
+2025-05-11 23:04:45,108 - ERROR - [31m✖ Error en compilación: b"opt: outputs/output.ll:27:7: error: value doesn't match function result type 'i32'\n  ret void\n      ^\n"[0m
+2025-05-11 23:15:57,005 - ERROR - [31m✖ Error en compilación: b"opt: outputs/output.ll:27:7: error: value doesn't match function result type 'i32'\n  ret void\n      ^\n"[0m
+2025-05-11 23:30:07,906 - ERROR - [31m✖ Error inesperado: SymbolTable.define_function() missing 1 required positional argument: 'params'[0m
+2025-05-12 06:16:28,356 - ERROR - [31m✖ Error inesperado: ExprParser.Sentencia_ifContext.bloque_de_sentencia() takes 1 positional argument but 2 were given[0m
+2025-05-12 06:37:33,899 - ERROR - [31m✖ Error inesperado: ExprParser.Sentencia_ifContext.bloque_de_sentencia() takes 1 positional argument but 2 were given[0m
+2025-05-12 06:39:30,805 - ERROR - [31m✖ Error inesperado: 'Bloque_de_sentenciaContext' object is not subscriptable[0m
+2025-05-12 07:20:51,383 - ERROR - [31m✖ Error inesperado: ''[0m
+2025-05-12 07:25:03,633 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m

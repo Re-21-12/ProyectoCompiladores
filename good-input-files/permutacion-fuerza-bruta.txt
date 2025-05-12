@@ -1,0 +1,17 @@
+hola {
+  for (entero i = 1; i < 4; i++) {
+    for (entero j = 1; j < 4; j++) {
+      if (j != i) {
+        for (entero k = 1; k < 4; k++) {
+          if (k != i ) {
+            if( k != j){
+            mostrar(i);
+            mostrar(j);
+            mostrar(k);
+            }
+          }
+        }
+      }
+    }
+  }
+}

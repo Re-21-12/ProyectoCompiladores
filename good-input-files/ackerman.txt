@@ -1,0 +1,15 @@
+hola {
+  funcion ackermann entero (m entero, n entero) {
+    if (m == 0) {
+      retorna n + 1;
+    }
+    else if (n == 0) {
+      retorna ackermann(m - 1, 1);
+    }
+    else {
+      retorna ackermann(m - 1, ackermann(m, n - 1));
+    }
+  }
+
+  ackermann(2, 3);
+}

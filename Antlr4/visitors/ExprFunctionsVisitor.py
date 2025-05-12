@@ -99,18 +99,19 @@ class ExprFunctionsVisitor(ExprBaseVisitor):
         """Handle if statements with proper return handling"""
         # Main if
         if self.visit(ctx.bloque_condicional(0)):
-            return self.visit(ctx.bloque_de_sentencia(0))
+            return self.visit(ctx.bloque_de_sentencia()[0])  # Access the first block correctly
         
         # Else ifs
         for i in range(1, len(ctx.bloque_condicional())):
             if self.visit(ctx.bloque_condicional(i)):
-                return self.visit(ctx.bloque_de_sentencia(i))
+                return self.visit(ctx.bloque_de_sentencia()[i])  # Access the blocks using indices correctly
         
         # Else
         if ctx.ELSE():
-            return self.visit(ctx.bloque_de_sentencia(-1))
-        
+            return self.visit(ctx.bloque_de_sentencia()[-1])  # Access the last block for else
+
         return None
+
     
     def visitParametros(self, ctx: ExprParser.ParametrosContext):
         """Process function parameters with their types"""

@@ -13,7 +13,7 @@ entry:
 
 define i32 @"primerafuncion"(i32 %"numerouno", i32 %"numerodos")
 {
-entry:
+entry:  
   %"numerouno.1" = alloca i32
   store i32 %"numerouno", i32* %"numerouno.1"
   %"numerodos.1" = alloca i32

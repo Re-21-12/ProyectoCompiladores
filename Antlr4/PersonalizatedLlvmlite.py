@@ -28,7 +28,7 @@ class LLVMGenerator:
         }
     
     def generate_code(self, ast_node):
-        # Create main function
+        # Create main function with i32 return type
         main_func_type = ir.FunctionType(ir.IntType(32), [])
         main_func = ir.Function(self.module, main_func_type, name="main")
         main_block = main_func.append_basic_block(name="entry")
@@ -37,8 +37,9 @@ class LLVMGenerator:
         # Generate code for the main function body
         self.visit(ast_node)
         
-        # Add return 0 at the end of main
-        self.builder.ret(Constant(ir.IntType(32), 0))
+        # Ensure we always return an i32 value
+        if not main_block.is_terminated:
+            self.builder.ret(Constant(ir.IntType(32), 0))
         
         return self.module
     
@@ -76,7 +77,12 @@ class LLVMGenerator:
             self.builder.store(value, ptr)
     
     def visit_Type(self, node):
-        return self.type_map[node.value]
+        if not node.value:
+            raise ValueError("Type name cannot be empty")
+        try:
+            return self.type_map[node.value]
+        except KeyError:
+            raise ValueError(f"Unknown type: '{node.value}'")
     
     def visit_Literal(self, node):
         if isinstance(node.value, bool):
@@ -399,21 +405,74 @@ class LLVMGenerator:
         # Generate function body
         self.visit(node.children[2])
         
-        # Generate return statement if exists
+        # Handle return statement
         if len(node.children) > 3 and node.children[3]:
             ret_val = self.visit(node.children[3])
             self.builder.ret(ret_val)
         else:
-            self.builder.ret_void()
+            # If no return statement and return type is void, add ret void
+            if isinstance(return_type, ir.VoidType):
+                self.builder.ret_void()
+            else:
+                # For non-void functions without return, add unreachable (error case)
+                self.builder.unreachable()
         
         # Reset builder to main function
         main_func = self.module.get_global('main')
         if main_func:
-            # Return to the main block
+            # Return to the main block if it exists
             self.builder.position_at_end(main_func.entry_basic_block)
         else:
             # Create a new builder without adding it to the module
             self.builder = IRBuilder(ir.Block(self.module.context, "dummy_block"))
+            func_name = node.value
+            return_type = self.visit(node.children[0])
+            params = node.children[1].children
+            
+            # Create parameter types
+            param_types = []
+            for param in params:
+                param_type = self.visit(param.children[0])
+                param_types.append(param_type)
+            
+            # Create function type
+            func_type = ir.FunctionType(return_type, param_types)
+            func = ir.Function(self.module, func_type, name=func_name)
+            self.functions[func_name] = func
+            
+            # Create entry block
+            entry_block = func.append_basic_block(name="entry")
+            self.builder = IRBuilder(entry_block)
+            
+            # Store parameters in symbol table
+            for i, param in enumerate(params):
+                param_name = param.value
+                param_var = func.args[i]
+                param_var.name = param_name
+                
+                # Allocate space for parameter
+                ptr = self.builder.alloca(param_types[i], name=param_name)
+                self.builder.store(param_var, ptr)
+                self.symbol_table[param_name] = ptr
+            
+            # Generate function body
+            self.visit(node.children[2])
+            
+            # Generate return statement if exists
+            if len(node.children) > 3 and node.children[3]:
+                ret_val = self.visit(node.children[3])
+                self.builder.ret(ret_val)
+            else:
+                self.builder.ret_void()
+            
+            # Reset builder to main function
+            main_func = self.module.get_global('main')
+            if main_func:
+                # Return to the main block
+                self.builder.position_at_end(main_func.entry_basic_block)
+            else:
+                # Create a new builder without adding it to the module
+                self.builder = IRBuilder(ir.Block(self.module.context, "dummy_block"))
             
     def visit_FunctionCall(self, node):
         func_name = node.value

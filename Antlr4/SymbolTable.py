@@ -16,9 +16,12 @@ class SymbolTable:
         """Define una variable en el ámbito actual."""
         self.ambitos[-1][name] = value
 
-    def define_function(self, name, params):
-        """Define una función y sus parámetros en el ámbito global."""
-        self.funciones[name] = params  
+    def define_function(self, name, params, return_type):
+        """Define una función con sus parámetros y tipo de retorno"""
+        self.funciones[name] = {
+            'params': params,
+            'return_type': return_type
+        }
         
     def define_function_params(self, nombre_funcion, args):
         """Define los parámetros de la función dentro de su ámbito local."""
@@ -46,3 +49,9 @@ class SymbolTable:
         if nombre_funcion in self.funciones:
             return self.funciones[nombre_funcion]
         return None
+    
+    def get_function_return_type(self, name):
+        """Obtiene el tipo de retorno de una función"""
+        if name in self.funciones:
+            return self.funciones[name]['return_type']
+        return None    

@@ -35,21 +35,32 @@ class ExprStatementVisitor(ExprFunctionsVisitor, ExprVariableVisitor):
             raise ValueError(f"Sentencia no reconocida: {ctx.getText()}")
 
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
-        """Handle if-elif-else statements with proper return value propagation"""
-        # Evaluate main if condition
-        if self._evaluate_condition(ctx.bloque_condicional(0)):
-            return self._execute_block(ctx.bloque_de_sentencia(0))
-        
-        # Evaluate elif conditions
+        """Handle if statements with proper return handling"""
+        # Main if
+        if self.visit(ctx.bloque_condicional(0)):
+            # Access the first block correctly
+            if isinstance(ctx.bloque_de_sentencia(), list):
+                return self.visit(ctx.bloque_de_sentencia()[0])
+            else:
+                return self.visit(ctx.bloque_de_sentencia())  # Single block case
+            
+        # Else ifs
         for i in range(1, len(ctx.bloque_condicional())):
-            if self._evaluate_condition(ctx.bloque_condicional(i)):
-                return self._execute_block(ctx.bloque_de_sentencia(i))
-        
-        # Evaluate else block if present
+            if self.visit(ctx.bloque_condicional(i)):
+                if isinstance(ctx.bloque_de_sentencia(), list):
+                    return self.visit(ctx.bloque_de_sentencia()[i])  # Access the blocks using indices correctly
+                else:
+                    return self.visit(ctx.bloque_de_sentencia())  # Single block case
+            
+        # Else
         if ctx.ELSE():
-            return self._execute_block(ctx.bloque_de_sentencia(-1))
-        
+            if isinstance(ctx.bloque_de_sentencia(), list):
+                return self.visit(ctx.bloque_de_sentencia()[-1])  # Access the last block for else
+            else:
+                return self.visit(ctx.bloque_de_sentencia())  # Single block case
+
         return None
+
 
     def _evaluate_condition(self, cond_block: ExprParser.Bloque_condicionalContext):
         """Helper to evaluate a condition block"""

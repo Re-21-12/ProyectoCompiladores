@@ -88,21 +88,31 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
     def exitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
         pass
 
-    # Al entrar a una función, creamos un nuevo ámbito
     def enterDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
-        # Ingresamos al ámbito de la función
-        self.symbol_table.enter_scope()
-
-        # Revisamos si existen parámetros
+        # Obtener nombre de la función
+        nombre_funcion = ctx.VARIABLE().getText()
+        
+        # Obtener tipo de retorno
+        tipo_retorno = ctx.tipo().getText()
+        
+        # Obtener parámetros
+        params = []
         if ctx.parametros():
-            # Extraemos los parámetros y los agregamos a la tabla de símbolos
             for param in ctx.parametros().parametro():
-                param_name = param.VARIABLE().getText()  # Nombre del parámetro
-                param_type = param.tipo().getText()  # Tipo del parámetro (dependiendo de la gramática)
-                
-                # Aquí agregamos el parámetro al símbolo con el tipo adecuado
-                self.symbol_table.define_variable(param_name, param_type)
-
+                param_name = param.VARIABLE().getText()
+                param_type = param.tipo().getText()
+                params.append((param_name, param_type))
+        
+        # Registrar función en la tabla de símbolos
+        self.symbol_table.define_function(nombre_funcion, params, tipo_retorno)
+        
+        # Ingresar al ámbito de la función
+        self.symbol_table.enter_scope()
+        
+        # Registrar parámetros como variables locales
+        for param_name, param_type in params:
+            self.symbol_table.define_variable(param_name, param_type)
+            
     # Al salir de una función, salimos del ámbito
     def exitDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
         self.symbol_table.exit_scope()
@@ -132,21 +142,18 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
 
         self.symbol_table.define_variable(nombre_variable, tipo)
 
-    def enterFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
+    def enterFuncion_llamada_expr(self, ctx: ExprParser.Funcion_llamada_exprContext):
         nombre_funcion = ctx.VARIABLE().getText()
-        argumentos = ctx.argumentos()
-
-        # Verificamos si la función está definida
-        if not self.symbol_table.get_variable(nombre_funcion):
-            self.report_error(ctx, f"Error: La función '{nombre_funcion}' no ha sido definida.")
+        
+        # Verificar si la función está definida
+        if not self.symbol_table.get_function_return_type(nombre_funcion):
+            self.report_error(ctx, f"Error: Función '{nombre_funcion}' no definida")
             return
-
-        # Aquí podrías agregar lógica adicional si deseas validar el número o tipo de argumentos
-        if argumentos:
-            args = argumentos.expr()
-            print(f"Llamada a función '{nombre_funcion}' con {len(args)} argumento(s).")
-        else:
-            print(f"Llamada a función '{nombre_funcion}' sin argumentos.")
+        
+        # Obtener tipo de retorno y establecerlo en el contexto
+        return_type = self.symbol_table.get_function_return_type(nombre_funcion)
+        ctx.type = return_type
+        print(f"Llamada a función '{nombre_funcion}' retorna: {return_type}")
 
     def exitFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
         pass
@@ -324,6 +331,11 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
             
             print(f"Expr operation: {left.getText()}({left_type}) {operator} {right.getText()}({right_type})")
 
+            if left_type == "desconocido":
+                left_type = self._infer_function_return_type(left)
+            if right_type == "desconocido":
+                right_type = self._infer_function_return_type(right)    
+
             # Verificación de variables no declaradas
             if left_type == "no_declarada" or right_type == "no_declarada":
                 undeclared = []
@@ -496,6 +508,25 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
             elif value.lower() in {'verdadero', 'falso'}:
                 return 'bool'
         return 'desconocido'    
+
+    def _get_operand_type(self, operand_name):
+        """Versión mejorada que maneja llamadas a funciones"""
+        if '(' in operand_name and operand_name.endswith(')'):
+            # Es una llamada a función
+            func_name = operand_name.split('(')[0]
+            return self.symbol_table.get_function_return_type(func_name) or "desconocido"
+        
+        # Resto de la lógica original...
+        if operand_name.startswith('(') and operand_name.endswith(')'):
+            return self._determine_literal_type(operand_name[1:-1])
+            
+        if operand_name.isidentifier():
+            var_info = self.symbol_table.get_variable(operand_name)
+            if var_info is None:
+                return "no_declarada"
+            return var_info
+        else:
+            return self._determine_literal_type(operand_name)    
     
     def _get_type_from_node(self, node):
         """Versión mejorada que maneja operaciones anidadas"""
