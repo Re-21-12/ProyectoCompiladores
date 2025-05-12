@@ -44,8 +44,9 @@ class ASTVisitor(ExprVisitor):
         conditions = []
         blocks = []
         
-        # Process all if/else if blocks
-        for cond_block in ctx.bloque_condicional():
+        # Process if and else if blocks
+        if_blocks = [ctx.bloque_condicional(0)] + list(ctx.bloque_condicional()[1:])
+        for cond_block in if_blocks:
             conditions.append(self.visit(cond_block.expr()))
             blocks.append(self.visit(cond_block.bloque_de_sentencia()))
         
@@ -92,7 +93,7 @@ class ASTVisitor(ExprVisitor):
         
         children = [return_type, ASTNode('Parameters', children=params), body]
         if return_expr:
-            children.append(return_expr)
+            children.append(ASTNode('ReturnStatement', children=[return_expr]))
         
         return ASTNode('FunctionDecl', children=children, value=name)
     
@@ -150,14 +151,18 @@ class ASTVisitor(ExprVisitor):
     
     def visitExpr(self, ctx):
         # Handle comparison operations
-        if ctx.MENOR_QUE() or ctx.MAYOR_QUE() or ctx.MENOR_IGUAL_QUE() or ctx.MAYOR_IGUAL_QUE() or ctx.IGUAL() or ctx.DIFERENTE():
+        if ctx.getChildCount() == 3 and (
+            ctx.MENOR_QUE() or ctx.MAYOR_QUE() or 
+            ctx.MENOR_IGUAL_QUE() or ctx.MAYOR_IGUAL_QUE() or 
+            ctx.IGUAL() or ctx.DIFERENTE()
+        ):
             left = self.visit(ctx.expr(0))
             right = self.visit(ctx.expr(1))
             op = ctx.getChild(1).getText()
             return ASTNode('BinaryOp', children=[left, right], value=op)
         
         # Handle addition/subtraction
-        if ctx.getChildCount() == 3 and (ctx.MAS() or ctx.MENOS()):
+        if ctx.getChildCount() >= 3 and (ctx.MAS() or ctx.MENOS()):
             left = self.visit(ctx.term(0))
             right = self.visit(ctx.term(1))
             op = ctx.getChild(1).getText()
@@ -168,7 +173,7 @@ class ASTVisitor(ExprVisitor):
     
     def visitTerm(self, ctx):
         # Handle multiplication/division
-        if ctx.getChildCount() == 3 and (ctx.MULTIPLICACION() or ctx.DIVISION()):
+        if ctx.getChildCount() >= 3 and (ctx.MULTIPLICACION() or ctx.DIVISION()):
             left = self.visit(ctx.factor(0))
             right = self.visit(ctx.factor(1))
             op = ctx.getChild(1).getText()
@@ -190,7 +195,7 @@ class ASTVisitor(ExprVisitor):
             return ASTNode('Variable', value=ctx.VARIABLE().getText())
         elif ctx.funcion_llamada_expr():
             return self.visit(ctx.funcion_llamada_expr())
-        elif ctx.PARENTESIS_INICIAL() and ctx.expr():
+        elif ctx.expr():
             return self.visit(ctx.expr())
         elif ctx.MENOS() and ctx.factor():
             operand = self.visit(ctx.factor())

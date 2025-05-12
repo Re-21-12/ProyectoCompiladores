@@ -1,0 +1,29 @@
+hola{
+
+        a entero = 3;
+        b entero = 1;
+        c entero = 2;
+
+    funcion bubbleSort entero(z entero,x entero,v entero){
+
+        if (z > x) {
+            tmp entero = z; 
+            z = x; 
+            x = tmp;
+        }else if (x > v) {
+            tmp entero = x; 
+            x = v; 
+            v = tmp;
+        }else {
+            tmp entero = z; 
+            a = x; 
+            x = tmp;
+        }
+
+
+        retorna 0;
+    }
+
+        bubbleSort(a, b, c);
+
+}

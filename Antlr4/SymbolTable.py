@@ -38,6 +38,12 @@ class SymbolTable:
                 return ambito[name]
         return None
     
+    def get_variable_in_current_scope(self, name):
+        """Busca la variable solo en el ámbito actual (más interno)."""
+        if not self.ambitos:
+            return None
+        return self.ambitos[-1].get(name, None)
+    
     def get_variable_type(self, name):
         """Devuelve el tipo de una variable si existe, de lo contrario, retorna None."""
         value = self.get_variable(name)
@@ -54,4 +60,4 @@ class SymbolTable:
         """Obtiene el tipo de retorno de una función"""
         if name in self.funciones:
             return self.funciones[name]['return_type']
-        return None    
+        return None

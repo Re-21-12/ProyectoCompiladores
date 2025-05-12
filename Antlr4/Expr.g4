@@ -18,7 +18,7 @@ sentencia:
   | mostrar 
   | declaracion_sin_asignacion
   | declaracion  
-  | actualizacion
+  | actualizacion PUNTO_Y_COMA 
   | declaracion_funcion
   | funcion_llamada
   | retorna

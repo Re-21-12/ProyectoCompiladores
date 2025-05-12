@@ -694,3 +694,51 @@ NameError: Variable 'x' no definida.
 2025-05-12 06:39:30,805 - ERROR - [31m✖ Error inesperado: 'Bloque_de_sentenciaContext' object is not subscriptable[0m
 2025-05-12 07:20:51,383 - ERROR - [31m✖ Error inesperado: ''[0m
 2025-05-12 07:25:03,633 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 09:16:57,935 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 09:25:17,227 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 09:26:13,997 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 09:29:14,333 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 09:41:18,426 - ERROR - [31m✖ Error de valor: Empty type at line 2, column 16[0m
+2025-05-12 09:42:54,468 - ERROR - [31m✖ Error en compilación: b'opt: outputs/output.ll:28:1: error: expected instruction opcode\n}\n^\n'[0m
+2025-05-12 09:43:58,490 - ERROR - [31m✖ Error de valor: Empty type at line 2, column 16[0m
+2025-05-12 10:01:37,712 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'type'[0m
+2025-05-12 10:17:07,598 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line 2: Error processing VariableDecl at line 2: 'NoneType' object has no attribute 'as_pointer'[0m
+2025-05-12 10:24:23,864 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing VariableDecl at line 2: 'NoneType' object has no attribute 'as_pointer'[0m
+2025-05-12 10:26:06,496 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing VariableDecl at line 2: 'NoneType' object has no attribute 'as_pointer'[0m
+2025-05-12 10:26:44,031 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing VariableDecl at line 2: 'NoneType' object has no attribute 'as_pointer'[0m
+2025-05-12 10:28:31,808 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line None: Error processing VariableDecl at line None: Error processing Type at line None: Type name cannot be empty at line None, column None[0m
+2025-05-12 11:47:43,652 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line None: Error processing VariableDecl at line None: Error processing Type at line None: Type name cannot be empty at line None, column None[0m
+2025-05-12 11:52:23,723 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line None: Error processing VariableDecl at line None: Error processing Type at line None: Type name cannot be empty at line None, column None[0m
+2025-05-12 11:53:04,157 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line None: Error processing VariableDecl at line None: Error processing Type at line None: Type name cannot be empty at line None, column None[0m
+2025-05-12 12:01:09,014 - ERROR - [31m✖ Error inesperado: 'SymbolTable' object has no attribute 'get_variable_in_current_scope'[0m
+2025-05-12 12:04:10,046 - ERROR - [31m✖ Error inesperado: 'PersonalizatedListener' object has no attribute '_infer_function_return_type'[0m
+2025-05-12 12:08:29,296 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line None: Error processing VariableDecl at line None: Error processing Type at line None: Type name cannot be empty at line None, column None[0m
+2025-05-12 12:16:09,112 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line None: Error processing VariableDecl at line None: Error processing Type at line None: Type name cannot be empty at line None, column None[0m
+2025-05-12 12:17:05,171 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line None: Error processing VariableDecl at line None: Error processing Type at line None: Type name cannot be empty at line None, column None[0m
+2025-05-12 12:18:18,195 - ERROR - [31m✖ Error de valor: Error processing Program at line None: Error processing MainFunction at line None: Error processing Block at line None: Error processing ForLoop at line None: Error processing VariableDecl at line None: Error processing Type at line None: Type name cannot be empty at line None, column None[0m
+2025-05-12 12:22:50,182 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 12:33:14,889 - ERROR - [31m✖ Error inesperado: 'IRBuilder' object has no attribute 'global_string'[0m
+2025-05-12 12:40:57,160 - ERROR - [31m✖ Error inesperado: 'IRBuilder' object has no attribute 'global_string_ptr'[0m
+2025-05-12 12:43:22,602 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 14:49:33,268 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 15:02:26,392 - ERROR - [31m✖ Error en compilación: b'opt: outputs/output.ll:28:1: error: expected instruction opcode\n}\n^\n'[0m
+2025-05-12 15:17:20,192 - ERROR - [31m✖ Error de valor: Type name cannot be empty[0m
+2025-05-12 15:17:40,348 - ERROR - [31m✖ Error en compilación: b'opt: outputs/output.ll:28:1: error: expected instruction opcode\n}\n^\n'[0m
+2025-05-12 15:17:51,873 - ERROR - [31m✖ Error inesperado: 'LLVMGenerator' object has no attribute 'generate_code'[0m
+2025-05-12 15:20:39,495 - ERROR - [31m✖ Error inesperado: 'LLVMGenerator' object has no attribute 'generate_code'[0m
+2025-05-12 15:21:58,093 - ERROR - [31m✖ Error inesperado: 'LLVMGenerator' object has no attribute 'module'[0m
+2025-05-12 15:39:54,807 - ERROR - [31m✖ Error inesperado: 'Module' object has no attribute 'declare_function'[0m
+2025-05-12 15:47:44,611 - ERROR - [31m✖ Error inesperado: 'Module' object has no attribute 'declare_function'[0m
+2025-05-12 15:48:01,687 - ERROR - [31m✖ Error inesperado: 'Module' object has no attribute 'declare_function'[0m
+2025-05-12 15:52:34,389 - ERROR - [31m✖ Error inesperado: printf[0m
+2025-05-12 16:03:21,561 - ERROR - [31m✖ Error inesperado: 'printf'[0m
+2025-05-12 16:03:29,984 - ERROR - [31m✖ Error inesperado: 'printf'[0m
+2025-05-12 16:05:29,761 - ERROR - [31m✖ Error en compilación: b"opt: warning: failed to infer data layout: unable to get target for 'unknown-unknown-unknown', see --version and --triple.\nopt: outputs/output.ll:25:1: error: expected instruction opcode\n}\n^\n"[0m
+2025-05-12 16:14:08,210 - ERROR - [31m✖ Error inesperado: 'Target' object has no attribute 'target_data'[0m
+2025-05-12 16:15:55,250 - ERROR - [31m✖ Error en compilación: b'opt: outputs/output.ll:25:1: error: expected instruction opcode\n}\n^\n'[0m
+2025-05-12 16:25:17,874 - ERROR - [31m✖ Error en compilación: b'opt: outputs/output.ll:25:1: error: expected instruction opcode\n}\n^\n'[0m
+2025-05-12 16:25:31,071 - ERROR - [31m✖ Error en compilación: b'opt: outputs/output.ll:25:1: error: expected instruction opcode\n}\n^\n'[0m
+2025-05-12 16:25:59,730 - ERROR - [31m✖ Error en compilación: b'opt: outputs/output.ll:25:1: error: expected instruction opcode\n}\n^\n'[0m
+2025-05-12 16:37:44,900 - ERROR - [31m✖ Error inesperado: Variable 'v' no definida[0m
+2025-05-12 16:38:26,611 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-12 16:57:56,589 - ERROR - [31m✖ Error inesperado: Función 'printf' no definida[0m
