@@ -654,3 +654,35 @@ NameError: Variable 'x' no definida.
 2025-05-05 01:16:42,424 - ERROR - [31m✖ Error inesperado: name 'os' is not defined[0m
 2025-05-11 06:53:48,891 - ERROR - [31m✖ Error inesperado: ''[0m
 2025-05-11 09:46:57,814 - ERROR - [31m✖ Error inesperado: 'PersonalizatedListener' object has no attribute 'reportAmbiguity'[0m
+2025-05-11 09:58:26,575 - ERROR - [31m✖ Error inesperado: 'PersonalizatedListener' object has no attribute 'reportAmbiguity'[0m
+2025-05-11 10:01:25,874 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 19:47:10,980 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:00:30,498 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:12:58,594 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:22:34,184 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:24:46,284 - ERROR - [31m✖ Error inesperado: name 'parametros' is not defined[0m
+2025-05-11 20:29:33,362 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:30:06,457 - ERROR - [31m✖ Error inesperado: Número incorrecto de argumentos para 'primerafuncion'[0m
+2025-05-11 20:37:27,090 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:39:59,360 - ERROR - [31m✖ Error inesperado: 'ArgumentosContext' object has no attribute 'argumento'[0m
+2025-05-11 20:40:18,341 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:42:20,940 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:45:40,495 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 20:47:28,527 - ERROR - [31m✖ Error inesperado: Número incorrecto de argumentos para 'primerafuncion'[0m
+2025-05-11 20:49:41,994 - ERROR - [31m✖ Error inesperado: object of type 'int' has no len()[0m
+2025-05-11 21:00:54,975 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-05-11 21:03:20,018 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-11 21:04:20,930 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-05-11 21:06:45,499 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-05-11 21:59:13,203 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-05-11 22:00:21,893 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-05-11 22:02:07,255 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-05-11 22:08:05,514 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-05-11 22:12:15,479 - ERROR - [31m✖ Error de valor: Sentencia no reconocida[0m
+2025-05-11 22:13:11,100 - ERROR - [31m✖ Error inesperado: 'Declaracion_funcionContext' object has no attribute 'expr'[0m
+2025-05-11 22:18:47,433 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-11 22:26:12,106 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-11 22:40:50,682 - ERROR - [31m✖ Error inesperado: 'ExprContext' object has no attribute 'PARENTESIS_INICIAL'[0m
+2025-05-11 22:41:07,548 - ERROR - [31m✖ Error inesperado: 'ExprContext' object has no attribute 'PARENTESIS_INICIAL'[0m
+2025-05-11 22:47:21,368 - ERROR - [31m✖ Error inesperado: list index out of range[0m
+2025-05-11 22:53:15,625 - ERROR - [31m✖ Error en compilación: b"opt: outputs/output.ll:27:7: error: value doesn't match function result type 'i32'\n  ret void\n      ^\n"[0m

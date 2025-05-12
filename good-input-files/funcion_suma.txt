@@ -1,5 +1,4 @@
-hola{
-    
+hola{ 
     funcion primerafuncion entero (numerouno entero, numerodos entero ){
             mostrar("holamnudo");
             retorna numerouno + numerodos;

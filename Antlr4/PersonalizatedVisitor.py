@@ -73,19 +73,19 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
         return super().visitBloque_condicional(ctx)
 
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
-        super().visitDeclaracion(ctx)
+        return super().visitDeclaracion(ctx)
 
     def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
-        super().visitReasignacion(ctx)
+        return super().visitReasignacion(ctx)
 
     def visitFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
         return super().visitChildren(ctx) 
 
     def visitRetorna(self, ctx:ExprParser.RetornaContext):
-        super().visitRetorna(ctx)
+        return super().visitRetorna(ctx)
 
     def visitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
-        super().visitChildren(ctx)
+        return super().visitChildren(ctx)
 
     # Visit a parse tree produced by ExprParser#mostrar.
     def visitMostrar(self, ctx:ExprParser.MostrarContext):

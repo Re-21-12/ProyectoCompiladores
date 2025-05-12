@@ -1,7 +1,7 @@
 from llvmlite import ir
 from llvmlite.ir import Constant, IRBuilder
 import llvmlite.binding as llvm
-from llvmlite.ir._utils import DuplicatedNameError  # Agrega esta importación
+
 class LLVMGenerator:
     def __init__(self):
         # Initialize LLVM components
@@ -12,6 +12,7 @@ class LLVMGenerator:
         self.functions = {}
         self.symbol_table = {}
         self.current_function = None
+        
         # Add printf declaration for print statements
         voidptr_ty = ir.IntType(8).as_pointer()
         printf_ty = ir.FunctionType(ir.IntType(32), [voidptr_ty], var_arg=True)
@@ -216,8 +217,8 @@ class LLVMGenerator:
         elif isinstance(value.type, ir.IntType) and value.type.width == 1:
             fmt_str = "%s\n\00"
             # Convert bool to string
-            true_str = "true\00"
-            false_str = "false\00"
+            true_str = "verdadero\00"
+            false_str = "falso\00"
             
             true_const = ir.Constant(ir.ArrayType(ir.IntType(8), len(true_str)), bytearray(true_str.encode('utf-8')))
             false_const = ir.Constant(ir.ArrayType(ir.IntType(8), len(false_str)), bytearray(false_str.encode('utf-8')))
@@ -398,17 +399,20 @@ class LLVMGenerator:
         # Generate function body
         self.visit(node.children[2])
         
-        # Generate return statement
-        ret_val = self.visit(node.children[3])
-        self.builder.ret(ret_val)
+        # Generate return statement if exists
+        if len(node.children) > 3 and node.children[3]:
+            ret_val = self.visit(node.children[3])
+            self.builder.ret(ret_val)
+        else:
+            self.builder.ret_void()
         
         # Reset builder to main function
         main_func = self.module.get_global('main')
         if main_func:
-            # Instead of creating an empty block, return to the main block
+            # Return to the main block
             self.builder.position_at_end(main_func.entry_basic_block)
         else:
-            # If no main function exists, just create a new builder without adding it to the module
+            # Create a new builder without adding it to the module
             self.builder = IRBuilder(ir.Block(self.module.context, "dummy_block"))
             
     def visit_FunctionCall(self, node):
@@ -425,6 +429,14 @@ class LLVMGenerator:
         # Parameters are handled in FunctionDecl visitor
         pass
     
-    def save_to_file(self, llvm_module, filename="output.ll"):
+    def visit_ReturnStatement(self, node):
+        if node.children:
+            return self.visit(node.children[0])
+        return None
+    
+    def visit_Empty(self, node):
+        return None
+    
+    def save_to_file(self, filename="output.ll"):
         with open(filename, "w") as f:
-            f.write(str(llvm_module))
+            f.write(str(self.module))

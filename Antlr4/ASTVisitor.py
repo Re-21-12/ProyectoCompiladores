@@ -1,4 +1,5 @@
 from ExprVisitor import ExprVisitor
+
 class ASTNode:
     def __init__(self, node_type, children=None, value=None, line=None, column=None):
         self.type = node_type
@@ -37,35 +38,35 @@ class ASTVisitor(ExprVisitor):
         return ASTNode('Block', children=statements)
     
     def visitSentencia(self, ctx):
-        # Get the first non-null child (declaration, if, while, etc.)
         return self.visit(ctx.getChild(0))
     
     def visitSentencia_if(self, ctx):
-        if_blocks = []
         conditions = []
+        blocks = []
         
         # Process all if/else if blocks
         for cond_block in ctx.bloque_condicional():
-            condition = self.visit(cond_block.expr())
-            block = self.visit(cond_block.bloque_de_sentencia())
-            conditions.append(condition)
-            if_blocks.append(block)
+            conditions.append(self.visit(cond_block.expr()))
+            blocks.append(self.visit(cond_block.bloque_de_sentencia()))
         
         # Process else block if exists
         else_block = None
         if ctx.ELSE():
             else_block = self.visit(ctx.bloque_de_sentencia())
         
-        return ASTNode('IfStatement', 
-                     children=[ASTNode('Conditions', children=conditions),
-                               ASTNode('IfBlocks', children=if_blocks),
-                               else_block] if else_block else 
-                               [ASTNode('Conditions', children=conditions),
-                                ASTNode('IfBlocks', children=if_blocks)])
+        nodes = [
+            ASTNode('Conditions', children=conditions),
+            ASTNode('Blocks', children=blocks)
+        ]
+        if else_block:
+            nodes.append(else_block)
+        
+        return ASTNode('IfStatement', children=nodes)
     
     def visitSentencia_while(self, ctx):
-        condition = self.visit(ctx.expr())
-        body = self.visit(ctx.bloque_de_sentencia())
+        cond_block = ctx.bloque_condicional()
+        condition = self.visit(cond_block.expr())
+        body = self.visit(cond_block.bloque_de_sentencia())
         return ASTNode('WhileLoop', children=[condition, body])
     
     def visitSentencia_for(self, ctx):
@@ -79,20 +80,21 @@ class ASTVisitor(ExprVisitor):
         name = ctx.VARIABLE().getText()
         return_type = self.visit(ctx.tipo())
         
-        # Process parameters
         params = []
         if ctx.parametros():
             params = [self.visit(param) for param in ctx.parametros().parametro()]
         
         body = self.visit(ctx.bloque())
-        return_expr = self.visit(ctx.expr())
         
-        return ASTNode('FunctionDecl',
-                      children=[return_type, 
-                                ASTNode('Parameters', children=params),
-                                body,
-                                return_expr],
-                      value=name)
+        return_expr = None
+        if ctx.retorna():
+            return_expr = self.visit(ctx.retorna().expr())
+        
+        children = [return_type, ASTNode('Parameters', children=params), body]
+        if return_expr:
+            children.append(return_expr)
+        
+        return ASTNode('FunctionDecl', children=children, value=name)
     
     def visitFuncion_llamada(self, ctx):
         name = ctx.VARIABLE().getText()
@@ -101,13 +103,20 @@ class ASTVisitor(ExprVisitor):
             args = [self.visit(arg) for arg in ctx.argumentos().expr()]
         return ASTNode('FunctionCall', children=args, value=name)
     
+    def visitFuncion_llamada_expr(self, ctx):
+        return self.visitFuncion_llamada(ctx)
+    
+    def visitRetorna(self, ctx):
+        expr = self.visit(ctx.expr())
+        return ASTNode('ReturnStatement', children=[expr])
+    
     def visitParametro(self, ctx):
         name = ctx.VARIABLE().getText()
         param_type = self.visit(ctx.tipo())
         return ASTNode('Parameter', children=[param_type], value=name)
     
     def visitBloque_condicional(self, ctx):
-        # This is handled directly in visitSentencia_if
+        # This is handled directly in visitSentencia_if and visitSentencia_while
         pass
     
     def visitBloque_de_sentencia(self, ctx):
@@ -122,6 +131,11 @@ class ASTVisitor(ExprVisitor):
         value = self.visit(ctx.expr())
         return ASTNode('VariableDecl', children=[var_type, value], value=var_name)
     
+    def visitDeclaracion_sin_asignacion(self, ctx):
+        var_name = ctx.VARIABLE().getText()
+        var_type = self.visit(ctx.tipo())
+        return ASTNode('VariableDecl', children=[var_type], value=var_name)
+    
     def visitReasignacion(self, ctx):
         var_name = ctx.VARIABLE().getText()
         value = self.visit(ctx.expr())
@@ -135,10 +149,7 @@ class ASTVisitor(ExprVisitor):
         return ASTNode('PrintStatement', children=[expr])
     
     def visitExpr(self, ctx):
-        if ctx.getChildCount() == 1:
-            return self.visit(ctx.term(0))
-        
-        # Handle comparisons
+        # Handle comparison operations
         if ctx.MENOR_QUE() or ctx.MAYOR_QUE() or ctx.MENOR_IGUAL_QUE() or ctx.MAYOR_IGUAL_QUE() or ctx.IGUAL() or ctx.DIFERENTE():
             left = self.visit(ctx.expr(0))
             right = self.visit(ctx.expr(1))
@@ -146,26 +157,25 @@ class ASTVisitor(ExprVisitor):
             return ASTNode('BinaryOp', children=[left, right], value=op)
         
         # Handle addition/subtraction
-        if ctx.MAS() or ctx.MENOS():
+        if ctx.getChildCount() == 3 and (ctx.MAS() or ctx.MENOS()):
             left = self.visit(ctx.term(0))
             right = self.visit(ctx.term(1))
             op = ctx.getChild(1).getText()
             return ASTNode('BinaryOp', children=[left, right], value=op)
         
-        return None
+        # Handle single term
+        return self.visit(ctx.term(0))
     
     def visitTerm(self, ctx):
-        if ctx.getChildCount() == 1:
-            return self.visit(ctx.factor(0))
-        
         # Handle multiplication/division
-        if ctx.MULTIPLICACION() or ctx.DIVISION():
+        if ctx.getChildCount() == 3 and (ctx.MULTIPLICACION() or ctx.DIVISION()):
             left = self.visit(ctx.factor(0))
             right = self.visit(ctx.factor(1))
             op = ctx.getChild(1).getText()
             return ASTNode('BinaryOp', children=[left, right], value=op)
         
-        return None
+        # Handle single factor
+        return self.visit(ctx.factor(0))
     
     def visitFactor(self, ctx):
         if ctx.NUMERO():
@@ -178,6 +188,8 @@ class ASTVisitor(ExprVisitor):
             return ASTNode('Literal', value=ctx.CADENA().getText()[1:-1])  # Remove quotes
         elif ctx.VARIABLE():
             return ASTNode('Variable', value=ctx.VARIABLE().getText())
+        elif ctx.funcion_llamada_expr():
+            return self.visit(ctx.funcion_llamada_expr())
         elif ctx.PARENTESIS_INICIAL() and ctx.expr():
             return self.visit(ctx.expr())
         elif ctx.MENOS() and ctx.factor():
@@ -188,7 +200,7 @@ class ASTVisitor(ExprVisitor):
             return ASTNode('UnaryOp', 
                          children=[ASTNode('Variable', value=ctx.VARIABLE().getText())],
                          value=op)
-        return None
+        return ASTNode('Empty')
     
     def visitActualizacion(self, ctx):
         var_name = ctx.VARIABLE().getText()
@@ -201,6 +213,6 @@ class ASTVisitor(ExprVisitor):
         elif ctx.expr():
             expr = self.visit(ctx.expr())
             return ASTNode('Assignment',
-                          children=[expr],
-                          value=var_name)
-        return None
+                         children=[expr],
+                         value=var_name)
+        return ASTNode('Empty')

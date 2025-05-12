@@ -6,8 +6,9 @@ else:
     from ExprParser import ExprParser
 from ExprListener import ExprListener
 from SymbolTable import SymbolTable
+from antlr4.error.ErrorListener import ErrorListener
 # This class defines a complete listener for a parse tree produced by ExprParser.
-class PersonalizatedListener(ExprListener, SymbolTable):
+class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.panic_mode = False  # Control para el modo pánico
@@ -105,6 +106,56 @@ class PersonalizatedListener(ExprListener, SymbolTable):
     # Al salir de una función, salimos del ámbito
     def exitDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
         self.symbol_table.exit_scope()
+
+
+    # Enter a parse tree produced by ExprParser#declaracion_sin_asignacion.
+    def enterDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
+        tipo = ctx.tipo().getText()
+        if tipo is None:
+            print(f"Error: Tipo desconocido '{tipo}' en la declaración.")
+            return
+        
+        variable = ctx.VARIABLE()
+        if variable is None:
+            print("Error: Variable no encontrada en la declaración.")
+            return
+        
+        nombre_variable = variable.getText()
+        if self.symbol_table.get_variable(nombre_variable) is not None:
+            print(f"Error: Variable '{nombre_variable}' ya declarada.")
+            return
+        
+        # Validar asignación si existe
+            
+        self.report_error(ctx, f"Warning: Variable '{nombre_variable}' declarada pero no instanciada.")
+
+
+        self.symbol_table.define_variable(nombre_variable, tipo)
+
+    def enterFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
+        nombre_funcion = ctx.VARIABLE().getText()
+        argumentos = ctx.argumentos()
+
+        # Verificamos si la función está definida
+        if not self.symbol_table.get_variable(nombre_funcion):
+            self.report_error(ctx, f"Error: La función '{nombre_funcion}' no ha sido definida.")
+            return
+
+        # Aquí podrías agregar lógica adicional si deseas validar el número o tipo de argumentos
+        if argumentos:
+            args = argumentos.expr()
+            print(f"Llamada a función '{nombre_funcion}' con {len(args)} argumento(s).")
+        else:
+            print(f"Llamada a función '{nombre_funcion}' sin argumentos.")
+
+    def exitFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
+        pass
+
+
+    # Exit a parse tree produced by ExprParser#declaracion_sin_asignacion.
+    def exitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
+        pass
+
 
     # Enter a parse tree produced by ExprParser#funcion_llamada.
     def enterFuncion_llamada(self, ctx: ExprParser.Funcion_llamadaContext):

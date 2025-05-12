@@ -142,7 +142,9 @@ def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_progr
         if optimize:
             opt_file = output_dir/"optimized.ll"
             subprocess.run(
-                ["opt", "-O3", "-S", str(ll_file), "-o", str(opt_file)],
+                ["opt", "-O2", "-S", str(ll_file), "-o", str(opt_file)],
+               # ["opt", "-O3", "-S", str(ll_file), "-o", str(opt_file)],
+                
                 check=True,
                 stderr=subprocess.PIPE
             )
