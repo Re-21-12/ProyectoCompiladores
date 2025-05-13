@@ -742,3 +742,10 @@ NameError: Variable 'x' no definida.
 2025-05-12 16:37:44,900 - ERROR - [31m✖ Error inesperado: Variable 'v' no definida[0m
 2025-05-12 16:38:26,611 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
 2025-05-12 16:57:56,589 - ERROR - [31m✖ Error inesperado: Función 'printf' no definida[0m
+2025-05-12 20:48:38,643 - ERROR - [31m✖ Error inesperado: Función 'printf' no definida[0m
+2025-05-12 20:50:25,374 - ERROR - [31m✖ Error inesperado: 'str' object has no attribute 'return_type'[0m
+2025-05-12 20:51:12,926 - ERROR - [31m✖ Error inesperado: 'str' object has no attribute 'return_type'[0m
+2025-05-12 21:00:33,328 - ERROR - [31m✖ Error inesperado: 'str' object has no attribute 'return_type'[0m
+2025-05-12 21:05:39,604 - ERROR - [31m✖ Error inesperado: 'Function' object has no attribute 'return_type'[0m
+2025-05-12 21:15:39,501 - ERROR - [31m✖ Error inesperado: 'Function' object has no attribute 'return_type'[0m
+2025-05-12 21:56:49,765 - ERROR - [31m✖ Error inesperado: [0m

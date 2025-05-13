@@ -71,6 +71,7 @@ class LLVMGenerator:
     def generate_code(self, ast_node):
         main_func_type = ir.FunctionType(self.int_type, [])
         main_func = ir.Function(self.module, main_func_type, name="main")
+        self.current_function = main_func  # Store the function object
         main_block = main_func.append_basic_block(name="entry")
         self.builder = IRBuilder(main_block)
         
@@ -236,8 +237,10 @@ class LLVMGenerator:
         self.builder.position_at_end(end_block)
         if not end_block.is_terminated:
             # Add a default terminator if needed
-            if self.current_function and self.current_function.return_type != self.void_type:
-                self.builder.ret(Constant(self.current_function.return_type, 0))
+            if (self.current_function and 
+                self.current_function.function_type.return_type != self.void_type):
+                self.builder.ret(Constant(self.current_function.function_type.return_type, 0))
+
 
     def _generate_while_loop(self, node):
         """Genera estructura while"""
@@ -317,7 +320,7 @@ class LLVMGenerator:
         old_builder = self.builder
         
         # Establecer nuevo contexto
-        self.current_function = func_name
+        self.current_function = func  # <- ESTA LÍNEA ES IMPORTANTE
         self.symbol_table = {}
         entry_block = func.append_basic_block("entry")
         self.builder = IRBuilder(entry_block)
@@ -333,11 +336,9 @@ class LLVMGenerator:
         self._generate_node(body_node)
         
         # Asegurar retorno si es necesario
-        if not entry_block.is_terminated and return_type != self.void_type:
-            if return_type == self.int_type:
-                self.builder.ret(Constant(self.int_type, 0))
-            elif return_type == self.double_type:
-                self.builder.ret(Constant(self.double_type, 0.0))
+        if not entry_block.is_terminated: 
+            if return_type != self.void_type:
+                self.builder.ret_void()
             else:
                 self.builder.ret(Constant(return_type, None))
         
@@ -371,12 +372,16 @@ class LLVMGenerator:
             return self.builder.call(func, args)
 
     def _generate_return(self, node):
-        """Genera retorno"""
-        if node.children:
+        if self.builder.block.is_terminated:
+            return  # Ya está terminado, no hacer nada
+
+        if len(node.children) > 0:
             ret_value = self._generate_expression(node.children[0])
-            self.builder.ret(ret_value)
         else:
-            self.builder.ret_void()
+            ret_value = None
+        
+        self.builder.ret(ret_value)
+
 
     def _generate_expression(self, node):
         """Genera código para expresiones"""

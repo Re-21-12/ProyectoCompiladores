@@ -267,3 +267,10 @@
 2025-05-12 16:25:31,046 - INFO - Análisis exitoso para good-input-files/permutacion-fuerza-bruta.txt
 2025-05-12 16:25:59,720 - INFO - Análisis exitoso para good-input-files/for_try.txt
 2025-05-12 16:46:34,624 - INFO - Análisis exitoso para good-input-files/first_try.txt
+2025-05-12 20:50:25,372 - INFO - Análisis exitoso para good-input-files/selection-sort.txt
+2025-05-12 20:51:12,926 - INFO - Análisis exitoso para good-input-files/selection-sort.txt
+2025-05-12 21:00:33,327 - INFO - Análisis exitoso para good-input-files/selection-sort.txt
+2025-05-12 21:05:39,603 - INFO - Análisis exitoso para good-input-files/selection-sort.txt
+2025-05-12 21:15:39,499 - INFO - Análisis exitoso para good-input-files/selection-sort.txt
+2025-05-12 21:56:49,764 - INFO - Análisis exitoso para good-input-files/selection-sort.txt
+2025-05-12 22:03:44,064 - INFO - Análisis exitoso para good-input-files/selection-sort.txt

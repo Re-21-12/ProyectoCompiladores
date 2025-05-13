@@ -21,10 +21,6 @@ hola
             z = tmp;
         }
 
-        printf(x);
-        printf(y);
-        printf(z);
-
         retorna 0;
     }
 
