@@ -25,42 +25,34 @@ class ExprStatementVisitor(ExprFunctionsVisitor, ExprVariableVisitor):
         elif ctx.funcion_llamada():
             return self.visitFuncion_llamada(ctx.funcion_llamada())
         elif ctx.retorna():
-            print("llego")
             return self.visitRetorna(ctx.retorna())
         elif ctx.declaracion_sin_asignacion():
             return self.visitDeclaracion_sin_asignacion(ctx.declaracion_sin_asignacion())
         else:
-            print(f"DEBUG: Unrecognized statement context: {dir(ctx)}")
-            print(f"DEBUG: Statement text: {ctx.getText()}")
             raise ValueError(f"Sentencia no reconocida: {ctx.getText()}")
 
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
         """Handle if statements with proper return handling"""
+        bloques = ctx.bloque_de_sentencia()
+        condiciones = ctx.bloque_condicional()
+
         # Main if
-        if self.visit(ctx.bloque_condicional(0)):
-            # Access the first block correctly
-            if isinstance(ctx.bloque_de_sentencia(), list):
-                return self.visit(ctx.bloque_de_sentencia()[0])
-            else:
-                return self.visit(ctx.bloque_de_sentencia())  # Single block case
-            
+        if self.visit(condiciones[0]):
+            if bloques and len(bloques) > 0:
+                return self.visit(bloques[0])
+
         # Else ifs
-        for i in range(1, len(ctx.bloque_condicional())):
-            if self.visit(ctx.bloque_condicional(i)):
-                if isinstance(ctx.bloque_de_sentencia(), list):
-                    return self.visit(ctx.bloque_de_sentencia()[i])  # Access the blocks using indices correctly
-                else:
-                    return self.visit(ctx.bloque_de_sentencia())  # Single block case
-            
+        for i in range(1, len(condiciones)):
+            if self.visit(condiciones[i]):
+                if bloques and len(bloques) > i:
+                    return self.visit(bloques[i])
+
         # Else
         if ctx.ELSE():
-            if isinstance(ctx.bloque_de_sentencia(), list):
-                return self.visit(ctx.bloque_de_sentencia()[-1])  # Access the last block for else
-            else:
-                return self.visit(ctx.bloque_de_sentencia())  # Single block case
+            if bloques and len(bloques) > len(condiciones):
+                return self.visit(bloques[-1])
 
         return None
-
 
     def _evaluate_condition(self, cond_block: ExprParser.Bloque_condicionalContext):
         """Helper to evaluate a condition block"""

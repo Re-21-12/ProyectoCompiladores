@@ -1,6 +1,5 @@
 import sys
 import logging
-# import traceback
 from antlr4 import *
 from antlr4.error.ErrorListener import ErrorListener
 from ExprLexer import ExprLexer
@@ -17,6 +16,11 @@ import subprocess
 from pathlib import Path
 import time
 import os
+from llvmlite import ir
+from llvmlite.ir import Constant, IRBuilder
+import llvmlite.binding as llvm
+import shutil
+import platform
 # Inicializar colorama
 init(autoreset=True)
 
@@ -126,90 +130,87 @@ def pretty_print_tree(tree, parser, indent=0, last=True, prefix=''):
 def check_extension(text):
     return text.endswith('.txt')
 
-def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_program=False):
-    """Compila código LLVM IR con opciones configurables"""
+def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_program=False, target_exe=False):
+    """Compila código LLVM IR a ejecutable (nativo o .exe para Windows)
+    
+    Args:
+        llvm_ir: Código LLVM IR
+        optimize: Aplica optimizaciones con `opt` si es True
+        generate_executable: Genera ejecutable si es True
+        run_program: Ejecuta el binario generado si es True
+        target_exe: Genera .exe para Windows si es True
+    """
     try:
         output_dir = Path("outputs")
         output_dir.mkdir(exist_ok=True)
         
-        # 1. Guardar el IR LLVM
-        ll_file = output_dir/"output.ll"
-        with open(ll_file, "w") as f:
+        ll_file = output_dir / "output.ll"
+        with open(ll_file, "w", encoding='utf-8') as f:
             f.write(str(llvm_ir))
         print(f"{Fore.GREEN}✔ IR LLVM guardado en: {ll_file}{Style.RESET_ALL}")
-        
-        # 2. Optimizar (si se solicita)
+
+        # Optimización
         if optimize:
-            opt_file = output_dir/"optimized.ll"
-            subprocess.run(
-                ["opt", "-O2", "-S", str(ll_file), "-o", str(opt_file)],
-               # ["opt", "-O3", "-S", str(ll_file), "-o", str(opt_file)],
-                
-                check=True,
-                stderr=subprocess.PIPE
-            )
-            print(f"{Fore.GREEN}✔ Versión optimizada en: {opt_file}{Style.RESET_ALL}")
-            ll_file = opt_file  # Usar el archivo optimizado para los siguientes pasos
-        
+            opt_file = output_dir / "optimized.ll"
+            opt_cmd = ["opt", "-O2", "-S", str(ll_file), "-o", str(opt_file)]
+            result = subprocess.run(opt_cmd, capture_output=True, text=True)
+            if result.stderr:
+                print(f"{Fore.YELLOW}⚠ Optimización: {result.stderr}{Style.RESET_ALL}")
+            print(f"{Fore.GREEN}✔ LLVM IR optimizado: {opt_file}{Style.RESET_ALL}")
+            ll_file = opt_file
+
         if not generate_executable:
             return True
-            
-        # 3. Compilar a código objeto
-        obj_file = output_dir/"output.o"
-        subprocess.run(
-            ["llc", "-filetype=obj", str(ll_file), "-o", str(obj_file)],
-            check=True,
-            stderr=subprocess.PIPE
-        )
-        print(f"{Fore.GREEN}✔ Objeto compilado en: {obj_file}{Style.RESET_ALL}")
-        
-        # 4. Generar ensamblador (opcional)
-        asm_file = output_dir/"output.s"
-        subprocess.run(
-            ["llc", "-march=x86-64", str(ll_file), "-o", str(asm_file)],
-            check=True,
-            stderr=subprocess.PIPE
-        )
-        print(f"{Fore.GREEN}✔ Ensamblador generado en: {asm_file}{Style.RESET_ALL}")
-        
-        # 5. Enlazar y crear ejecutable
-        exec_file = output_dir/"program"
-        subprocess.run(
-            ["clang", str(obj_file), "-o", str(exec_file)],
-            check=True,
-            stderr=subprocess.PIPE
-        )
-        print(f"{Fore.GREEN}✔ Ejecutable creado en: {exec_file}{Style.RESET_ALL}")
-        
-        if not run_program:
-            return True
-            
-        # 6. Ejecutar el programa
-        print(f"{Fore.CYAN}  EJECUCIÓN DEL PROGRAMA  ")
-        print(f"{Fore.YELLOW}═"*50 + Style.RESET_ALL)
-        
-        result = subprocess.run(
-            [str(exec_file)],
-            capture_output=True,
-            text=True
-        )
-        
-        if result.stdout:
-            print(f"{Fore.GREEN}Salida:\n{result.stdout}{Style.RESET_ALL}")
-        if result.stderr:
-            print(f"{Fore.RED}Errores:\n{result.stderr}{Style.RESET_ALL}")
-            
+
+        # Compilación a código objeto
+        obj_file = output_dir / "output.o"
+        llc_cmd = [
+            "llc",
+            "-filetype=obj",
+            "-O3",
+        ]
+
+        if target_exe:
+            llc_cmd.extend(["-mtriple=x86_64-pc-windows-gnu"])
+        llc_cmd.extend([str(ll_file), "-o", str(obj_file)])
+
+        print(f"{Fore.CYAN}[INFO] Ejecutando llc: {' '.join(llc_cmd)}{Style.RESET_ALL}")
+        result_llc = subprocess.run(llc_cmd, capture_output=True, text=True)
+        if result_llc.returncode != 0:
+            print(f"{Fore.RED}[ERROR] llc falló:\n{result_llc.stderr}{Style.RESET_ALL}")
+            return False
+        print(f"{Fore.GREEN}✔ Archivo objeto generado: {obj_file}{Style.RESET_ALL}")
+
+        # Enlazado
+        exe_file = output_dir / ("program.exe" if target_exe else "program")
+        if target_exe:
+            gcc_cmd = [
+                "x86_64-w64-mingw32-gcc",
+                str(obj_file),
+                "-o", str(exe_file)
+            ]
+        else:
+            gcc_cmd = [
+                "gcc",
+                str(obj_file),
+                "-o", str(exe_file)
+            ]
+
+        print(f"{Fore.CYAN}[INFO] Enlazando ejecutable: {' '.join(gcc_cmd)}{Style.RESET_ALL}")
+        result_gcc = subprocess.run(gcc_cmd, capture_output=True, text=True)
+        if result_gcc.returncode != 0:
+            print(f"{Fore.RED}[ERROR] Enlace fallido:\n{result_gcc.stderr}{Style.RESET_ALL}")
+            return False
+        print(f"{Fore.GREEN}✔ Ejecutable generado: {exe_file}{Style.RESET_ALL}")
+
+        if run_program:
+            print(f"{Fore.MAGENTA}▶ Ejecutando el programa:{Style.RESET_ALL}")
+            subprocess.run([str(exe_file)])
+
         return True
-        
-    except subprocess.CalledProcessError as e:
-        error_msg = f"{Fore.RED}✖ Error en compilación: {e.stderr}{Style.RESET_ALL}"
-        print(error_msg)
-        error_logger.error(error_msg)
-        return False
+
     except Exception as e:
-        error_msg = f"{Fore.RED}✖ Error inesperado: {str(e)}{Style.RESET_ALL}"
-        print(error_msg)
-        error_logger.error(error_msg)
+        print(f"{Fore.RED}[EXCEPCIÓN] {e}{Style.RESET_ALL}")
         return False
 
 def compile_existing_llvm(input_ll_file, optimize=False):
@@ -218,30 +219,32 @@ def compile_existing_llvm(input_ll_file, optimize=False):
         if not os.path.exists(input_ll_file):
             raise FileNotFoundError(f"Archivo {input_ll_file} no encontrado")
             
-        with open(input_ll_file, 'r') as f:
+        with open(input_ll_file, 'r', encoding='utf-8') as f:
             llvm_ir = f.read()
             
-        return compile_llvm_ir(llvm_ir, optimize=optimize, generate_executable=True, run_program=True)
+        return compile_llvm_ir(llvm_ir, optimize=optimize, generate_executable=True, run_program=False)
     except Exception as e:
         print(f"{Fore.RED}✖ Error al procesar archivo .ll: {str(e)}{Style.RESET_ALL}")
         return False
+
 
 def convert_to_exe(input_file):
     """Convierte un binario a .exe (simulado)"""
     try:
         if not os.path.exists(input_file):
             raise FileNotFoundError(f"Archivo {input_file} no encontrado")
-            
+
         output_dir = Path("outputs")
-        exec_file = output_dir/"program.exe"
-        
+        output_dir.mkdir(exist_ok=True)  # Crear el directorio si no existe
+
+        exec_file = output_dir / "program.exe"
+
         # En sistemas Unix, simplemente copiamos el archivo (simulación)
-        # En Windows, podrías agregar lógica adicional si es necesario
-        import shutil
         shutil.copy(input_file, exec_file)
-        
+
         print(f"{Fore.GREEN}✔ Ejecutable Windows creado en: {exec_file}{Style.RESET_ALL}")
         return True
+
     except Exception as e:
         print(f"{Fore.RED}✖ Error al convertir a .exe: {str(e)}{Style.RESET_ALL}")
         return False
@@ -291,6 +294,7 @@ def show_main_menu():
     options = [
         "Ejecutar todo el flujo completo y compilar el binario con optimización (opt)",
         "Ejecutar todo el flujo completo y compilar el binario sin optimización",
+        "Ejecutar todo el flujo completo y compilar un .exe optimizado para Windows",
         "Ejecutar únicamente hasta la generación de código intermedio .ll",
         "Tomar como entrada un .ll optimizado manualmente y compilar el binario",
         "Convertir el binario a .exe",
@@ -321,7 +325,7 @@ def process_input_file(path_file, timer):
     
     # ========== FASE 2: Análisis léxico ==========
     timer.start_phase("Análisis léxico")
-    input_stream = FileStream(path_file)
+    input_stream = FileStream(path_file, encoding='utf-8')
     lexer = ExprLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
     timer.end_phase()
@@ -371,7 +375,7 @@ def process_input_file(path_file, timer):
     llvm_code = llvm_generator.generate_code(ast_result)
     timer.end_phase()
     
-    with open("outputs/output.ll", "w") as f:
+    with open("outputs/output.ll", "w", encoding='utf-8') as f:
         f.write(str(llvm_code))
     print(f"IR generado y guardado en: outputs/output.ll")
     logging.info("Código LLVM generado:")
@@ -403,7 +407,7 @@ def main():
                 # ========== FASE 8: Compilación con optimización ==========
                 timer.start_phase("Compilación con optimización")
                 logging.info("Compilando con optimización...")
-                if not compile_llvm_ir(llvm_code, optimize=True, generate_executable=True, run_program=True):
+                if not compile_llvm_ir(llvm_code, optimize=True, generate_executable=True, run_program=False):
                     print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
                 timer.end_phase()
                 
@@ -413,29 +417,40 @@ def main():
                 # ========== FASE 8: Compilación sin optimización ==========
                 timer.start_phase("Compilación sin optimización")
                 logging.info("Compilando sin optimización...")
-                if not compile_llvm_ir(llvm_code, optimize=False, generate_executable=True, run_program=True):
+                if not compile_llvm_ir(llvm_code, optimize=False, generate_executable=True, run_program=False):
                     print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
                 timer.end_phase()
                 
-            elif option == 3:  # Solo generación de LLVM
+            elif option == 3:  # Flujo completo con optimización para .exe
+                llvm_code = process_input_file(path_file, timer)
+                
+                # ========== FASE 8: Compilación con optimización para Windows ==========
+                timer.start_phase("Compilación para .exe optimizado")
+                logging.info("Compilando .exe optimizado...")
+                if not compile_llvm_ir(llvm_code, optimize=True, generate_executable=True, 
+                                      run_program=False, target_exe=True):
+                    print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
+                timer.end_phase()
+                
+            elif option == 4:  # Solo generación de LLVM
                 llvm_code = process_input_file(path_file, timer)
                 print(f"{Fore.GREEN}✔ Proceso completado hasta generación de LLVM{Style.RESET_ALL}")
                 
-            elif option == 4:  # Compilar .ll existente
+            elif option == 5:  # Compilar .ll existente
                 ll_file = input(f"{Fore.GREEN}Ingrese la ruta del archivo .ll optimizado: {Style.RESET_ALL}")
                 timer.start_phase("Compilación de .ll optimizado")
                 if not compile_existing_llvm(ll_file, optimize=True):
                     print(f"{Fore.RED}✖ Fallo en la compilación{Style.RESET_ALL}")
                 timer.end_phase()
                 
-            elif option == 5:  # Convertir a .exe
+            elif option == 6:  # Convertir a .exe
                 bin_file = input(f"{Fore.GREEN}Ingrese la ruta del binario a convertir: {Style.RESET_ALL}")
                 timer.start_phase("Conversión a .exe")
                 if not convert_to_exe(bin_file):
                     print(f"{Fore.RED}✖ Fallo en la conversión{Style.RESET_ALL}")
                 timer.end_phase()
                 
-            elif option == 6:  # Salir
+            elif option == 7:  # Salir
                 print(f"{Fore.YELLOW}Saliendo del programa...{Style.RESET_ALL}")
                 break
                 

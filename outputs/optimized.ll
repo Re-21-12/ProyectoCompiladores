@@ -9,10 +9,4 @@ entry:
   ret i32 0
 }
 
-; Function Attrs: mustprogress nofree norecurse nosync nounwind willreturn memory(none)
-define noundef i32 @selectionSort(i32 %.1, i32 %.2, i32 %.3) local_unnamed_addr #0 {
-entry:
-  ret i32 0
-}
-
 attributes #0 = { mustprogress nofree norecurse nosync nounwind willreturn memory(none) }

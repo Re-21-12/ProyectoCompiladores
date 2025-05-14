@@ -2,12 +2,42 @@ from ExprParser import ExprParser
 from visitors.ExprBaseVisitor import *
 
 class ExprVariableVisitor(ExprBaseVisitor):
-
+    def __init__(self):
+        super().__init__()
     # Visit a parse tree produced by ExprParser#declaracion_sin_asignacion.
     def visitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
 
         return self.visitChildren(ctx)
 
+    def define_function(self, name, params, return_type, body):
+        info = {
+            'params': params,
+            'return_type': return_type,
+            'body': body
+        }
+        super().define_function(name, info)
+
+    def call_function(self, name, args):
+        func = self.get_function(name)
+
+        if len(args) != len(func['params']):
+            raise ValueError(f"Argumentos incorrectos para '{name}'. Esperaba {len(func['params'])}, obtuvo {len(args)}")
+
+        self.enter_scope()  # nuevo ámbito
+
+        # Asignar valores a los parámetros
+        for (param_name, _), arg_value in zip(func['params'], args):
+            self.define_variable(param_name, arg_value)
+
+        result = None
+        try:
+            for stmt in func['body']:
+                result = self.visit(stmt)
+        except ReturnException as ret:
+            result = ret.value
+
+        self.exit_scope()
+        return result
 
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         var_name = ctx.VARIABLE().getText()

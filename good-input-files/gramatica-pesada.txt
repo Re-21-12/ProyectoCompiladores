@@ -1,83 +1,25 @@
 hola {
-    entero contador = 0;
-    decimal precio = 99.99;
-    bool activo = verdadero;
-    cadena mensaje = "Bienvenido al programa";
-    
-    mostrar(mensaje);
-    
-    if (contador < 10) {
-        contador++;
-        mostrar(contador);
-    } else if (contador == 5) {
-        precio = precio * 2;
-    } else {
-        activo = falso;
+    primernumero entero = 0;
+    cadena holamundo = "Holamundo";
+
+
+    for (i entero = 0; i < 10; i++) {
+    mostrar(i);
+}
+    for (y entero = 0; y < 10; y++) {
+    mostrar(y);
+}
+
+    while(primernumero < 10){
+        primernumero++;
+        mostrar(primernumero);
     }
-    
-    while (activo == verdadero && contador > 0) {
-        contador = contador - 1;
-        if (contador == 5) {
-            break;
-        }
+
+    funcion funcionprueba entero (primerparametro entero, segundoparametro entero){
+        mostrar(3*7);
+        return primernumero + segundoparametro;
     }
-    
-    for (entero i = 0; i < 10; i++) {
-        mostrar(i);
-        decimal resultado = i * precio;
-        mostrar(resultado);
-    }
-    
-    funcion entero suma(entero a, entero b) {
-        entero resultado = a + b;
-        retorna resultado;
-    }
-    
-    funcion decimal calcularTotal(decimal precio, entero cantidad) {
-        decimal total = precio * cantidad;
-        if (total > 100) {
-            total = total * 0.9;
-        }
-        retorna total;
-    }
-    
-    entero x = suma(5, 3);
-    decimal totalCompra = calcularTotal(25.5, 4);
-    
-    mostrar(x);
-    mostrar(totalCompra);
-    
-    contador = contador + x;
-    mostrar(contador);
-    
-    bool condicion1 = verdadero;
-    bool condicion2 = falso;
-    
-    if (condicion1 != condicion2) {
-        cadena comparacion = "Las condiciones son diferentes";
-        mostrar(comparacion);
-    }
-    
-    for (entero j = 10; j >= 0; j--) {
-        if (j % 2 == 0) {
-            mostrar("Par:");
-            mostrar(j);
-        } else {
-            mostrar("Impar:");
-            mostrar(j);
-        }
-    }
-    
-    entero a = 15;
-    entero b = 30;
-    
-    while (a < b) {
-        a++;
-        b = b - 2;
-        mostrar(a);
-        mostrar(b);
-    }
-    
-    cadena despedida = "Fin del programa";
-    mostrar(despedida);
+
+    funcionprueba(3,7);
+
 }

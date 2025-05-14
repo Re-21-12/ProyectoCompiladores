@@ -1,0 +1,28 @@
+hola
+{
+
+    a entero = 3;
+    b entero = 1;
+    c entero = 2;
+
+    funcion insertionSort entero(x entero, y entero, z entero){
+
+        if (y < x) {
+            tmp entero = x;
+            x = y;
+            y = tmp;
+        }else if (z < x) {
+            tmp entero = x;
+            x = z;
+            z = tmp;
+        } else if (z < y) {
+            tmp entero = y;
+            y = z;
+            z = tmp;
+        }
+
+        retorna 0;
+    }
+
+    insertionSort(a, b, c);
+}

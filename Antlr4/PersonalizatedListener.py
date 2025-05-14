@@ -9,6 +9,10 @@ from SymbolTable import SymbolTable
 from antlr4.error.ErrorListener import ErrorListener
 # This class defines a complete listener for a parse tree produced by ExprParser.
 class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
+    
+    letras = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+    digitos = "0123456789"
+    
     def __init__(self):
         self.symbol_table = SymbolTable()
         self.panic_mode = False  # Control para el modo pánico
@@ -249,7 +253,14 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
         if self.symbol_table.get_variable(nombre_variable) is None:
             self.report_error(ctx,f"Error: Variable '{nombre_variable}' no declarada antes de su uso.")
             return
-  
+        if ctx.expr():
+            valor = ctx.expr().getText()
+            if (valor.startswith('"') and valor.endswith('"')) or (valor.startswith("'") and valor.endswith("'")):
+                contenido = valor.strip('"\'').strip()
+                if not self.validar_cadena_valida(contenido):
+                    corregido = self.limpiar_cadena(contenido)
+                    self.report_error(ctx, f"Advertencia: La cadena '{contenido}' contiene caracteres no válidos. Se corrigió a '{corregido}'")
+
     # Exit a parse tree produced by ExprParser#reasignacion.
     def exitReasignacion(self, ctx: ExprParser.ReasignacionContext):
         pass
@@ -509,6 +520,11 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
                 return 'bool'
         return 'desconocido'    
 
+    def limpiar_cadena(self, cadena):
+        """Limpia una cadena reemplazando caracteres inválidos"""
+        caracteres_permitidos = self.letras + self.digitos + " .,;:!?¿¡-_"
+        return ''.join(c if c in caracteres_permitidos else '.' for c in cadena)
+
     def _get_operand_type(self, operand_name):
         """Versión mejorada que maneja llamadas a funciones"""
         if '(' in operand_name and operand_name.endswith(')'):
@@ -547,6 +563,11 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
         
         # Para nodos terminales
         return self._get_operand_type(node.getText())
+    def validar_cadena_valida(self, cadena: str):
+        """Valida que la cadena contenga al menos un carácter válido"""
+        # Permitimos letras, números, espacios y algunos caracteres especiales comunes
+        caracteres_validos = self.letras + self.digitos + " .,;:!?¿¡-_@#$%&()"
+        return any(c in caracteres_validos for c in cadena)
 
     def report_error(self, ctx, message):
         line = ctx.start.line if ctx.start else "unknown"

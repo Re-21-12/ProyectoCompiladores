@@ -170,35 +170,40 @@ class LLVMGenerator:
         }
         
         return func
-
+    
     def _generate_print(self, expr_node):
-        """Genera llamada a printf"""
         expr_value = self._generate_expression(expr_node)
         expr_type = self._get_expression_type(expr_node)
-        
-        # Obtener la función printf
+
         try:
             printf = self.module.get_global("printf")
         except KeyError:
-            # Si no existe, declararla
             printf_type = ir.FunctionType(self.int_type, [self.char_ptr_type], var_arg=True)
             printf = ir.Function(self.module, printf_type, name="printf")
-        
-        # Seleccionar formato según el tipo
+
+        # Seleccionar el formato adecuado
         if isinstance(expr_type, ir.IntType) and expr_type.width == 32:
-            fmt = ir.Constant(ir.ArrayType(ir.IntType(8), 4), bytearray(b"%d\n\00"))
+            fmt_str = "%d\n\0"
         elif isinstance(expr_type, ir.DoubleType):
-            fmt = ir.Constant(ir.ArrayType(ir.IntType(8), 4), bytearray(b"%f\n\00"))
+            fmt_str = "%f\n\0"
         else:
-            fmt = ir.Constant(ir.ArrayType(ir.IntType(8), 4), bytearray(b"%s\n\00"))
-            
-        global_fmt = ir.GlobalVariable(self.module, fmt.type, name=f"fmt.{len(self.string_constants)}")
-        global_fmt.linkage = "internal"
-        global_fmt.global_constant = True
-        global_fmt.initializer = fmt
-        
+            fmt_str = "%s\n\0"
+
+        # Si ya existe esta cadena de formato, reutilizarla
+        if fmt_str not in self.string_constants:
+            byte_array = bytearray(fmt_str.encode("utf8"))
+            fmt = ir.Constant(ir.ArrayType(ir.IntType(8), len(byte_array)), byte_array)
+            global_fmt = ir.GlobalVariable(self.module, fmt.type, name=f"fmt.{len(self.string_constants)}")
+            global_fmt.linkage = "internal"
+            global_fmt.global_constant = True
+            global_fmt.initializer = fmt
+            self.string_constants[fmt_str] = global_fmt
+        else:
+            global_fmt = self.string_constants[fmt_str]
+
         fmt_ptr = self.builder.bitcast(global_fmt, self.char_ptr_type)
         self.builder.call(printf, [fmt_ptr, expr_value])
+
     def _generate_if_statement(self, node):
         """Genera estructura if-else"""
         conditions = node.children[0].children
@@ -337,10 +342,16 @@ class LLVMGenerator:
         
         # Asegurar retorno si es necesario
         if not entry_block.is_terminated: 
-            if return_type != self.void_type:
+            if return_type == self.int_type:
+                self.builder.ret(Constant(self.int_type, 0))
+            elif return_type == self.double_type:
+                self.builder.ret(Constant(self.double_type, 0.0))
+            elif return_type == self.bool_type:
+                self.builder.ret(Constant(self.bool_type, 0))            
+            elif return_type != self.void_type:
                 self.builder.ret_void()
             else:
-                self.builder.ret(Constant(return_type, None))
+                raise Exception(f"Unhandled return type in function '{func_name}'")
         
         # Restaurar contexto
         self.current_function = old_function

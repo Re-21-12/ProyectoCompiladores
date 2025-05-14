@@ -2,7 +2,7 @@ hola{
     x entero = 0;
     y entero = 10; 
     while (x < y){
-        x++;
+        x = x + 1;
         mostrar(x);
     }
 }

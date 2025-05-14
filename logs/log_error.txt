@@ -749,3 +749,26 @@ NameError: Variable 'x' no definida.
 2025-05-12 21:05:39,604 - ERROR - [31m✖ Error inesperado: 'Function' object has no attribute 'return_type'[0m
 2025-05-12 21:15:39,501 - ERROR - [31m✖ Error inesperado: 'Function' object has no attribute 'return_type'[0m
 2025-05-12 21:56:49,765 - ERROR - [31m✖ Error inesperado: [0m
+2025-05-12 22:13:06,927 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-12 23:09:14,019 - ERROR - [31m✖ Error en compilación: b'opt: outputs/output.ll:25:1: error: expected instruction opcode\n}\n^\n'[0m
+2025-05-12 23:21:50,298 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-12 23:31:33,467 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-13 00:26:15,465 - ERROR - [31m✖ Error inesperado: [0m
+2025-05-13 21:28:30,555 - ERROR - [31m✖ Error en compilación: opt: Unknown command line argument '-std-compile-opts'.  Try: 'opt --help'
+opt: Did you mean '--loadstore-opt'?
+opt: Unknown command line argument '-constprop'.  Try: 'opt --help'
+opt: Did you mean '--consthoist'?
+[0m
+2025-05-13 21:34:42,187 - ERROR - [31m✖ Error en compilación: opt: Unknown command line argument '-std-compile-opts'.  Try: 'opt --help'
+opt: Did you mean '--loadstore-opt'?
+opt: Unknown command line argument '-constprop'.  Try: 'opt --help'
+opt: Did you mean '--consthoist'?
+[0m
+2025-05-13 21:41:22,502 - ERROR - [31m✖ Error en compilación: b"/usr/bin/ld: no se reconoce la opci\xc3\xb3n `--subsystem'\n/usr/bin/ld: use la opci\xc3\xb3n --help para informaci\xc3\xb3n de modo de empleo\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\n"[0m
+2025-05-13 22:23:29,214 - ERROR - [31m✖ Error en compilación: b"outputs/output.o: in function `main':\noutput.ll:(.text+0x2): relocation truncated to fit: R_X86_64_32 against `.rodata'\ncollect2: error: ld returned 1 exit status\n"[0m
+2025-05-14 06:47:37,107 - ERROR - [31m✖ Error de valor: 'ascii' codec can't decode byte 0xd0 in position 31: ordinal not in range(128)[0m
+2025-05-14 07:06:32,703 - ERROR - [31m✖ Error de valor: 'ascii' codec can't decode byte 0xd0 in position 31: ordinal not in range(128)[0m
+2025-05-14 07:19:47,552 - ERROR - [31m✖ Error de valor: 'ascii' codec can't decode byte 0xd0 in position 31: ordinal not in range(128)[0m
+2025-05-14 07:23:14,739 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-14 12:47:06,783 - ERROR - [31m✖ Error inesperado: fmt.0[0m
+2025-05-14 12:53:43,846 - ERROR - [31m✖ Error de valor: Sentencia no reconocida: [0m
