@@ -32,81 +32,91 @@ class ExprStatementVisitor(ExprFunctionsVisitor, ExprVariableVisitor):
             raise ValueError(f"Sentencia no reconocida: {ctx.getText()}")
 
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
-        """Handle if statements with proper return handling"""
         bloques = ctx.bloque_de_sentencia()
         condiciones = ctx.bloque_condicional()
 
         # Main if
         if self.visit(condiciones[0]):
             if bloques and len(bloques) > 0:
-                return self.visit(bloques[0])
+                self.enter_scope()
+                result = self.visit(bloques[0])
+                self.exit_scope()
+                return result
 
         # Else ifs
         for i in range(1, len(condiciones)):
             if self.visit(condiciones[i]):
                 if bloques and len(bloques) > i:
-                    return self.visit(bloques[i])
+                    self.enter_scope()
+                    result = self.visit(bloques[i])
+                    self.exit_scope()
+                    return result
 
         # Else
         if ctx.ELSE():
             if bloques and len(bloques) > len(condiciones):
-                return self.visit(bloques[-1])
+                self.enter_scope()
+                result = self.visit(bloques[-1])
+                self.exit_scope()
+                return result
 
         return None
 
+    def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
+        cond_block = ctx.bloque_condicional()
+        while self._evaluate_condition(cond_block):
+            self.enter_scope()
+            result = self._execute_block(cond_block.bloque_de_sentencia())
+            self.exit_scope()
+            if self.should_return:
+                return result
+
+    def visitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
+        # Scope para todo el for
+        self.enter_scope()
+        self.visit(ctx.declaracion())
+
+        while self.visit(ctx.expr()):
+            self.enter_scope()
+            result = self._execute_block(ctx.bloque_de_sentencia())
+            self.exit_scope()
+            if self.should_return:
+                self.exit_scope()
+                return result
+            self.visit(ctx.actualizacion())
+
+        self.exit_scope()
+
+    def visitMostrar(self, ctx: ExprParser.MostrarContext):
+        value = self.visit(ctx.expr())
+        print(value)
+
+    def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
+        if ctx.sentencia():
+            return self.visit(ctx.sentencia())
+        else:
+            return self.visit(ctx.bloque())
+
+    def visitRetorna(self, ctx: ExprParser.RetornaContext):
+        return super().visitRetorna(ctx)
+
     def _evaluate_condition(self, cond_block: ExprParser.Bloque_condicionalContext):
-        """Helper to evaluate a condition block"""
         return self.visit(cond_block.expr())
 
     def _execute_block(self, block: ExprParser.Bloque_de_sentenciaContext):
-        """Helper to execute a block and handle return statements"""
         result = self.visit(block)
         return result if self.should_return else None
 
-    def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
-        """Execute statements in a block (either single statement or {block})"""
-        if ctx.sentencia():  # Single statement
-            return self.visit(ctx.sentencia())
-        else:  # Block with {}
-            return self.visit(ctx.bloque())
-
-    def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
-        """Execute while loop with proper break on return"""
-        cond_block = ctx.bloque_condicional()
-        while self._evaluate_condition(cond_block):
-            result = self._execute_block(cond_block.bloque_de_sentencia())
-            if self.should_return:
-                return result
-
-    def visitRetorna(self, ctx:ExprParser.RetornaContext):
-        return super().visitRetorna(ctx)
-
-    def visitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        """Execute for loop with proper initialization, condition, and update"""
-        # Initialization
-        self.visit(ctx.declaracion())
-        
-        # Loop while condition is true
-        while self.visit(ctx.expr()):
-            # Execute body
-            result = self._execute_block(ctx.bloque_de_sentencia())
-            if self.should_return:
-                return result
-            
-            # Update step
-            self.visit(ctx.actualizacion())
-
-    def visitMostrar(self, ctx: ExprParser.MostrarContext):
-        """Handle print statement"""
-        value = self.visit(ctx.expr())
-        print(value)  # Simple print without debug prefix
-
-    # Inherited methods with proper type hints
+    # Inherited methods with proper cleanup
     def visitDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
         return super().visitDeclaracion_funcion(ctx)
 
     def visitFuncion_llamada(self, ctx: ExprParser.Funcion_llamadaContext):
-        return super().visitFuncion_llamada(ctx)
+        # Scope de ejecución de la función ya se maneja en el visitor base
+        result = super().visitFuncion_llamada(ctx)
+        self.should_return = False
+        self.return_value = None
+        return result
 
     def visitParametros(self, ctx: ExprParser.ParametrosContext):
         return super().visitParametros(ctx)

@@ -9,5 +9,7 @@ define i32 @"main"()
 entry:
   %"primernumero" = alloca i32
   store i32 0, i32* %"primernumero"
+  %"segundo" = alloca i32
+  store i32 0, i32* %"segundo"
   ret i32 0
 }

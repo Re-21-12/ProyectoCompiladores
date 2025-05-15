@@ -1,25 +1,63 @@
 hola {
-    primernumero entero = 0;
-    cadena holamundo = "Holamundo";
+    contador entero = 0;
+    suma entero = 0;
+    mensaje cadena = "Comenzando algoritmo";
+    es_valido bool = verdadero;
+    es_admin bool = falso;
 
+    mostrar(mensaje);
 
-    for (i entero = 0; i < 10; i++) {
-    mostrar(i);
-}
-    for (y entero = 0; y < 10; y++) {
-    mostrar(y);
-}
+    if(es_valido){
+        mensaje cadena = "Usuario válido";
+        mostrar(mensaje);
 
-    while(primernumero < 10){
-        primernumero++;
-        mostrar(primernumero);
+        if(es_admin){
+            mostrar("Bienvenido administrador");
+        } else {
+            mostrar("Acceso limitado");
+        }
     }
 
-    funcion funcionprueba entero (primerparametro entero, segundoparametro entero){
-        mostrar(3*7);
-        return primernumero + segundoparametro;
+    for (i entero = 0; i < 5; i++) {
+        suma = suma + i;
+        mostrar(suma);
     }
 
-    funcionprueba(3,7);
+    while(suma < 20){
+        suma++;
+        mostrar(suma);
+    }
 
+    funcion calcularMultiplicacion entero (a entero, b entero){
+        resultado entero = a * b;
+        mostrar(resultado);
+        retorna resultado;
+    }
+
+    funcion calcularPromedio decimal (total decimal, cantidad decimal){
+        promedio decimal = total / cantidad;
+        mostrar(promedio);
+        retorna promedio;
+    }
+
+    funcion esPar bool (numero entero){
+        if((numero % 2) == 0){
+            retorna verdadero;
+        } else {
+            retorna falso;
+        }
+    }
+
+    resultado entero = calcularMultiplicacion(4, 6);
+    mostrar(resultado);
+
+    promedio_final decimal = calcularPromedio(35.5, 5.0);
+    mostrar(promedio_final);
+
+    par bool = esPar(resultado);
+    if(par){
+        mostrar("El resultado es par");
+    } else {
+        mostrar("El resultado es impar");
+    }
 }

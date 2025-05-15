@@ -4,10 +4,12 @@ from visitors.ExprBaseVisitor import *
 class ExprVariableVisitor(ExprBaseVisitor):
     def __init__(self):
         super().__init__()
-    # Visit a parse tree produced by ExprParser#declaracion_sin_asignacion.
-    def visitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
 
-        return self.visitChildren(ctx)
+    def visitDeclaracion_sin_asignacion(self, ctx: ExprParser.Declaracion_sin_asignacionContext):
+        var_name = ctx.VARIABLE().getText()
+        var_type = ctx.tipo().getText()
+        self.define_variable(var_name, None)
+        return None
 
     def define_function(self, name, params, return_type, body):
         info = {
@@ -23,9 +25,8 @@ class ExprVariableVisitor(ExprBaseVisitor):
         if len(args) != len(func['params']):
             raise ValueError(f"Argumentos incorrectos para '{name}'. Esperaba {len(func['params'])}, obtuvo {len(args)}")
 
-        self.enter_scope()  # nuevo ámbito
+        self.enter_scope()
 
-        # Asignar valores a los parámetros
         for (param_name, _), arg_value in zip(func['params'], args):
             self.define_variable(param_name, arg_value)
 
@@ -52,7 +53,7 @@ class ExprVariableVisitor(ExprBaseVisitor):
             raise TypeError(f"Error de tipo: Se esperaba una cadena para '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
         elif var_type == "bool" and not isinstance(value, bool):
             raise TypeError(f"Error de tipo: Se esperaba un bool para '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
-        
+
         self.define_variable(var_name, value)
         return value
 
@@ -78,34 +79,26 @@ class ExprVariableVisitor(ExprBaseVisitor):
         return new_value
 
     def visitActualizacion(self, ctx: ExprParser.ActualizacionContext):
-        """Actualizando."""
-        
         var_name = ctx.VARIABLE().getText()
-        # print(f"Actualizando variable: {var_name}")
 
-        # Buscar la variable en los ámbitos
         for scope in reversed(self.ambitos):
             if var_name in scope:
                 if not isinstance(scope[var_name], (int, float)):
                     raise TypeError(f"Error: No se puede actualizar la variable '{var_name}' porque no es numérica")
 
                 if ctx.MASMAS():
-                    # print(f"Incrementando {var_name}")
                     scope[var_name] += 1
                 elif ctx.MENOSMENOS():
-                    # print(f"Decrementando {var_name}")
                     scope[var_name] -= 1
                 elif ctx.expr():
                     new_value = self.visit(ctx.expr())
-                    scope[var_name] = new_value  # Asigna el nuevo valor
+                    scope[var_name] = new_value
 
-                # print(f"Nuevo valor de {var_name}: {scope[var_name]}")
                 return scope[var_name]
 
         raise NameError(f"Variable '{var_name}' no definida.")
 
     def traducir_tipo(self, value):
-        """Devuelve una representación de tipo para los errores."""
         if isinstance(value, int):
             return "entero"
         elif isinstance(value, float):

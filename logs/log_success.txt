@@ -304,3 +304,4 @@
 2025-05-14 12:49:49,744 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
 2025-05-14 12:50:40,630 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
 2025-05-14 12:53:03,200 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
+2025-05-14 21:17:50,645 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt

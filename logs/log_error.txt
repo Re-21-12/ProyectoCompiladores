@@ -772,3 +772,13 @@ opt: Did you mean '--consthoist'?
 2025-05-14 07:23:14,739 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
 2025-05-14 12:47:06,783 - ERROR - [31m✖ Error inesperado: fmt.0[0m
 2025-05-14 12:53:43,846 - ERROR - [31m✖ Error de valor: Sentencia no reconocida: [0m
+2025-05-14 21:17:07,173 - ERROR - [31m✖ Error de valor: Sentencia no reconocida: [0m
+2025-05-14 21:18:20,702 - ERROR - [31m✖ Error de valor: Sentencia no reconocida: [0m
+2025-05-14 21:19:24,640 - ERROR - [31m✖ Error de valor: Sentencia no reconocida: [0m
+2025-05-14 21:42:39,371 - ERROR - [31m✖ Error inesperado: Variable 'Holamundo' no definida[0m
+2025-05-14 21:43:28,906 - ERROR - [31m✖ Error inesperado: Variable 'holamundocadena1' no definida[0m
+2025-05-14 21:50:35,681 - ERROR - [31m✖ Error inesperado: Variable 'holamundocadena1' no definida[0m
+2025-05-14 21:55:36,466 - ERROR - [31m✖ Error inesperado: Variable 'holamundocadena1' no definida[0m
+2025-05-14 21:58:04,098 - ERROR - [31m✖ Error inesperado: Variable 'holamundocadena1' no definida[0m
+2025-05-14 22:19:27,216 - ERROR - [31m✖ Error de valor: Sentencia no reconocida: [0m
+2025-05-14 22:23:15,087 - ERROR - [31m✖ Error inesperado: 'PersonalizatedListener' object has no attribute '_infer_function_return_type'[0m
