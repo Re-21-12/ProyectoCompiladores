@@ -782,3 +782,21 @@ opt: Did you mean '--consthoist'?
 2025-05-14 21:58:04,098 - ERROR - [31m✖ Error inesperado: Variable 'holamundocadena1' no definida[0m
 2025-05-14 22:19:27,216 - ERROR - [31m✖ Error de valor: Sentencia no reconocida: [0m
 2025-05-14 22:23:15,087 - ERROR - [31m✖ Error inesperado: 'PersonalizatedListener' object has no attribute '_infer_function_return_type'[0m
+2025-05-15 07:02:17,080 - ERROR - [31m✖ Error inesperado: object of type 'Bloque_de_sentenciaContext' has no len()[0m
+2025-05-15 07:07:31,342 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba un entero para 'resultado', pero se obtuvo desconocido[0m
+2025-05-15 07:11:02,451 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba un entero para 'resultado', pero se obtuvo desconocido[0m
+2025-05-15 07:36:12,704 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba un entero para 'resultado', pero se obtuvo desconocido[0m
+2025-05-15 07:41:26,194 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba un entero para 'resultado', pero se obtuvo desconocido[0m
+2025-05-15 07:52:37,939 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'bool' para 'es_valido', pero se obtuvo 'entero'[0m
+2025-05-15 22:59:18,737 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-15 22:59:48,126 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'bool' para 'es_valido', pero se obtuvo 'entero'[0m
+2025-05-15 23:02:24,996 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'entero' para 'resultado', pero se obtuvo 'desconocido'[0m
+2025-05-15 23:28:11,676 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'entero' para 'resultado', pero se obtuvo 'desconocido'[0m
+2025-05-15 23:30:01,068 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'bool' para 'es_valido', pero se obtuvo 'entero'[0m
+2025-05-15 23:36:39,402 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'bool' para 'es_valido', pero se obtuvo 'entero'[0m
+2025-05-15 23:42:43,775 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'entero' para 'resultado', pero se obtuvo 'desconocido'[0m
+2025-05-15 23:46:59,416 - ERROR - [31m✖ Error inesperado: Variable 'resultado' no definida[0m
+2025-05-15 23:50:53,772 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'bool' para 'par', pero se obtuvo 'desconocido'[0m
+2025-05-15 23:51:26,839 - ERROR - [31m✖ Error inesperado: [0m
+2025-05-15 23:59:40,212 - ERROR - [31m✖ Error inesperado: [0m
+2025-05-16 00:26:39,881 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m

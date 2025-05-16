@@ -408,20 +408,31 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
         return False
 
     def _get_type_from_node(self, node):
-        """Versión mejorada que maneja operaciones anidadas"""
-        if isinstance(node, ParserRuleContext):
-            if node.getChildCount() == 3:
-                left = self._get_type_from_node(node.getChild(0))
-                right = self._get_type_from_node(node.getChild(2))
-                
-                if left == "no_declarada" or right == "no_declarada":
-                    return "no_declarada"
-                    
-                if not (self._is_numeric_type(left) and self._is_numeric_type(right)):
-                    return "desconocido"
-                
-                return 'decimal' if 'decimal' in (left, right) else 'entero'
-        return self._get_operand_type(node.getText())
+        if node is None:
+            return None
+        
+        # Si es una función ya conocida
+        if hasattr(node, 'type'):
+            return node.type
+
+        text = node.getText()
+
+        if text.isdigit():
+            return 'entero'
+        elif text.replace('.', '', 1).isdigit():
+            return 'decimal'
+        elif text.startswith('"') and text.endswith('"'):
+            return 'cadena'
+        elif text in ['verdadero', 'falso']:
+            return 'bool'
+        
+        # Si es una variable
+        var_type = self.symbol_table.get_variable(text)
+        if var_type:
+            return var_type
+
+        return None
+
 
     def _infer_function_return_type(self, node):
         """Infers the return type of a function call node"""

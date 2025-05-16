@@ -33,11 +33,16 @@ class ExprStatementVisitor(ExprFunctionsVisitor, ExprVariableVisitor):
 
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
         bloques = ctx.bloque_de_sentencia()
+        if not isinstance(bloques, list):
+            bloques = [bloques]
+
         condiciones = ctx.bloque_condicional()
+        if not isinstance(condiciones, list):
+            condiciones = [condiciones]
 
         # Main if
         if self.visit(condiciones[0]):
-            if bloques and len(bloques) > 0:
+            if len(bloques) > 0:
                 self.enter_scope()
                 result = self.visit(bloques[0])
                 self.exit_scope()
@@ -46,7 +51,7 @@ class ExprStatementVisitor(ExprFunctionsVisitor, ExprVariableVisitor):
         # Else ifs
         for i in range(1, len(condiciones)):
             if self.visit(condiciones[i]):
-                if bloques and len(bloques) > i:
+                if len(bloques) > i:
                     self.enter_scope()
                     result = self.visit(bloques[i])
                     self.exit_scope()
@@ -54,13 +59,14 @@ class ExprStatementVisitor(ExprFunctionsVisitor, ExprVariableVisitor):
 
         # Else
         if ctx.ELSE():
-            if bloques and len(bloques) > len(condiciones):
+            if len(bloques) > len(condiciones):
                 self.enter_scope()
                 result = self.visit(bloques[-1])
                 self.exit_scope()
                 return result
 
         return None
+
 
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         cond_block = ctx.bloque_condicional()

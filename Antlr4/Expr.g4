@@ -16,7 +16,7 @@ sentencia:
   | sentencia_for 
   | reasignacion  
   | mostrar 
-  | declaracion_sin_asignacion
+  | declaracion_sin_asignacion  
   | declaracion  
   | actualizacion PUNTO_Y_COMA 
   | declaracion_funcion
@@ -71,7 +71,7 @@ bloque_de_sentencia:
 ;
 
 declaracion:
-  VARIABLE tipo ASIGNACION (expr | funcion_llamada_expr) PUNTO_Y_COMA
+  VARIABLE tipo ASIGNACION (expr | funcion_llamada) PUNTO_Y_COMA
 ;  // Una declaración es una variable asignada a una expresión seguida de un punto y coma
 
 declaracion_sin_asignacion:

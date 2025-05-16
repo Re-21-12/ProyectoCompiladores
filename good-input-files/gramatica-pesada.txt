@@ -1,11 +1,32 @@
 hola {
     contador entero = 0;
     suma entero = 0;
+    suma2 entero = 0;
     mensaje cadena = "Comenzando algoritmo";
     es_valido bool = verdadero;
     es_admin bool = falso;
+    
+    contador2 entero = 0;
+    suma3 entero = 0;
+    suma4 entero = 0;
+    mensaje1 cadena = "Comenzando algoritmo";
+    es_valido2 bool = verdadero;
 
     mostrar(mensaje);
+
+    resultado1 entero = 5 + 3;
+    resultado2 entero = 10 - 2;
+    resultado3 entero = 4 * 7;
+    resultado4 decimal = 20.0 / 4.0;
+
+    mostrar(resultado1);
+    mostrar(resultado2);
+    mostrar(resultado3);
+    mostrar(resultado4);
+
+    total entero = resultado1 + resultado2 ;
+    total2 entero = resultado3 * resultado1 ;
+    mostrar(total);
 
     if(es_valido){
         mensaje cadena = "Usuario válido";
@@ -18,7 +39,7 @@ hola {
         }
     }
 
-    for (i entero = 0; i < 5; i++) {
+    for (i entero = 0; i < 19; i++) {
         suma = suma + i;
         mostrar(suma);
     }
@@ -40,24 +61,26 @@ hola {
         retorna promedio;
     }
 
-    funcion esPar bool (numero entero){
-        if((numero % 2) == 0){
+    calcularMultiplicacion(4, 6);
+    calcularPromedio(35.5, 5.0);
+
+    funcion esParFunc bool (numero entero){
+        if(numero > 0){
             retorna verdadero;
         } else {
             retorna falso;
         }
     }
 
-    resultado entero = calcularMultiplicacion(4, 6);
-    mostrar(resultado);
-
-    promedio_final decimal = calcularPromedio(35.5, 5.0);
-    mostrar(promedio_final);
-
-    par bool = esPar(resultado);
+    par bool = verdadero;
     if(par){
         mostrar("El resultado es par");
     } else {
         mostrar("El resultado es impar");
+    }
+
+    for (x entero = 0; x < 1000; x++) {
+        suma2 = suma2 + x;
+        mostrar(suma2);
     }
 }

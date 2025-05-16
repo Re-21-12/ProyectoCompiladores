@@ -43,19 +43,34 @@ class ExprVariableVisitor(ExprBaseVisitor):
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         var_name = ctx.VARIABLE().getText()
         var_type = ctx.tipo().getText()
-        value = self.visit(ctx.expr())
 
-        if var_type == "entero" and not isinstance(value, int):
-            raise TypeError(f"Error de tipo: Se esperaba un entero para '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
-        elif var_type == "decimal" and not isinstance(value, float):
-            raise TypeError(f"Error de tipo: Se esperaba un decimal para '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
-        elif var_type == "cadena" and not isinstance(value, str):
-            raise TypeError(f"Error de tipo: Se esperaba una cadena para '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
-        elif var_type == "bool" and not isinstance(value, bool):
-            raise TypeError(f"Error de tipo: Se esperaba un bool para '{var_name}', pero se obtuvo {self.traducir_tipo(value)}")
+        value = None
+        inferred_type = None
+
+        if ctx.expr():
+            value = self.visit(ctx.expr())
+            print("algo",value)
+            inferred_type = self.traducir_tipo(value)
+            print("algo infer",inferred_type)
+
+        elif ctx.funcion_llamada():
+            value = self.visit(ctx.funcion_llamada())
+            nombre_funcion = ctx.funcion_llamada().VARIABLE().getText()
+            inferred_type = self.get_function_return_type(nombre_funcion)
+            print(f"Llamada a función '{nombre_funcion}' devuelve tipo '{inferred_type}' con valor: {value}")
+
+        else:
+            raise ValueError(f"La declaración de '{var_name}' no tiene una expresión o llamada de función válida.")
+
+        # Verificación de tipo
+        if var_type != inferred_type:
+            raise TypeError(
+                f"Error de tipo: Se esperaba '{var_type}' para '{var_name}', pero se obtuvo '{inferred_type}'"
+            )
 
         self.define_variable(var_name, value)
         return value
+
 
     def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
         var_name = ctx.VARIABLE().getText()
@@ -99,12 +114,14 @@ class ExprVariableVisitor(ExprBaseVisitor):
         raise NameError(f"Variable '{var_name}' no definida.")
 
     def traducir_tipo(self, value):
-        if isinstance(value, int):
+        print("valor obtenido",value)
+        if isinstance(value, bool):
+            return "bool"        
+        elif isinstance(value, int):
             return "entero"
         elif isinstance(value, float):
             return "decimal"
         elif isinstance(value, str):
             return "cadena"
-        elif isinstance(value, bool):
-            return "bool"
+
         return "desconocido"

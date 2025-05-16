@@ -35,3 +35,8 @@ class ExprBaseVisitor(ParseTreeVisitor):
         if name not in self.funciones:
             raise Exception(f"Función '{name}' no definida")
         return self.funciones[name]
+    def get_function_return_type(self, name):
+        """Obtiene el tipo de retorno de una función si está definida."""
+        if name not in self.funciones:
+            raise Exception(f"Función '{name}' no definida")
+        return self.funciones[name]['return_type']

@@ -71,7 +71,7 @@ def serializedATN():
         30,15,0,161,29,1,0,0,0,162,168,3,6,3,0,163,164,5,14,0,0,164,165,
         3,4,2,0,165,166,5,15,0,0,166,168,1,0,0,0,167,162,1,0,0,0,167,163,
         1,0,0,0,168,31,1,0,0,0,169,170,5,36,0,0,170,171,3,38,19,0,171,174,
-        5,11,0,0,172,175,3,42,21,0,173,175,3,18,9,0,174,172,1,0,0,0,174,
+        5,11,0,0,172,175,3,42,21,0,173,175,3,16,8,0,174,172,1,0,0,0,174,
         173,1,0,0,0,175,176,1,0,0,0,176,177,5,29,0,0,177,33,1,0,0,0,178,
         179,5,36,0,0,179,180,3,38,19,0,180,181,5,29,0,0,181,35,1,0,0,0,182,
         183,5,36,0,0,183,184,5,11,0,0,184,185,3,42,21,0,185,186,5,29,0,0,
@@ -1443,8 +1443,8 @@ class ExprParser ( Parser ):
             return self.getTypedRuleContext(ExprParser.ExprContext,0)
 
 
-        def funcion_llamada_expr(self):
-            return self.getTypedRuleContext(ExprParser.Funcion_llamada_exprContext,0)
+        def funcion_llamada(self):
+            return self.getTypedRuleContext(ExprParser.Funcion_llamadaContext,0)
 
 
         def getRuleIndex(self):
@@ -1489,7 +1489,7 @@ class ExprParser ( Parser ):
 
             elif la_ == 2:
                 self.state = 173
-                self.funcion_llamada_expr()
+                self.funcion_llamada()
                 pass
 
 
