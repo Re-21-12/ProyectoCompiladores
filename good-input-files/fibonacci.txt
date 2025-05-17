@@ -9,8 +9,8 @@ hola {
     }
   }
 
-  entero i = 0;
-  entero limite = 10;
+   i entero = 0;
+  limite entero  = 10;
 
   while (i < limite) {
     mostrar(fibonacci(i));

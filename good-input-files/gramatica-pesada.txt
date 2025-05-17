@@ -1,86 +1,379 @@
 hola {
-    contador entero = 0;
-    suma entero = 0;
-    suma2 entero = 0;
-    mensaje cadena = "Comenzando algoritmo";
-    es_valido bool = verdadero;
-    es_admin bool = falso;
+    contadorA entero = 0;
+    sumaA entero = 0;
+    sumaA2 entero = 0;
+    mensajeA cadena = "Iniciando proceso";
+    es_validoA bool = verdadero;
+    es_adminA bool = falso;
     
-    contador2 entero = 0;
-    suma3 entero = 0;
-    suma4 entero = 0;
-    mensaje1 cadena = "Comenzando algoritmo";
-    es_valido2 bool = verdadero;
+    contadorA2 entero = 0;
+    sumaA3 entero = 0;
+    sumaA4 entero = 0;
+    mensajeA1 cadena = "Iniciando proceso";
+    es_validoA2 bool = verdadero;
 
-    mostrar(mensaje);
+    mostrar(mensajeA);
 
-    resultado1 entero = 5 + 3;
-    resultado2 entero = 10 - 2;
-    resultado3 entero = 4 * 7;
-    resultado4 decimal = 20.0 / 4.0;
+    resultadoA1 entero = 6 + 4;
+    resultadoA2 entero = 11 - 3;
+    resultadoA3 entero = 5 * 8;
+    resultadoA4 decimal = 25.0 / 5.0;
 
-    mostrar(resultado1);
-    mostrar(resultado2);
-    mostrar(resultado3);
-    mostrar(resultado4);
+    mostrar(resultadoA1);
+    mostrar(resultadoA2);
+    mostrar(resultadoA3);
+    mostrar(resultadoA4);
 
-    total entero = resultado1 + resultado2 ;
-    total2 entero = resultado3 * resultado1 ;
-    mostrar(total);
+    totalA entero = resultadoA1 + resultadoA2;
+    totalA2 entero = resultadoA3 * resultadoA1;
+    mostrar(totalA);
 
-    if(es_valido){
-        mensaje cadena = "Usuario válido";
-        mostrar(mensaje);
+      funcion fibonacci entero(n entero) {
+    if (n == 0) {
+      retorna 0;
+    } else if (n == 1) {
+      retorna 1;
+    } else {
+      retorna fibonacci(n - 1) + fibonacci(n - 2);
+    }
+  }
 
-        if(es_admin){
-            mostrar("Bienvenido administrador");
+  asd entero = 0;
+  limite entero = 10;
+
+  while (asd < limite) {
+    mostrar(fibonacci(asd));
+    asd++;
+  }
+
+    if(es_validoA){
+        mensajeA cadena = "Usuario verificado";
+        mostrar(mensajeA);
+
+        if(es_adminA){
+            mostrar("Acceso completo");
         } else {
-            mostrar("Acceso limitado");
+            mostrar("Acceso restringido");
         }
     }
 
-    for (i entero = 0; i < 19; i++) {
-        suma = suma + i;
-        mostrar(suma);
+    for (j entero = 0; j < 10000; j++) {
+        sumaA = sumaA + j;
+        mostrar(sumaA);
     }
 
-    while(suma < 20){
-        suma++;
-        mostrar(suma);
+    while(sumaA < 20){
+        sumaA++;
+        mostrar(sumaA);
     }
 
-    funcion calcularMultiplicacion entero (a entero, b entero){
-        resultado entero = a * b;
-        mostrar(resultado);
-        retorna resultado;
+    funcion calcularMultiplicacionA entero (c entero, d entero){
+        resultadoA entero = c * d;
+        mostrar(resultadoA);
+        retorna resultadoA;
     }
 
-    funcion calcularPromedio decimal (total decimal, cantidad decimal){
-        promedio decimal = total / cantidad;
-        mostrar(promedio);
-        retorna promedio;
+    funcion calcularPromedioA decimal (totalA decimal, cantidadA decimal){
+        promedioA decimal = totalA / cantidadA;
+        mostrar(promedioA);
+        retorna promedioA;
     }
 
-    calcularMultiplicacion(4, 6);
-    calcularPromedio(35.5, 5.0);
+    calcularMultiplicacionA(5, 7);
+    calcularPromedioA(36.6, 6.0);
 
-    funcion esParFunc bool (numero entero){
-        if(numero > 0){
+    funcion esParFuncA bool (numeroA entero){
+        if(numeroA > 0){
             retorna verdadero;
         } else {
             retorna falso;
         }
     }
 
-    par bool = verdadero;
-    if(par){
-        mostrar("El resultado es par");
+    parA bool = verdadero;
+    if(parA){
+        mostrar("El numero es par");
     } else {
-        mostrar("El resultado es impar");
+        mostrar("El numero es impar");
     }
 
-    for (x entero = 0; x < 1000; x++) {
-        suma2 = suma2 + x;
-        mostrar(suma2);
+    for (y entero = 0; y < 10000; y++) {
+        sumaA2 = sumaA2 + y;
+        mostrar(sumaA2);
     }
+
+numeroA21 entero = 31;
+numeroA22 entero = 32;
+numeroA23 entero = 33;
+numeroA24 entero = 34;
+numeroA25 entero = 35;
+
+resultadonumeroA entero = 31+32;
+resultadonumeroA1 entero = 32-31;
+resultadonumeroA2 entero = 33*34;
+resultadonumeroA3 entero = 35+35;
+resultadonumeroA4 decimal = 40.5 / 2;
+
+    funcion calcularMultiplicacionA2 entero (c1 entero, d2 entero){
+        resultadoA entero = c1 * d2;
+        mostrar(resultadoA);
+        retorna resultadoA;
+    }
+
+    funcion calcularPromedioA2 decimal (totalA2 decimal, cantidadA2 decimal){
+        promedioA decimal = totalA2 / cantidadA2;
+        mostrar(promedioA);
+        retorna promedioA;
+    }
+
+    funcion calcularPromedioA3 decimal (y numero){
+        sumaA32 entero = 0;
+        for (j entero = 0; j < 10000; j++) {
+            sumaA32 = sumaA32 + j;
+            mostrar(sumaA32);
+        }
+        retorna 0.0;
+    }
+
+    calcularPromedioA2(2.23,3.32);
+
+    contadorB entero = 0;
+    sumaB entero = 0;
+    sumaB2 entero = 0;
+    mensajeB cadena = "Ejecutando rutina";
+    es_validoB bool = verdadero;
+    es_adminB bool = falso;
+    
+    contadorB2 entero = 0;
+    sumaB3 entero = 0;
+    sumaB4 entero = 0;
+    mensajeB1 cadena = "Ejecutando rutina";
+    es_validoB2 bool = verdadero;
+
+    mostrar(mensajeB);
+
+    resultadoB1 entero = 7 + 5;
+    resultadoB2 entero = 12 - 4;
+    resultadoB3 entero = 6 * 9;
+    resultadoB4 decimal = 30.0 / 6.0;
+
+    mostrar(resultadoB1);
+    mostrar(resultadoB2);
+    mostrar(resultadoB3);
+    mostrar(resultadoB4);
+
+    totalB entero = resultadoB1 + resultadoB2;
+    totalB2 entero = resultadoB3 * resultadoB1;
+    mostrar(totalB);
+
+    if(es_validoB){
+        mensajeB cadena = "Cliente autorizado";
+        mostrar(mensajeB);
+
+        if(es_adminB){
+            mostrar("Privilegios totales");
+        } else {
+            mostrar("Privilegios basicos");
+        }
+    }
+
+    for (k entero = 0; k < 19; k++) {
+        sumaB = sumaB + k;
+        mostrar(sumaB);
+    }
+
+    while(sumaB < 20){
+        sumaB++;
+        mostrar(sumaB);
+    }
+
+    funcion calcularMultiplicacionB entero (e entero, f entero){
+        resultadoB entero = e * f;
+        mostrar(resultadoB);
+        retorna resultadoB;
+    }
+
+    funcion calcularPromedioB decimal (totalB decimal, cantidadB decimal){
+        promedioB decimal = totalB / cantidadB;
+        mostrar(promedioB);
+        retorna promedioB;
+    }
+
+    calcularMultiplicacionB(6, 8);
+    calcularPromedioB(37.7, 7.0);
+
+    funcion esParFuncB bool (numeroB entero){
+        if(numeroB > 0){
+            retorna verdadero;
+        } else {
+            retorna falso;
+        }
+    }
+
+    parB bool = verdadero;
+    if(parB){
+        mostrar("El valor es par");
+    } else {
+        mostrar("El valor es impar");
+    }
+
+    for (z entero = 0; z < 1000; z++) {
+        sumaB2 = sumaB2 + z;
+        mostrar(sumaB2);
+    }
+
+numeroB21 entero = 41;
+numeroB22 entero = 42;
+numeroB23 entero = 43;
+numeroB24 entero = 44;
+numeroB25 entero = 45;
+
+resultadonumeroB entero = 41+42;
+resultadonumeroB1 entero = 42-41;
+resultadonumeroB2 entero = 43*44;
+resultadonumeroB3 entero = 45+45;
+resultadonumeroB4 decimal = 50.5 / 2;
+
+    funcion calcularMultiplicacionB2 entero (e1 entero, f2 entero){
+        resultadoB entero = e1 * f2;
+        mostrar(resultadoB);
+        retorna resultadoB;
+    }
+
+    funcion calcularPromedioB2 decimal (totalB2 decimal, cantidadB2 decimal){
+        promedioB decimal = totalB2 / cantidadB2;
+        mostrar(promedioB);
+        retorna promedioB;
+    }
+
+    funcion calcularPromedioB3 decimal (z numero){
+        sumaB32 entero = 0;
+        for (k entero = 0; k < 10000; k++) {
+            sumaB32 = sumaB32 + k;
+            mostrar(sumaB32);
+        }
+        retorna 0.0;
+    }
+
+    calcularPromedioB2(3.34,4.43);
+
+    contadorC entero = 0;
+    sumaC entero = 0;
+    sumaC2 entero = 0;
+    mensajeC cadena = "Procesando datos";
+    es_validoC bool = verdadero;
+    es_adminC bool = falso;
+    
+    contadorC2 entero = 0;
+    sumaC3 entero = 0;
+    sumaC4 entero = 0;
+    mensajeC1 cadena = "Procesando datos";
+    es_validoC2 bool = verdadero;
+
+    mostrar(mensajeC);
+
+    resultadoC1 entero = 8 + 6;
+    resultadoC2 entero = 13 - 5;
+    resultadoC3 entero = 7 * 10;
+    resultadoC4 decimal = 35.0 / 7.0;
+
+    mostrar(resultadoC1);
+    mostrar(resultadoC2);
+    mostrar(resultadoC3);
+    mostrar(resultadoC4);
+
+    totalC entero = resultadoC1 + resultadoC2;
+    totalC2 entero = resultadoC3 * resultadoC1;
+    mostrar(totalC);
+
+    if(es_validoC){
+        mensajeC cadena = "Sesion activa";
+        mostrar(mensajeC);
+
+        if(es_adminC){
+            mostrar("Modo administrador");
+        } else {
+            mostrar("Modo usuario");
+        }
+    }
+
+    for (l entero = 0; l < 19; l++) {
+        sumaC = sumaC + l;
+        mostrar(sumaC);
+    }
+
+    while(sumaC < 20){
+        sumaC++;
+        mostrar(sumaC);
+    }
+
+    funcion calcularMultiplicacionC entero (g entero, h entero){
+        resultadoC entero = g * h;
+        mostrar(resultadoC);
+        retorna resultadoC;
+    }
+
+    funcion calcularPromedioC decimal (totalC decimal, cantidadC decimal){
+        promedioC decimal = totalC / cantidadC;
+        mostrar(promedioC);
+        retorna promedioC;
+    }
+
+    calcularMultiplicacionC(7, 9);
+    calcularPromedioC(38.8, 8.0);
+
+    funcion esParFuncC bool (numeroC entero){
+        if(numeroC > 0){
+            retorna verdadero;
+        } else {
+            retorna falso;
+        }
+    }
+
+    parC bool = verdadero;
+    if(parC){
+        mostrar("La cifra es par");
+    } else {
+        mostrar("La cifra es impar");
+    }
+
+    for (w entero = 0; w < 10000; w++) {
+        sumaC2 = sumaC2 + w;
+        mostrar(sumaC2);
+    }
+
+numeroC21 entero = 51;
+numeroC22 entero = 52;
+numeroC23 entero = 53;
+numeroC24 entero = 54;
+numeroC25 entero = 55;
+
+resultadonumeroC entero = 51+52;
+resultadonumeroC1 entero = 52-51;
+resultadonumeroC2 entero = 53*54;
+resultadonumeroC3 entero = 55+55;
+resultadonumeroC4 decimal = 60.5 / 2;
+
+    funcion calcularMultiplicacionC2 entero (g1 entero, h2 entero){
+        resultadoC entero = g1 * h2;
+        mostrar(resultadoC);
+        retorna resultadoC;
+    }
+
+    funcion calcularPromedioC2 decimal (totalC2 decimal, cantidadC2 decimal){
+        promedioC decimal = totalC2 / cantidadC2;
+        mostrar(promedioC);
+        retorna promedioC;
+    }
+
+    funcion calcularPromedioC3 decimal (w numero){
+        sumaC32 entero = 0;
+        for (l entero = 0; l < 19; l++) {
+            sumaC32 = sumaC32 + l;
+            mostrar(sumaC32);
+        }
+        retorna 0.0;
+    }
+
+    calcularPromedioC2(4.45,5.54);
 }

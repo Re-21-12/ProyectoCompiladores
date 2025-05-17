@@ -56,29 +56,38 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
             return
         
         expected_type = self.symbol_table.get_function_return_type(self.current_function)
-        actual_type = self._get_type_from_node(ctx.expr())
+        expr_type = self._get_type_from_node(ctx.expr())
         
-        if expected_type != actual_type:
-            self.report_error(ctx, f"Error: La función '{self.current_function}' debe retornar '{expected_type}' pero se encontró '{actual_type}'")
+        if expr_type is None:
+            # Si no podemos determinar el tipo, intentar inferirlo
+            expr_type = self._infer_type_from_expression(ctx.expr())
+        
+        if expected_type != expr_type:
+            self.report_error(ctx, 
+                f"Error: La función '{self.current_function}' debe retornar '{expected_type}' " +
+                f"pero se encontró '{expr_type if expr_type else 'None'}'")
 
     def exitRetorna(self, ctx:ExprParser.RetornaContext): pass
 
     def enterSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
+        self.symbol_table.enter_scope()  # Nuevo scope para el for
+        
         declaracion = ctx.declaracion()  
         if declaracion:
             tipo = declaracion.tipo().getText()
             nombre_variable = declaracion.VARIABLE().getText()
 
-            if self.symbol_table.get_variable(nombre_variable):
-                self.report_error(ctx, f"Error: La variable '{nombre_variable}' ya ha sido declarada.")
+            if self.symbol_table.get_variable_in_current_scope(nombre_variable):
+                self.report_error(ctx, f"Error: La variable '{nombre_variable}' ya ha sido declarada en este scope.")
                 return
 
             self.symbol_table.define_variable(nombre_variable, tipo)
-        else:
-            self.report_error(ctx, "Error: No se ha declarado una variable de iteración en el for.")
 
-    def exitSentencia_for(self, ctx: ExprParser.Sentencia_forContext): pass
 
+    def exitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
+        self.symbol_table.exit_scope()  # Salir del scope del f
+
+    # En el Listener (corrección para funciones):
     def enterDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
         nombre_funcion = ctx.VARIABLE().getText()
         self.current_function = nombre_funcion
@@ -91,12 +100,16 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
                 param_type = param.tipo().getText()
                 params.append((param_name, param_type))
         
+        # Registrar la función ANTES de procesar el cuerpo (para permitir recursión)
         self.symbol_table.define_function(nombre_funcion, params, tipo_retorno)
+        
+        # Entrar al nuevo scope
         self.symbol_table.enter_scope()
         
+        # Registrar parámetros
         for param_name, param_type in params:
             self.symbol_table.define_variable(param_name, param_type)
-            
+
     def exitDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
         self.current_function = None 
         self.symbol_table.exit_scope()
@@ -249,56 +262,51 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
                     ctx.type = 'entero'
 
     def enterExpr(self, ctx:ExprParser.ExprContext):
-        if ctx.getChildCount() == 3:
-            ctx.type = self._get_type_from_node(ctx)
-            print(f"Expr result: {ctx.getText()} -> {ctx.type}")
-        
-        if ctx.getChildCount() == 3:
+        if ctx.getChildCount() == 3:  # Operación binaria
             left = ctx.getChild(0)
             operator = ctx.getChild(1).getText()
             right = ctx.getChild(2)
 
+            # Obtener tipos de los operandos
             left_type = self._get_type_from_node(left)
             right_type = self._get_type_from_node(right)
             
             print(f"Expr operation: {left.getText()}({left_type}) {operator} {right.getText()}({right_type})")
 
-            if left_type == "desconocido":
+            # Manejar casos especiales para funciones
+            if left_type is None:
                 left_type = self._infer_function_return_type(left)
-            if right_type == "desconocido":
-                right_type = self._infer_function_return_type(right)    
+            if right_type is None:
+                right_type = self._infer_function_return_type(right)
 
+            # Validar tipos
             if left_type == "no_declarada" or right_type == "no_declarada":
                 undeclared = []
-                if left_type == "no_declarada" and isinstance(left, TerminalNode) and left.getText().isidentifier():
+                if left_type == "no_declarada":
                     undeclared.append(left.getText())
-                if right_type == "no_declarada" and isinstance(right, TerminalNode) and right.getText().isidentifier():
+                if right_type == "no_declarada":
                     undeclared.append(right.getText())
                 if undeclared:
                     self.report_error(ctx, f"Error: Variable(s) no declarada(s) {tuple(undeclared)}")
                 return
 
+            # Determinar tipo resultante
             if operator == '+':
                 if left_type == 'cadena' and right_type == 'cadena':
                     ctx.type = 'cadena'
-                    print(f"Concatenación result: {ctx.type}")
-                    return
-                    
-                if not (self._is_numeric_type(left_type) and self._is_numeric_type(right_type)):
-                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
-                    return
-            
-            if operator in {'+', '-'}:
-                if not (self._is_numeric_type(left_type) and self._is_numeric_type(right_type)):
-                    self.report_error(ctx, f"No se puede aplicar '{operator}' entre '{left_type}' y '{right_type}'")
-                    return
-                
-                if 'decimal' in (left_type, right_type) or 'float' in (left_type, right_type):
-                    ctx.type = 'decimal'
+                elif self._is_numeric_type(left_type) and self._is_numeric_type(right_type):
+                    ctx.type = 'decimal' if 'decimal' in (left_type, right_type) else 'entero'
                 else:
-                    ctx.type = 'entero'
-                print(f"Expr result type set to: {ctx.type}")
-
+                    self.report_error(ctx, f"Operación '+' no válida entre {left_type} y {right_type}")
+            elif operator in ['-', '*', '/']:
+                if self._is_numeric_type(left_type) and self._is_numeric_type(right_type):
+                    ctx.type = 'decimal' if 'decimal' in (left_type, right_type) else 'entero'
+                else:
+                    self.report_error(ctx, f"Operación '{operator}' no válida entre {left_type} y {right_type}")
+            elif operator in ['==', '!=', '<', '>', '<=', '>=']:
+                ctx.type = 'bool'
+            
+            print(f"Expr result type set to: {ctx.type}")
     def exitExpr(self, ctx: ExprParser.ExprContext):
         if ctx.getChildCount() == 3:
             left = ctx.getChild(0)
@@ -411,12 +419,13 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
         if node is None:
             return None
         
-        # Si es una función ya conocida
+        # Si el nodo ya tiene tipo asignado
         if hasattr(node, 'type'):
             return node.type
 
         text = node.getText()
 
+        # Literales
         if text.isdigit():
             return 'entero'
         elif text.replace('.', '', 1).isdigit():
@@ -426,13 +435,41 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
         elif text in ['verdadero', 'falso']:
             return 'bool'
         
-        # Si es una variable
+        # Llamadas a funciones
+        if '(' in text and text.endswith(')'):
+            func_name = text.split('(')[0]
+            return self.symbol_table.get_function_return_type(func_name)
+        
+        # Variables
         var_type = self.symbol_table.get_variable(text)
         if var_type:
             return var_type
 
         return None
 
+    def _infer_type_from_expression(self, expr_node):
+        if isinstance(expr_node, TerminalNode):
+            return self._get_type_from_node(expr_node)
+        
+        if hasattr(expr_node, 'type'):
+            return expr_node.type
+        
+        if expr_node.getChildCount() == 1:
+            return self._infer_type_from_expression(expr_node.getChild(0))
+        
+        if expr_node.getChildCount() == 3:  # Operación binaria
+            left_type = self._infer_type_from_expression(expr_node.getChild(0))
+            right_type = self._infer_type_from_expression(expr_node.getChild(2))
+            operator = expr_node.getChild(1).getText()
+            
+            if operator in ['+', '-', '*', '/']:
+                if 'decimal' in (left_type, right_type):
+                    return 'decimal'
+                return 'entero'
+            elif operator in ['==', '!=', '<', '>', '<=', '>=']:
+                return 'bool'
+        
+        return None
 
     def _infer_function_return_type(self, node):
         """Infers the return type of a function call node"""

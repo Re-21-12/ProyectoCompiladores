@@ -20,7 +20,8 @@ class SymbolTable:
         """Define una función con sus parámetros y tipo de retorno"""
         self.funciones[name] = {
             'params': params,
-            'return_type': return_type
+            'return_type': return_type,
+            'scope_level': len(self.ambitos)  # Guardar nivel de scope
         }
         
     def define_function_params(self, nombre_funcion, args):

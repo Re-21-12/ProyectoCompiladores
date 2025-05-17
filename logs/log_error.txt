@@ -800,3 +800,22 @@ opt: Did you mean '--consthoist'?
 2025-05-15 23:51:26,839 - ERROR - [31m✖ Error inesperado: [0m
 2025-05-15 23:59:40,212 - ERROR - [31m✖ Error inesperado: [0m
 2025-05-16 00:26:39,881 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-16 08:49:16,205 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'entero' para 'resultadonumero6', pero se obtuvo 'decimal'[0m
+2025-05-16 08:49:43,514 - ERROR - [31m✖ Error inesperado: cannot store i32 to double*: mismatching types[0m
+2025-05-16 08:50:37,023 - ERROR - [31m✖ Error inesperado: cannot store i32 to double*: mismatching types[0m
+2025-05-16 09:39:27,110 - ERROR - [31m✖ Error inesperado: calcularPromedio2[0m
+2025-05-16 09:39:51,736 - ERROR - [31m✖ Error inesperado: Número incorrecto de argumentos para 'calcularPromedio2'[0m
+2025-05-16 09:41:01,480 - ERROR - [31m✖ Error inesperado: 'suma'[0m
+2025-05-16 09:42:14,295 - ERROR - [31m✖ Error inesperado: 'suma'[0m
+2025-05-16 10:00:18,655 - ERROR - [31m✖ Error inesperado: 'mensaje'[0m
+2025-05-16 10:00:26,096 - ERROR - [31m✖ Error inesperado: 'mensaje'[0m
+2025-05-16 10:06:10,008 - ERROR - [31m✖ Error inesperado: Variable 'suma' no declarada[0m
+2025-05-16 10:14:25,666 - ERROR - [31m✖ Error inesperado: Type of #1 arg mismatch: double != i32[0m
+2025-05-16 10:41:21,483 - ERROR - [31m✖ Error inesperado: Type of #1 arg mismatch: double != i32[0m
+2025-05-16 11:23:26,773 - ERROR - [31m✖ Error inesperado: 'Function' object is not subscriptable[0m
+2025-05-16 21:33:12,344 - ERROR - [31m✖ Error inesperado: 'Function' object has no attribute 'return_type'[0m
+2025-05-16 21:54:16,533 - ERROR - [31m✖ Error inesperado: str.1[0m
+2025-05-16 22:14:13,828 - ERROR - [31m✖ Error inesperado: str.6[0m
+2025-05-16 22:22:27,311 - ERROR - [31m✖ Error inesperado: cannot store [18 x i8]* to i8**: mismatching types[0m
+2025-05-16 22:37:49,751 - ERROR - [31m✖ Error inesperado: cannot store [18 x i8]* to i8**: mismatching types[0m
+2025-05-16 22:39:17,539 - ERROR - [31m✖ Error inesperado: 'IntType' object has no attribute 'is_array'[0m
