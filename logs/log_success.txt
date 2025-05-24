@@ -347,3 +347,4 @@
 2025-05-16 23:36:15,077 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
 2025-05-16 23:36:53,391 - INFO - Análisis exitoso para good-input-files/fibonacci.txt
 2025-05-16 23:37:41,443 - INFO - Análisis exitoso para good-input-files/fibonacci.txt
+2025-05-24 08:23:31,688 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt

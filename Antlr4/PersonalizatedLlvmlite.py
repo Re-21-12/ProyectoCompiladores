@@ -77,46 +77,48 @@ class LLVMGenerator:
     def _generate_node(self, node):
         """Dispatch node generation based on type"""
         node_type = node.type
-        
+
         if node_type == "Program":
+            # Procesa todos los hijos del programa (debería ser solo uno: MainFunction)
             for child in node.children:
                 self._generate_node(child)
-                
+
         elif node_type == "MainFunction":
+            # Procesa todos los hijos del main (debería ser solo uno: Block)
             for child in node.children:
                 self._generate_node(child)
-                
+
         elif node_type == "Block":
+            # Procesa todas las sentencias del bloque
             for child in node.children:
                 self._generate_node(child)
-                
+
         elif node_type == "VariableDecl":
             self._generate_variable_decl(node)
-                
+
         elif node_type == "Assignment":
             self._generate_assignment(node)
-            
+
         elif node_type == "PrintStatement":
             self._generate_print(node.children[0])
-            
+
         elif node_type == "IfStatement":
             self._generate_if_statement(node)
-            
+
         elif node_type == "WhileLoop":
             self._generate_while_loop(node)
-            
+
         elif node_type == "ForLoop":
             self._generate_for_loop(node)
-            
+
         elif node_type == "FunctionDecl":
             self._generate_function_decl(node)
-            
+
         elif node_type == "FunctionCall":
-            return self._generate_function_call(node)
-            
+            self._generate_function_call(node)
+
         elif node_type == "ReturnStatement":
             self._generate_return(node)
-
     def _generate_variable_decl(self, node):
         """Generate variable declaration"""
         var_name = node.value
