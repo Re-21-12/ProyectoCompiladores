@@ -376,4 +376,397 @@ resultadonumeroC4 decimal = 60.5 / 2;
     }
 
     calcularPromedioC2(4.45,5.54);
+
+    contadorD entero = 0;
+    sumaD entero = 0;
+    sumaD2 entero = 0;
+    mensajeD cadena = "Inicio de rutina D";
+    es_validoD bool = verdadero;
+    es_adminD bool = falso;
+
+    contadorD2 entero = 0;
+    sumaD3 entero = 0;
+    sumaD4 entero = 0;
+    mensajeD1 cadena = "Inicio de rutina D extra";
+    es_validoD2 bool = verdadero;
+
+    mostrar(mensajeD);
+
+    resultadoD1 entero = 9 + 3;
+    resultadoD2 entero = 15 - 6;
+    resultadoD3 entero = 4 * 11;
+    resultadoD4 decimal = 44.0 / 4.0;
+
+    mostrar(resultadoD1);
+    mostrar(resultadoD2);
+    mostrar(resultadoD3);
+    mostrar(resultadoD4);
+
+    totalD entero = resultadoD1 + resultadoD2;
+    totalD2 entero = resultadoD3 * resultadoD1;
+    mostrar(totalD);
+
+    funcion factorial entero(n entero) {
+        resultadoF entero = 1;
+        for (i entero = 1; i <= n; i++) {
+            resultadoF = resultadoF * i;
+        }
+        retorna resultadoF;
+    }
+
+    mostrar(factorial(5));
+
+    if(es_validoD){
+        mensajeD cadena = "Usuario D verificado";
+        mostrar(mensajeD);
+
+        if(es_adminD){
+            mostrar("Acceso D completo");
+        } else {
+            mostrar("Acceso D restringido");
+        }
+    }
+
+    for (m entero = 0; m < 15; m++) {
+        sumaD = sumaD + m;
+        mostrar(sumaD);
+    }
+
+    while(sumaD < 30){
+        sumaD++;
+        mostrar(sumaD);
+    }
+
+    funcion calcularMultiplicacionD entero (i entero, j entero){
+        resultadoD entero = i * j;
+        mostrar(resultadoD);
+        retorna resultadoD;
+    }
+
+    funcion calcularPromedioD decimal (totalD decimal, cantidadD decimal){
+        promedioD decimal = totalD / cantidadD;
+        mostrar(promedioD);
+        retorna promedioD;
+    }
+
+    calcularMultiplicacionD(8, 6);
+    calcularPromedioD(48.0, 8.0);
+
+    funcion esImparFuncD bool (numeroD entero){
+        if(numeroD % 2 != 0){
+            retorna verdadero;
+        } else {
+            retorna falso;
+        }
+    }
+
+    imparD bool = esImparFuncD(7);
+    if(imparD){
+        mostrar("El numero es impar");
+    } else {
+        mostrar("El numero es par");
+    }
+
+    for (n entero = 0; n < 5000; n++) {
+        sumaD2 = sumaD2 + n;
+        mostrar(sumaD2);
+    }
+
+    numeroD21 entero = 61;
+    numeroD22 entero = 62;
+    numeroD23 entero = 63;
+    numeroD24 entero = 64;
+    numeroD25 entero = 65;
+
+    resultadonumeroD entero = 61+62;
+    resultadonumeroD1 entero = 62-61;
+    resultadonumeroD2 entero = 63*64;
+    resultadonumeroD3 entero = 65+65;
+    resultadonumeroD4 decimal = 70.5 / 2;
+
+    funcion calcularMultiplicacionD2 entero (i1 entero, j2 entero){
+        resultadoD entero = i1 * j2;
+        mostrar(resultadoD);
+        retorna resultadoD;
+    }
+
+    funcion calcularPromedioD2 decimal (totalD2 decimal, cantidadD2 decimal){
+        promedioD decimal = totalD2 / cantidadD2;
+        mostrar(promedioD);
+        retorna promedioD;
+    }
+
+    funcion calcularPromedioD3 decimal (n numero){
+        sumaD32 entero = 0;
+        for (m entero = 0; m < 5000; m++) {
+            sumaD32 = sumaD32 + m;
+            mostrar(sumaD32);
+        }
+        retorna 0.0;
+    }
+
+    calcularPromedioD2(5.55,6.66);
+
+    contadorE entero = 0;
+    sumaE entero = 0;
+    sumaE2 entero = 0;
+    mensajeE cadena = "Inicio de rutina E";
+    es_validoE bool = verdadero;
+    es_adminE bool = falso;
+
+    contadorE2 entero = 0;
+    sumaE3 entero = 0;
+    sumaE4 entero = 0;
+    mensajeE1 cadena = "Inicio de rutina E extra";
+    es_validoE2 bool = verdadero;
+
+    mostrar(mensajeE);
+
+    resultadoE1 entero = 10 + 2;
+    resultadoE2 entero = 18 - 7;
+    resultadoE3 entero = 3 * 12;
+    resultadoE4 decimal = 36.0 / 3.0;
+
+    mostrar(resultadoE1);
+    mostrar(resultadoE2);
+    mostrar(resultadoE3);
+    mostrar(resultadoE4);
+
+    totalE entero = resultadoE1 + resultadoE2;
+    totalE2 entero = resultadoE3 * resultadoE1;
+    mostrar(totalE);
+
+    if(es_validoE){
+        mensajeE cadena = "Usuario E verificado";
+        mostrar(mensajeE);
+
+        if(es_adminE){
+            mostrar("Acceso E completo");
+        } else {
+            mostrar("Acceso E restringido");
+        }
+    }
+
+    for (p entero = 0; p < 10; p++) {
+        sumaE = sumaE + p;
+        mostrar(sumaE);
+    }
+
+    while(sumaE < 25){
+        sumaE++;
+        mostrar(sumaE);
+    }
+
+    funcion calcularMultiplicacionE entero (k entero, l entero){
+        resultadoE entero = k * l;
+        mostrar(resultadoE);
+        retorna resultadoE;
+    }
+
+    funcion calcularPromedioE decimal (totalE decimal, cantidadE decimal){
+        promedioE decimal = totalE / cantidadE;
+        mostrar(promedioE);
+        retorna promedioE;
+    }
+
+    calcularMultiplicacionE(9, 5);
+    calcularPromedioE(45.0, 9.0);
+
+    funcion esParFuncE bool (numeroE entero){
+        if(numeroE % 2 == 0){
+            retorna verdadero;
+        } else {
+            retorna falso;
+        }
+    }
+
+    parE bool = esParFuncE(8);
+    if(parE){
+        mostrar("El numero es par");
+    } else {
+        mostrar("El numero es impar");
+    }
+
+    for (q entero = 0; q < 3000; q++) {
+        sumaE2 = sumaE2 + q;
+        mostrar(sumaE2);
+    }
+
+    numeroE21 entero = 71;
+    numeroE22 entero = 72;
+    numeroE23 entero = 73;
+    numeroE24 entero = 74;
+    numeroE25 entero = 75;
+
+    resultadonumeroE entero = 71+72;
+    resultadonumeroE1 entero = 72-71;
+    resultadonumeroE2 entero = 73*74;
+    resultadonumeroE3 entero = 75+75;
+    resultadonumeroE4 decimal = 80.5 / 2;
+
+    funcion calcularMultiplicacionE2 entero (k1 entero, l2 entero){
+        resultadoE entero = k1 * l2;
+        mostrar(resultadoE);
+        retorna resultadoE;
+    }
+
+    funcion calcularPromedioE2 decimal (totalE2 decimal, cantidadE2 decimal){
+        promedioE decimal = totalE2 / cantidadE2;
+        mostrar(promedioE);
+        retorna promedioE;
+    }
+
+    funcion calcularPromedioE3 decimal (q numero){
+        sumaE32 entero = 0;
+        for (p entero = 0; p < 3000; p++) {
+            sumaE32 = sumaE32 + p;
+            mostrar(sumaE32);
+        }
+        retorna 0.0;
+    }
+
+    calcularPromedioE2(6.66,7.77);
+
+asd entero = 0;
+limite entero = 10;
+
+while (asd < limite) {
+    mostrar(fibonacci(asd));
+    asd++;
+}
+
+indiceFibo entero = 10;
+limiteFibo entero = 30;
+
+while (indiceFibo < limiteFibo) {
+    mostrar(fibonacci(indiceFibo));
+    indiceFibo++;
+}
+
+for (iF entero = 30; iF < 50; iF++) {
+    mostrar(fibonacci(iF));
+}
+
+jF entero = 50;
+while (jF <= 60) {
+    mostrar(fibonacci(jF));
+    jF = jF + 2;
+}
+
+funcion sumaRecursiva entero(n entero) {
+    if (n == 0) {
+        retorna 0;
+    } else {
+        retorna n + sumaRecursiva(n - 1);
+    }
+}
+
+funcion productoRecursivo entero(n entero, m entero) {
+    if (m == 0) {
+        retorna 0;
+    } else {
+        retorna n + productoRecursivo(n, m - 1);
+    }
+}
+
+funcion potenciaRecursiva entero(base entero, exp entero) {
+    if (exp == 0) {
+        retorna 1;
+    } else {
+        retorna base * potenciaRecursiva(base, exp - 1);
+    }
+}
+
+funcion cuentaAtras entero(n entero) {
+    if (n == 0) {
+        retorna 0;
+    } else {
+        mostrar(n);
+        retorna cuentaAtras(n - 1);
+    }
+}
+
+funcion combinatoria entero(n entero, k entero) {
+    if (k == 0 || k == n) {
+        retorna 1;
+    } else {
+        retorna combinatoria(n - 1, k - 1) + combinatoria(n - 1, k);
+    }
+}
+
+asd2 entero = 0;
+limite2 entero = 10000;
+
+while (asd2 < limite2) {
+    mostrar(fibonacci(asd2 % 30)); 
+    asd2++;
+}
+
+indiceFibo2 entero = 10000;
+limiteFibo2 entero = 20000;
+
+while (indiceFibo2 < limiteFibo2) {
+    mostrar(fibonacci(indiceFibo2 % 30));
+    indiceFibo2++;
+}
+
+for (iF2 entero = 20000; iF2 < 30000; iF2++) {
+    mostrar(fibonacci(iF2 % 30));
+}
+
+jF2 entero = 30000;
+while (jF2 <= 40000) {
+    mostrar(fibonacci(jF2 % 30));
+    jF2 = jF2 + 2;
+}
+
+
+mostrar(sumaRecursiva(5000));
+mostrar(productoRecursivo(100, 50));
+mostrar(potenciaRecursiva(2, 20));
+cuentaAtras(1000);
+mostrar(combinatoria(20, 10));
+
+
+for (x2 entero = 0; x2 < 10000; x2++) {
+    mostrar(sumaRecursiva(x2 % 20));
+}
+
+for (y2 entero = 0; y2 < 10000; y2++) {
+    mostrar(productoRecursivo(y2 % 10, 10));
+}
+
+for (z2 entero = 0; z2 < 10000; z2++) {
+    mostrar(potenciaRecursiva(3, z2 % 10));
+}
+
+for (w2 entero = 0; w2 < 10000; w2++) {
+    mostrar(combinatoria(10, w2 % 10));
+}
+
+
+sumaExtra1 entero = 0;
+for (a entero = 0; a < 10000; a++) {
+    sumaExtra1 = sumaExtra1 + a;
+    mostrar(sumaExtra1);
+}
+
+sumaExtra2 entero = 0;
+for (b entero = 0; b < 10000; b++) {
+    sumaExtra2 = sumaExtra2 + b;
+    mostrar(sumaExtra2);
+}
+
+sumaExtra3 entero = 0;
+for (c entero = 0; c < 10000; c++) {
+    sumaExtra3 = sumaExtra3 + c;
+    mostrar(sumaExtra3);
+}
+
+sumaExtra4 entero = 0;
+for (d entero = 0; d < 10000; d++) {
+    sumaExtra4 = sumaExtra4 + d;
+    mostrar(sumaExtra4);
+}
+
 }

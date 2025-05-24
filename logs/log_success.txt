@@ -348,3 +348,11 @@
 2025-05-16 23:36:53,391 - INFO - Análisis exitoso para good-input-files/fibonacci.txt
 2025-05-16 23:37:41,443 - INFO - Análisis exitoso para good-input-files/fibonacci.txt
 2025-05-24 08:23:31,688 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
+2025-05-24 09:37:49,809 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
+2025-05-24 09:39:25,003 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
+2025-05-24 09:41:17,662 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
+2025-05-24 09:44:20,373 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
+2025-05-24 09:45:57,196 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
+2025-05-24 09:48:31,244 - INFO - Análisis exitoso para good-input-files/funcion_suma.txt
+2025-05-24 09:48:42,742 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt
+2025-05-24 09:55:35,635 - INFO - Análisis exitoso para good-input-files/gramatica-pesada.txt

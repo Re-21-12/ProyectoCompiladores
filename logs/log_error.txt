@@ -819,3 +819,9 @@ opt: Did you mean '--consthoist'?
 2025-05-16 22:22:27,311 - ERROR - [31m✖ Error inesperado: cannot store [18 x i8]* to i8**: mismatching types[0m
 2025-05-16 22:37:49,751 - ERROR - [31m✖ Error inesperado: cannot store [18 x i8]* to i8**: mismatching types[0m
 2025-05-16 22:39:17,539 - ERROR - [31m✖ Error inesperado: 'IntType' object has no attribute 'is_array'[0m
+2025-05-24 09:29:50,848 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-24 09:33:46,975 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-24 09:35:41,052 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-24 09:37:18,447 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-24 09:52:03,100 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-24 09:54:02,900 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m

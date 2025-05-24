@@ -175,6 +175,41 @@ for.cond:                                         ; preds = %for.cond, %entry
   br label %for.cond
 }
 
+; Function Attrs: nofree norecurse nosync nounwind memory(none)
+define noundef i32 @factorial(i32 %.1) local_unnamed_addr #4 {
+entry:
+  %cmptmp = icmp sgt i32 %.1, 0
+  br i1 %cmptmp, label %for.cond, label %for.end
+
+for.cond:                                         ; preds = %entry, %for.cond
+  br label %for.cond
+
+for.end:                                          ; preds = %entry
+  ret i32 1
+}
+
+; Function Attrs: nofree nounwind
+define i32 @calcularMultiplicacionD(i32 %.1, i32 %.2) local_unnamed_addr #0 {
+entry:
+  %multmp = mul i32 %.2, %.1
+  %.8 = tail call i32 (ptr, ...) @printf(ptr nonnull dereferenceable(1) @fmt.2, i32 %multmp)
+  ret i32 %multmp
+}
+
+; Function Attrs: nofree nounwind
+define double @calcularPromedioD(double %.1, double %.2) local_unnamed_addr #0 {
+entry:
+  %divtmp = fdiv double %.1, %.2
+  %.8 = tail call i32 (ptr, ...) @printf(ptr nonnull dereferenceable(1) @fmt.3, double %divtmp)
+  ret double %divtmp
+}
+
+; Function Attrs: mustprogress nofree norecurse nosync nounwind willreturn memory(none)
+define noundef i1 @esImparFuncD(i32 %.1) local_unnamed_addr #3 {
+entry:
+  ret i1 true
+}
+
 ; Function Attrs: nofree nounwind
 declare noundef i32 @puts(ptr nocapture noundef readonly) local_unnamed_addr #0
 
@@ -182,3 +217,4 @@ attributes #0 = { nofree nounwind }
 attributes #1 = { nofree noreturn nounwind }
 attributes #2 = { nofree noreturn nosync nounwind memory(none) }
 attributes #3 = { mustprogress nofree norecurse nosync nounwind willreturn memory(none) }
+attributes #4 = { nofree norecurse nosync nounwind memory(none) }

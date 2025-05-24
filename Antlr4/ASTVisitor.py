@@ -44,16 +44,25 @@ class ASTVisitor(ExprVisitor):
         conditions = []
         blocks = []
         
-        # Process if and else if blocks
-        if_blocks = [ctx.bloque_condicional(0)] + list(ctx.bloque_condicional()[1:])
-        for cond_block in if_blocks:
-            conditions.append(self.visit(cond_block.expr()))
-            blocks.append(self.visit(cond_block.bloque_de_sentencia()))
+        # Procesar los bloques condicionales
+        if ctx.bloque_condicional():
+            for cond_block in ctx.bloque_condicional():
+                # Verifica que el bloque de sentencia exista antes de visitarlo
+                bloque_sentencia = cond_block.bloque_de_sentencia()
+                if bloque_sentencia is not None:
+                    blocks.append(self.visit(bloque_sentencia))
+                else:
+                    blocks.append(ASTNode('Empty'))
+                conditions.append(self.visit(cond_block.expr()))
         
-        # Process else block if exists
+        # Procesar else si existe
         else_block = None
         if ctx.ELSE():
-            else_block = self.visit(ctx.bloque_de_sentencia())
+            bloque_else = ctx.bloque_de_sentencia()
+            if bloque_else is not None:
+                else_block = self.visit(bloque_else)
+            else:
+                else_block = ASTNode('Empty')
         
         nodes = [
             ASTNode('Conditions', children=conditions),
@@ -63,7 +72,7 @@ class ASTVisitor(ExprVisitor):
             nodes.append(else_block)
         
         return ASTNode('IfStatement', children=nodes)
-    
+        
     def visitSentencia_while(self, ctx):
         cond_block = ctx.bloque_condicional()
         condition = self.visit(cond_block.expr())
@@ -80,21 +89,23 @@ class ASTVisitor(ExprVisitor):
     def visitDeclaracion_funcion(self, ctx):
         name = ctx.VARIABLE().getText()
         return_type = self.visit(ctx.tipo())
-        
+
         params = []
         if ctx.parametros():
             params = [self.visit(param) for param in ctx.parametros().parametro()]
-        
-        body = self.visit(ctx.bloque())
-        
+
+        body = self.visit(ctx.bloque()) if ctx.bloque() else None
+
         return_expr = None
-        if ctx.retorna():
+        if ctx.retorna() is not None and ctx.retorna().expr() is not None:
             return_expr = self.visit(ctx.retorna().expr())
-        
-        children = [return_type, ASTNode('Parameters', children=params), body]
+
+        children = [return_type, ASTNode('Parameters', children=params)]
+        if body:
+            children.append(body)
         if return_expr:
             children.append(ASTNode('ReturnStatement', children=[return_expr]))
-        
+
         return ASTNode('FunctionDecl', children=children, value=name)
     
     def visitFuncion_llamada(self, ctx):
@@ -116,10 +127,15 @@ class ASTVisitor(ExprVisitor):
         param_type = self.visit(ctx.tipo())
         return ASTNode('Parameter', children=[param_type], value=name)
     
-    def visitBloque_condicional(self, ctx):
-        # This is handled directly in visitSentencia_if and visitSentencia_while
-        pass
-    
+    def visitBloque(self, ctx):
+        statements = []
+        for child in ctx.sentencia():
+            if child is not None:
+                result = self.visit(child)
+                if result is not None:
+                    statements.append(result)
+        return ASTNode('Block', children=statements)
+
     def visitBloque_de_sentencia(self, ctx):
         if ctx.sentencia():
             return self.visit(ctx.sentencia())

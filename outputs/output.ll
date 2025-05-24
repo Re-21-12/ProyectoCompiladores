@@ -501,6 +501,110 @@ for.end.5:
   %"divtmp.5" = fdiv double 0x404e400000000000, %".220"
   store double %"divtmp.5", double* %"resultadonumeroC4"
   %"call_calcularPromedioC2" = call double @"calcularPromedioC2"(double 0x4011cccccccccccd, double 0x401628f5c28f5c29)
+  %"contadorD" = alloca i32
+  store i32 0, i32* %"contadorD"
+  %"sumaD" = alloca i32
+  store i32 0, i32* %"sumaD"
+  %"sumaD2" = alloca i32
+  store i32 0, i32* %"sumaD2"
+  %"mensajeD" = alloca i8*
+  %"str.1.9_ptr" = getelementptr [19 x i8], [19 x i8]* @"str.1.9", i32 0, i32 0
+  store i8* %"str.1.9_ptr", i8** %"mensajeD"
+  %"es_validoD" = alloca i1
+  store i1 1, i1* %"es_validoD"
+  %"es_adminD" = alloca i1
+  store i1 0, i1* %"es_adminD"
+  %"contadorD2" = alloca i32
+  store i32 0, i32* %"contadorD2"
+  %"sumaD3" = alloca i32
+  store i32 0, i32* %"sumaD3"
+  %"sumaD4" = alloca i32
+  store i32 0, i32* %"sumaD4"
+  %"mensajeD1" = alloca i8*
+  %"str.1.10_ptr" = getelementptr [25 x i8], [25 x i8]* @"str.1.10", i32 0, i32 0
+  store i8* %"str.1.10_ptr", i8** %"mensajeD1"
+  %"es_validoD2" = alloca i1
+  store i1 1, i1* %"es_validoD2"
+  %"mensajeD.val" = load i8*, i8** %"mensajeD"
+  %".233" = bitcast [4 x i8]* @"fmt.1" to i8*
+  %".234" = call i32 (i8*, ...) @"printf"(i8* %".233", i8* %"mensajeD.val")
+  %"resultadoD1" = alloca i32
+  %"addtmp.18" = add i32 9, 3
+  store i32 %"addtmp.18", i32* %"resultadoD1"
+  %"resultadoD2" = alloca i32
+  %"subtmp.6" = sub i32 15, 6
+  store i32 %"subtmp.6", i32* %"resultadoD2"
+  %"resultadoD3" = alloca i32
+  %"multmp.9" = mul i32 4, 11
+  store i32 %"multmp.9", i32* %"resultadoD3"
+  %"resultadoD4" = alloca double
+  %"divtmp.6" = fdiv double 0x4046000000000000, 0x4010000000000000
+  store double %"divtmp.6", double* %"resultadoD4"
+  %"resultadoD1.val" = load i32, i32* %"resultadoD1"
+  %".239" = bitcast [4 x i8]* @"fmt.2" to i8*
+  %".240" = call i32 (i8*, ...) @"printf"(i8* %".239", i32 %"resultadoD1.val")
+  %"resultadoD2.val" = load i32, i32* %"resultadoD2"
+  %".241" = bitcast [4 x i8]* @"fmt.2" to i8*
+  %".242" = call i32 (i8*, ...) @"printf"(i8* %".241", i32 %"resultadoD2.val")
+  %"resultadoD3.val" = load i32, i32* %"resultadoD3"
+  %".243" = bitcast [4 x i8]* @"fmt.2" to i8*
+  %".244" = call i32 (i8*, ...) @"printf"(i8* %".243", i32 %"resultadoD3.val")
+  %"resultadoD4.val" = load double, double* %"resultadoD4"
+  %".245" = bitcast [4 x i8]* @"fmt.3" to i8*
+  %".246" = call i32 (i8*, ...) @"printf"(i8* %".245", double %"resultadoD4.val")
+  %"totalD" = alloca i32
+  %"resultadoD1.val.1" = load i32, i32* %"resultadoD1"
+  %"resultadoD2.val.1" = load i32, i32* %"resultadoD2"
+  %"addtmp.19" = add i32 %"resultadoD1.val.1", %"resultadoD2.val.1"
+  store i32 %"addtmp.19", i32* %"totalD"
+  %"totalD2" = alloca i32
+  %"resultadoD3.val.1" = load i32, i32* %"resultadoD3"
+  %"resultadoD1.val.2" = load i32, i32* %"resultadoD1"
+  %"multmp.10" = mul i32 %"resultadoD3.val.1", %"resultadoD1.val.2"
+  store i32 %"multmp.10", i32* %"totalD2"
+  %"totalD.val" = load i32, i32* %"totalD"
+  %".249" = bitcast [4 x i8]* @"fmt.2" to i8*
+  %".250" = call i32 (i8*, ...) @"printf"(i8* %".249", i32 %"totalD.val")
+  %"call_factorial" = call i32 @"factorial"(i32 5)
+  %".251" = bitcast [4 x i8]* @"fmt.2" to i8*
+  %".252" = call i32 (i8*, ...) @"printf"(i8* %".251", i32 %"call_factorial")
+  %".253" = icmp ne i32 0, 0
+  br i1 %".253", label %"if.then.6", label %"if.end.6"
+if.then.6:
+  br label %"if.end.6"
+if.end.6:
+  %"m" = alloca i32
+  store i32 0, i32* %"m"
+  br label %"for.cond.6"
+for.cond.6:
+  %"m.val" = load i32, i32* %"m"
+  %"cmptmp.10" = icmp slt i32 %"m.val", 15
+  br i1 %"cmptmp.10", label %"for.body.6", label %"for.end.6"
+for.body.6:
+  %"sumaD.val" = load i32, i32* %"sumaD"
+  %"m.val.1" = load i32, i32* %"m"
+  %"addtmp.20" = add i32 %"sumaD.val", %"m.val.1"
+  store i32 %"addtmp.20", i32* %"sumaD"
+  %"sumaD.val.1" = load i32, i32* %"sumaD"
+  %".260" = bitcast [4 x i8]* @"fmt.2" to i8*
+  %".261" = call i32 (i8*, ...) @"printf"(i8* %".260", i32 %"sumaD.val.1")
+  br label %"for.update.6"
+for.update.6:
+  br label %"for.cond.6"
+for.end.6:
+  br label %"while.cond.4"
+while.cond.4:
+  %"sumaD.val.2" = load i32, i32* %"sumaD"
+  %"cmptmp.11" = icmp slt i32 %"sumaD.val.2", 30
+  br i1 %"cmptmp.11", label %"while.body.4", label %"while.end.4"
+while.body.4:
+  %"sumaD.val.3" = load i32, i32* %"sumaD"
+  %".266" = bitcast [4 x i8]* @"fmt.2" to i8*
+  %".267" = call i32 (i8*, ...) @"printf"(i8* %".266", i32 %"sumaD.val.3")
+  br label %"while.cond.4"
+while.end.4:
+  %"call_calcularMultiplicacionD" = call i32 @"calcularMultiplicacionD"(i32 8, i32 6)
+  %"call_calcularPromedioD" = call double @"calcularPromedioD"(double 0x4048000000000000, double 0x4020000000000000)
   ret i32 0
 }
 
@@ -893,4 +997,85 @@ for.update:
   br label %"for.cond"
 for.end:
   ret double              0x0
+}
+
+@"str.1.9" = internal constant [19 x i8] c"Inicio de rutina D\00"
+@"str.1.10" = internal constant [25 x i8] c"Inicio de rutina D extra\00"
+define i32 @"factorial"(i32 %".1")
+{
+entry:
+  %"n.addr" = alloca i32
+  store i32 %".1", i32* %"n.addr"
+  %"resultadoF" = alloca i32
+  store i32 1, i32* %"resultadoF"
+  %"i" = alloca i32
+  store i32 1, i32* %"i"
+  br label %"for.cond"
+for.cond:
+  %"i.val" = load i32, i32* %"i"
+  %"n.val" = load i32, i32* %"n.addr"
+  %"cmptmp" = icmp sle i32 %"i.val", %"n.val"
+  br i1 %"cmptmp", label %"for.body", label %"for.end"
+for.body:
+  %"resultadoF.val" = load i32, i32* %"resultadoF"
+  %"i.val.1" = load i32, i32* %"i"
+  %"multmp" = mul i32 %"resultadoF.val", %"i.val.1"
+  store i32 %"multmp", i32* %"resultadoF"
+  br label %"for.update"
+for.update:
+  br label %"for.cond"
+for.end:
+  %"resultadoF.val.1" = load i32, i32* %"resultadoF"
+  ret i32 %"resultadoF.val.1"
+}
+
+define i32 @"calcularMultiplicacionD"(i32 %".1", i32 %".2")
+{
+entry:
+  %"i.addr" = alloca i32
+  store i32 %".1", i32* %"i.addr"
+  %"j.addr" = alloca i32
+  store i32 %".2", i32* %"j.addr"
+  %"resultadoD" = alloca i32
+  %"i.val" = load i32, i32* %"i.addr"
+  %"j.val" = load i32, i32* %"j.addr"
+  %"multmp" = mul i32 %"i.val", %"j.val"
+  store i32 %"multmp", i32* %"resultadoD"
+  %"resultadoD.val" = load i32, i32* %"resultadoD"
+  %".7" = bitcast [4 x i8]* @"fmt.2" to i8*
+  %".8" = call i32 (i8*, ...) @"printf"(i8* %".7", i32 %"resultadoD.val")
+  %"resultadoD.val.1" = load i32, i32* %"resultadoD"
+  ret i32 %"resultadoD.val.1"
+}
+
+define double @"calcularPromedioD"(double %".1", double %".2")
+{
+entry:
+  %"totalD.addr" = alloca double
+  store double %".1", double* %"totalD.addr"
+  %"cantidadD.addr" = alloca double
+  store double %".2", double* %"cantidadD.addr"
+  %"promedioD" = alloca double
+  %"totalD.val" = load double, double* %"totalD.addr"
+  %"cantidadD.val" = load double, double* %"cantidadD.addr"
+  %"divtmp" = fdiv double %"totalD.val", %"cantidadD.val"
+  store double %"divtmp", double* %"promedioD"
+  %"promedioD.val" = load double, double* %"promedioD"
+  %".7" = bitcast [4 x i8]* @"fmt.3" to i8*
+  %".8" = call i32 (i8*, ...) @"printf"(i8* %".7", double %"promedioD.val")
+  %"promedioD.val.1" = load double, double* %"promedioD"
+  ret double %"promedioD.val.1"
+}
+
+define i1 @"esImparFuncD"(i32 %".1")
+{
+entry:
+  %"numeroD.addr" = alloca i32
+  store i32 %".1", i32* %"numeroD.addr"
+  %".4" = icmp ne i32 0, 0
+  br i1 %".4", label %"if.then", label %"if.end"
+if.then:
+  br label %"if.end"
+if.end:
+  ret i1 1
 }
