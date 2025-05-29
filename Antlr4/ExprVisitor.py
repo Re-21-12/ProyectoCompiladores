@@ -134,5 +134,10 @@ class ExprVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ExprParser#sentencia_switch.
+    def visitSentencia_switch(self, ctx:ExprParser.Sentencia_switchContext):
+        return self.visitChildren(ctx)
+
+
 
 del ExprParser

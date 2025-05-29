@@ -171,40 +171,33 @@ class ASTVisitor(ExprVisitor):
         return ASTNode('PrintStatement', children=[expr])
     
     def visitExpr(self, ctx):
-        # Handle comparison operations
-        if ctx.getChildCount() == 3 and (
-            ctx.MENOR_QUE() or ctx.MAYOR_QUE() or 
-            ctx.MENOR_IGUAL_QUE() or ctx.MAYOR_IGUAL_QUE() or 
-            ctx.IGUAL() or ctx.DIFERENTE()
-        ):
-            left = self.visit(ctx.expr(0))
-            right = self.visit(ctx.expr(1))
-            op = ctx.getChild(1).getText()
-            return ASTNode('BinaryOp', children=[left, right], value=op)
-        
-        # Handle addition/subtraction
-        if ctx.getChildCount() >= 3 and (ctx.MAS() or ctx.MENOS()):
-            left = self.visit(ctx.term(0))
-            right = self.visit(ctx.term(1))
-            op = ctx.getChild(1).getText()
-            return ASTNode('BinaryOp', children=[left, right], value=op)
-        
-        # Handle single term
+        if ctx.getChildCount() == 3:
+            left = self.visit(ctx.getChild(0))
+            operator = ctx.getChild(1).getText()
+            right = self.visit(ctx.getChild(2))
+
+            if operator in {'&&', '||', '%', '<', '>', '<=', '>=', '==', '!='}:
+                return ASTNode('BinaryOp', children=[left, right], value=operator)
+
+        # Manejo de términos
         return self.visit(ctx.term(0))
     
     def visitTerm(self, ctx):
-        # Handle multiplication/division
-        if ctx.getChildCount() >= 3 and (ctx.MULTIPLICACION() or ctx.DIVISION()):
-            left = self.visit(ctx.factor(0))
-            right = self.visit(ctx.factor(1))
-            op = ctx.getChild(1).getText()
-            return ASTNode('BinaryOp', children=[left, right], value=op)
-        
-        # Handle single factor
+        if ctx.getChildCount() == 3:
+            left = self.visit(ctx.getChild(0))
+            operator = ctx.getChild(1).getText()
+            right = self.visit(ctx.getChild(2))
+
+            if operator in {'*', '/', '^'}:
+                return ASTNode('BinaryOp', children=[left, right], value=operator)
+
         return self.visit(ctx.factor(0))
     
     def visitFactor(self, ctx):
-        if ctx.NUMERO():
+        if ctx.RAIZ():
+            expr = self.visit(ctx.expr())
+            return ASTNode('UnaryOp', children=[expr], value='raiz')
+        elif ctx.NUMERO():
             return ASTNode('Literal', value=int(ctx.NUMERO().getText()))
         elif ctx.DECIMAL():
             return ASTNode('Literal', value=float(ctx.DECIMAL().getText()))
@@ -242,3 +235,23 @@ class ASTVisitor(ExprVisitor):
                          children=[expr],
                          value=var_name)
         return ASTNode('Empty')
+
+    def visitSentencia_switch(self, ctx):
+        """Maneja la sentencia switch."""
+        switch_expr = self.visit(ctx.expr())
+        cases = []
+        default_block = None
+
+        for case_ctx in ctx.getChildren():
+            if case_ctx.getText().startswith("case"):
+                case_expr = self.visit(case_ctx.expr())
+                case_block = self.visit(case_ctx.bloque())
+                cases.append(ASTNode('Case', children=[case_expr, case_block]))
+            elif case_ctx.getText() == "default":
+                default_block = self.visit(case_ctx.bloque())
+
+        children = [ASTNode('SwitchExpr', children=[switch_expr])] + cases
+        if default_block:
+            children.append(ASTNode('Default', children=[default_block]))
+
+        return ASTNode('SwitchStatement', children=children)

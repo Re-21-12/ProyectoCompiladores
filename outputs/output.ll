@@ -22,6 +22,8 @@ while.body:
   %"call_fibonacci" = call i32 @"fibonacci"(i32 %"i.val.1")
   %".6" = bitcast [4 x i8]* @"fmt.0" to i8*
   %".7" = call i32 (i8*, ...) @"printf"(i8* %".6", i32 %"call_fibonacci")
+  %"i.val.2" = load i32, i32* %"i"
+  store i32 %"i.val.2", i32* %"i"
   br label %"while.cond"
 while.end:
   ret i32 0
@@ -40,13 +42,8 @@ if.end:
   ret i32 0
 if.else:
   %"n.val" = load i32, i32* %"n.addr"
-  %"subtmp" = sub i32 %"n.val", 1
-  %"call_fibonacci" = call i32 @"fibonacci"(i32 %"subtmp")
-  %"n.val.1" = load i32, i32* %"n.addr"
-  %"subtmp.1" = sub i32 %"n.val.1", 2
-  %"call_fibonacci.1" = call i32 @"fibonacci"(i32 %"subtmp.1")
-  %"addtmp" = add i32 %"call_fibonacci", %"call_fibonacci.1"
-  ret i32 %"addtmp"
+  %"call_fibonacci" = call i32 @"fibonacci"(i32 %"n.val")
+  ret i32 %"call_fibonacci"
 }
 
 @"fmt.0" = internal constant [4 x i8] c"%d\0a\00"

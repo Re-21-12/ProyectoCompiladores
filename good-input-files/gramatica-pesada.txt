@@ -453,7 +453,7 @@ resultadonumeroC4 decimal = 60.5 / 2;
     calcularPromedioD(48.0, 8.0);
 
     funcion esImparFuncD bool (numeroD entero){
-        if(numeroD % 2 != 0){
+        if(numeroD ){
             retorna verdadero;
         } else {
             retorna falso;
@@ -573,7 +573,7 @@ resultadonumeroC4 decimal = 60.5 / 2;
     calcularPromedioE(45.0, 9.0);
 
     funcion esParFuncE bool (numeroE entero){
-        if(numeroE % 2 == 0){
+        if(numeroE ){
             retorna verdadero;
         } else {
             retorna falso;

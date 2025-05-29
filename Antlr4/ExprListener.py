@@ -233,5 +233,14 @@ class ExprListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExprParser#sentencia_switch.
+    def enterSentencia_switch(self, ctx:ExprParser.Sentencia_switchContext):
+        pass
+
+    # Exit a parse tree produced by ExprParser#sentencia_switch.
+    def exitSentencia_switch(self, ctx:ExprParser.Sentencia_switchContext):
+        pass
+
+
 
 del ExprParser

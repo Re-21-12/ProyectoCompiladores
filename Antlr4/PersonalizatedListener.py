@@ -45,7 +45,7 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
     def exitArgumentos(self, ctx: ExprParser.ArgumentosContext): pass
     def enterBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext): pass
     def exitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext): pass
-    def enterFactor(self, ctx:ExprParser.FactorContext): pass
+    def enterFactor(self, ctx: ExprParser.FactorContext): pass
     def exitFactor(self, ctx:ExprParser.FactorContext): pass
 
     # ----------------------- Important Rule Implementations -----------------------
@@ -54,14 +54,15 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
         if not self.current_function:
             self.report_error(ctx, "Error: 'retorna' fuera de una función")
             return
-        
+
+        print(f"Procesando 'retorna' en la función '{self.current_function}'")
+
         expected_type = self.symbol_table.get_function_return_type(self.current_function)
         expr_type = self._get_type_from_node(ctx.expr())
-        
+
         if expr_type is None:
-            # Si no podemos determinar el tipo, intentar inferirlo
             expr_type = self._infer_type_from_expression(ctx.expr())
-        
+
         if expected_type != expr_type:
             self.report_error(ctx, 
                 f"Error: La función '{self.current_function}' debe retornar '{expected_type}' " +
@@ -90,23 +91,24 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
     # En el Listener (corrección para funciones):
     def enterDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
         nombre_funcion = ctx.VARIABLE().getText()
-        self.current_function = nombre_funcion
         tipo_retorno = ctx.tipo().getText()
-        
+
+        self.current_function = nombre_funcion  # Establecer la función actual
+
         params = []
         if ctx.parametros():
             for param in ctx.parametros().parametro():
                 param_name = param.VARIABLE().getText()
                 param_type = param.tipo().getText()
+                if not self._is_valid_identifier(param_name):
+                    self.report_error(ctx, f"Error: Nombre de parámetro '{param_name}' no válido en la función '{nombre_funcion}'.")
+                if param_name in [p[0] for p in params]:
+                    self.report_error(ctx, f"Error: Parámetro duplicado '{param_name}' en la función '{nombre_funcion}'.")
                 params.append((param_name, param_type))
-        
-        # Registrar la función ANTES de procesar el cuerpo (para permitir recursión)
+
         self.symbol_table.define_function(nombre_funcion, params, tipo_retorno)
-        
-        # Entrar al nuevo scope
         self.symbol_table.enter_scope()
-        
-        # Registrar parámetros
+
         for param_name, param_type in params:
             self.symbol_table.define_variable(param_name, param_type)
 
@@ -137,14 +139,24 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
 
     def enterFuncion_llamada_expr(self, ctx: ExprParser.Funcion_llamada_exprContext):
         nombre_funcion = ctx.VARIABLE().getText()
-        
-        if not self.symbol_table.get_function_return_type(nombre_funcion):
-            self.report_error(ctx, f"Error: Función '{nombre_funcion}' no definida")
+        funcion_info = self.symbol_table.get_function(nombre_funcion)
+
+        if funcion_info is None:
+            self.report_error(ctx, f"Error: Función '{nombre_funcion}' no definida.")
             return
-        
-        return_type = self.symbol_table.get_function_return_type(nombre_funcion)
-        ctx.type = return_type
-        print(f"Llamada a función '{nombre_funcion}' retorna: {return_type}")
+
+        parametros = funcion_info['params']
+        argumentos = ctx.argumentos().expr() if ctx.argumentos() else []
+
+        if len(argumentos) != len(parametros):
+            self.report_error(ctx, f"Error: La función '{nombre_funcion}' espera {len(parametros)} argumentos pero se proporcionaron {len(argumentos)}.")
+            return
+
+        for arg, param in zip(argumentos, parametros):
+            arg_type = self._infer_type_from_expression(arg)
+            param_type = param[1]
+            if arg_type != param_type:
+                self.report_error(ctx, f"Error: Tipo incompatible en el argumento '{arg.getText()}'. Se esperaba '{param_type}' pero se encontró '{arg_type}'.")
 
     def exitFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext): pass
 
@@ -156,23 +168,21 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
 
     def enterDeclaracion(self, ctx: ExprParser.DeclaracionContext):
         tipo = ctx.tipo().getText()
-        if tipo is None:
-            print(f"Error: Tipo desconocido '{tipo}' en la declaración.")
-            return
-        
         variable = ctx.VARIABLE()
-        if variable is None:
-            print("Error: Variable no encontrada en la declaración.")
-            return
-        
         nombre_variable = variable.getText()
+
+        if not self._is_valid_identifier(nombre_variable):
+            self.report_error(ctx, f"Error: Nombre de variable '{nombre_variable}' no válido.")
+            return
+
         if self.symbol_table.get_variable(nombre_variable) is not None:
-            print(f"Error: Variable '{nombre_variable}' ya declarada.")
+            self.report_error(ctx, f"Error: Variable '{nombre_variable}' ya declarada.")
             return
-        
-        if ctx.ASIGNACION() and tipo is None:
-            self.report_error(ctx, f"Error: No se pudo determinar el tipo de la expresión en la asignación de '{nombre_variable}'.")
-            return
+
+        if ctx.expr():
+            expr_type = self._infer_type_from_expression(ctx.expr())
+            if expr_type != tipo:
+                self.report_error(ctx, f"Error: Tipo incompatible. Se esperaba '{tipo}' pero se encontró '{expr_type}'.")
 
         self.symbol_table.define_variable(nombre_variable, tipo)
 
@@ -180,29 +190,30 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
 
     def enterReasignacion(self, ctx: ExprParser.ReasignacionContext):
         nombre_variable = ctx.VARIABLE().getText()
-        print(f'[WARN]: Reasignando variable {nombre_variable}')
-        if self.symbol_table.get_variable(nombre_variable) is None:
-            self.report_error(ctx,f"Error: Variable '{nombre_variable}' no declarada antes de su uso.")
+        variable_type = self.symbol_table.get_variable_type(nombre_variable)
+
+        if variable_type is None:
+            self.report_error(ctx, f"Error: Variable '{nombre_variable}' no declarada antes de su uso.")
             return
+
         if ctx.expr():
-            valor = ctx.expr().getText()
-            if (valor.startswith('"') and valor.endswith('"')) or (valor.startswith("'") and valor.endswith("'")):
-                contenido = valor.strip('"\'').strip()
-                if not self.validar_cadena_valida(contenido):
-                    corregido = self.limpiar_cadena(contenido)
-                    self.report_error(ctx, f"Advertencia: La cadena '{contenido}' contiene caracteres no válidos. Se corrigió a '{corregido}'")
+            expr_type = self._infer_type_from_expression(ctx.expr())
+            if expr_type != variable_type:
+                self.report_error(ctx, f"Error: Tipo incompatible. La variable '{nombre_variable}' es de tipo '{variable_type}' pero se intentó asignar un valor de tipo '{expr_type}'.")
 
     def exitReasignacion(self, ctx: ExprParser.ReasignacionContext): pass
 
     def enterActualizacion(self, ctx: ExprParser.ActualizacionContext):
         nombre_variable = ctx.VARIABLE().getText()
-        tipo = self.symbol_table.get_variable_type(nombre_variable)
-        
-        print(f"[WARN] Actualizando variable: {nombre_variable}")
-        print(tipo)
-        if tipo is None:
-            self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque aún no ha sido declarada")
+        variable_type = self.symbol_table.get_variable_type(nombre_variable)
+
+        if variable_type is None:
+            self.report_error(ctx, f"Error: No se puede actualizar la variable '{nombre_variable}' porque aún no ha sido declarada.")
             return
+
+        if variable_type not in {'entero', 'decimal'}:
+            self.report_error(ctx, f"Error: Solo se pueden actualizar variables de tipo numérico ('entero' o 'decimal'). La variable '{nombre_variable}' es de tipo '{variable_type}'.")
+
 
     def exitActualizacion(self, ctx:ExprParser.ActualizacionContext): pass
 
@@ -267,46 +278,26 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
             operator = ctx.getChild(1).getText()
             right = ctx.getChild(2)
 
-            # Obtener tipos de los operandos
-            left_type = self._get_type_from_node(left)
-            right_type = self._get_type_from_node(right)
-            
-            print(f"Expr operation: {left.getText()}({left_type}) {operator} {right.getText()}({right_type})")
+            left_type = self._infer_type_from_expression(left)
+            right_type = self._infer_type_from_expression(right)
 
-            # Manejar casos especiales para funciones
-            if left_type is None:
-                left_type = self._infer_function_return_type(left)
-            if right_type is None:
-                right_type = self._infer_function_return_type(right)
+            if operator in ['+', '-', '*', '/']:
+                if not (self._is_numeric_type(left_type) and self._is_numeric_type(right_type)):
+                    self.report_error(ctx, f"Error: Operación '{operator}' no válida entre '{left_type}' y '{right_type}'.")
+            elif operator == '%':
+                if left_type != 'entero' or right_type != 'entero':
+                    self.report_error(ctx, f"Error: Operación '%' solo válida entre enteros, pero se encontró '{left_type}' y '{right_type}'.")
+            elif operator in ['&&', '||']:
+                if left_type != 'bool' or right_type != 'bool':
+                    self.report_error(ctx, f"Error: Operación lógica '{operator}' solo válida entre booleanos, pero se encontró '{left_type}' y '{right_type}'.")
+            elif operator in ['<', '>', '<=', '>=']:
+                if not (self._is_numeric_type(left_type) and self._is_numeric_type(right_type)):
+                    self.report_error(ctx, f"Error: Operación '{operator}' no válida entre '{left_type}' y '{right_type}'.")
+            elif operator in ['==', '!=']:
+                if left_type != right_type:
+                    self.report_error(ctx, f"Error: Comparación '{operator}' no válida entre '{left_type}' y '{right_type}'.")
 
-            # Validar tipos
-            if left_type == "no_declarada" or right_type == "no_declarada":
-                undeclared = []
-                if left_type == "no_declarada":
-                    undeclared.append(left.getText())
-                if right_type == "no_declarada":
-                    undeclared.append(right.getText())
-                if undeclared:
-                    self.report_error(ctx, f"Error: Variable(s) no declarada(s) {tuple(undeclared)}")
-                return
 
-            # Determinar tipo resultante
-            if operator == '+':
-                if left_type == 'cadena' and right_type == 'cadena':
-                    ctx.type = 'cadena'
-                elif self._is_numeric_type(left_type) and self._is_numeric_type(right_type):
-                    ctx.type = 'decimal' if 'decimal' in (left_type, right_type) else 'entero'
-                else:
-                    self.report_error(ctx, f"Operación '+' no válida entre {left_type} y {right_type}")
-            elif operator in ['-', '*', '/']:
-                if self._is_numeric_type(left_type) and self._is_numeric_type(right_type):
-                    ctx.type = 'decimal' if 'decimal' in (left_type, right_type) else 'entero'
-                else:
-                    self.report_error(ctx, f"Operación '{operator}' no válida entre {left_type} y {right_type}")
-            elif operator in ['==', '!=', '<', '>', '<=', '>=']:
-                ctx.type = 'bool'
-            
-            print(f"Expr result type set to: {ctx.type}")
     def exitExpr(self, ctx: ExprParser.ExprContext):
         if ctx.getChildCount() == 3:
             left = ctx.getChild(0)
@@ -397,13 +388,14 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
     def _validate_operation(self, left_type, right_type, operator):
         valid_combinations = {
             '+': [{'entero', 'decimal'}, {'entero', 'decimal'}],
+            '-': [{'entero', 'decimal'}, {'entero', 'decimal'}],
             '*': [{'entero', 'decimal'}, {'entero', 'decimal'}],
-            '==': [{'entero', 'decimal', 'bool', 'cadena'}, {'entero', 'decimal', 'bool', 'cadena'}]
+            '/': [{'entero', 'decimal'}, {'entero', 'decimal'}],
+            '%': [{'entero'}, {'entero'}],
+            '^': [{'entero', 'decimal'}, {'entero', 'decimal'}],
         }
-        
         if operator not in valid_combinations:
             return False
-            
         allowed_left, allowed_right = valid_combinations[operator]
         return left_type in allowed_left and right_type in allowed_right
 
@@ -465,10 +457,25 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
             if operator in ['+', '-', '*', '/']:
                 if 'decimal' in (left_type, right_type):
                     return 'decimal'
-                return 'entero'
+                if 'entero' in (left_type, right_type):
+                    return 'entero'
+                self.report_error(expr_node, f"Operación '{operator}' no válida entre {left_type} y {right_type}")
             elif operator in ['==', '!=', '<', '>', '<=', '>=']:
                 return 'bool'
-        
+            elif operator == '%':
+                if left_type == 'entero' and right_type == 'entero':
+                    return 'entero'
+                self.report_error(expr_node, f"Operación '%' no válida entre {left_type} y {right_type}")
+            elif operator == '^':
+                if self._is_numeric_type(left_type) and self._is_numeric_type(right_type):
+                    return 'decimal' if 'decimal' in (left_type, right_type) else 'entero'
+                self.report_error(expr_node, f"Operación '^' no válida entre {left_type} y {right_type}")
+    
+        # Manejar llamadas a funciones
+        if expr_node.getChildCount() > 0 and expr_node.getChild(0).getText().isidentifier():
+            func_name = expr_node.getChild(0).getText()
+            return self.symbol_table.get_function_return_type(func_name) or "desconocido"
+    
         return None
 
     def _infer_function_return_type(self, node):
@@ -497,3 +504,62 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
 
     def reportContextSensitivity(self, recognizer, dfa, startIndex, stopIndex, prediction, configs):
         pass
+
+    def enterSentencia_switch(self, ctx: ExprParser.Sentencia_switchContext):
+        """Maneja la entrada a una sentencia switch."""
+        expr_type = self._infer_type_from_expression(ctx.expr())
+        if expr_type not in {'entero', 'cadena', 'bool'}:
+            self.report_error(ctx, f"Error: El tipo de la expresión en 'switch' debe ser 'entero', 'cadena' o 'bool', pero se encontró '{expr_type}'.")
+
+    def exitSentencia_switch(self, ctx: ExprParser.Sentencia_switchContext):
+        """Maneja la salida de una sentencia switch."""
+        print(f"Salida de sentencia switch con expresión: {ctx.expr().getText()}")
+
+    def enterMostrar(self, ctx: ExprParser.MostrarContext):
+        """Maneja la entrada a una sentencia mostrar."""
+        expr_type = self._infer_type_from_expression(ctx.expr())
+        if expr_type is None:
+            self.report_error(ctx, "Error: No se puede determinar el tipo de la expresión en 'mostrar'.")
+        else:
+            print(f"Mostrando expresión de tipo: {expr_type}")
+
+    def exitMostrar(self, ctx: ExprParser.MostrarContext):
+        """Maneja la salida de una sentencia mostrar."""
+        print(f"Salida de sentencia mostrar con expresión: {ctx.expr().getText()}")
+
+    def _validate_literal(self, literal):
+        """Valida que un literal sea válido."""
+        if literal.isdigit():
+            return True  # Es un número entero válido
+        try:
+            float(literal)
+            return True  # Es un número decimal válido
+        except ValueError:
+            pass
+        if (literal.startswith('"') and literal.endswith('"')) or \
+           (literal.startswith("'") and literal.endswith("'")):
+            return True  # Es una cadena válida
+        if literal.lower() in {'verdadero', 'falso'}:
+            return True  # Es un booleano válido
+        return False
+
+    def enterFactor(self, ctx: ExprParser.FactorContext):
+        if ctx.NUMERO() or ctx.DECIMAL() or ctx.CADENA() or ctx.BOOLEANO():
+            literal = ctx.getText()
+            if not self._validate_literal(literal):
+                self.report_error(ctx, f"Error: Literal no válido '{literal}'.")
+        if ctx.CADENA():
+            cadena = ctx.getText()
+            if not self.validar_cadena_valida(cadena):
+                self.report_error(ctx, f"Error: La cadena '{cadena}' contiene caracteres no válidos.")
+
+    def _is_valid_identifier(self, name):
+        """Verifica si un identificador es válido según las reglas del lenguaje."""
+        if not name:
+            return False  # El identificador no puede estar vacío
+        if name[0] not in self.letras:  # Debe comenzar con una letra o un guion bajo
+            return False
+        for char in name:
+            if char not in self.letras + self.digitos + "_":  # Solo se permiten letras, dígitos y guiones bajos
+                return False
+        return True

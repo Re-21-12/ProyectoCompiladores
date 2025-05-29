@@ -825,3 +825,10 @@ opt: Did you mean '--consthoist'?
 2025-05-24 09:37:18,447 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
 2025-05-24 09:52:03,100 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
 2025-05-24 09:54:02,900 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-29 15:55:45,790 - ERROR - [31m✖ Error inesperado: 'super' object has no attribute 'get_variable'[0m
+2025-05-29 15:56:49,908 - ERROR - [31m✖ Error inesperado: maximum recursion depth exceeded[0m
+2025-05-29 16:01:24,162 - ERROR - [31m✖ Error inesperado: maximum recursion depth exceeded[0m
+2025-05-29 16:13:13,890 - ERROR - [31m✖ Error inesperado: object of type 'NoneType' has no len()[0m
+2025-05-29 17:07:30,389 - ERROR - [31m✖ Error inesperado: Operador desconocido: <[0m
+2025-05-29 17:32:35,896 - ERROR - [31m✖ Error inesperado: 'PersonalizatedListener' object has no attribute '_is_valid_identifier'[0m
+2025-05-29 17:38:45,168 - ERROR - [31m✖ Error inesperado: 'SymbolTable' object has no attribute 'get_function'[0m

@@ -62,3 +62,9 @@ class SymbolTable:
         if name in self.funciones:
             return self.funciones[name]['return_type']
         return None
+    
+    def get_function(self, name):
+        """Obtiene la información completa de una función (parámetros y tipo de retorno)."""
+        if name in self.funciones:
+            return self.funciones[name]
+        return None

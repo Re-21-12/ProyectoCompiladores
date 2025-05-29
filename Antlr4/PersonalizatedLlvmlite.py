@@ -119,6 +119,9 @@ class LLVMGenerator:
 
         elif node_type == "ReturnStatement":
             self._generate_return(node)
+
+        elif node_type == "SwitchStatement":
+            self._generate_switch_statement(node)
     def _generate_variable_decl(self, node):
         """Generate variable declaration"""
         var_name = node.value
@@ -536,6 +539,26 @@ class LLVMGenerator:
                     return self.builder.icmp_signed("==", left, right, name="cmptmp")
                 else: 
                     return self.builder.icmp_signed("!=", left, right, name="cmptmp")
+        elif op == "%":
+            if isinstance(left_type, ir.DoubleType) or isinstance(right_type, ir.DoubleType):
+                raise Exception("El operador '%' no es válido para tipos decimales")
+            return self.builder.srem(left, right, name="modtmp")
+        elif op == "^":
+            # Llamar a una función externa como `pow` para manejar potencias
+            pow_func = self.module.get_global("pow")
+            if not pow_func:
+                pow_type = ir.FunctionType(self.double_type, [self.double_type, self.double_type])
+                pow_func = ir.Function(self.module, pow_type, name="pow")
+            left = self.builder.sitofp(left, self.double_type) if isinstance(left.type, ir.IntType) else left
+            right = self.builder.sitofp(right, self.double_type) if isinstance(right.type, ir.IntType) else right
+            return self.builder.call(pow_func, [left, right], name="powtmp")
+        elif op == "raiz":
+            sqrt_func = self.module.get_global("sqrt")
+            if not sqrt_func:
+                sqrt_type = ir.FunctionType(self.double_type, [self.double_type])
+                sqrt_func = ir.Function(self.module, sqrt_type, name="sqrt")
+            operand = self.builder.sitofp(operand, self.double_type) if isinstance(operand.type, ir.IntType) else operand
+            return self.builder.call(sqrt_func, [operand], name="sqrttmp")
     def _generate_unary_op(self, node):
         """Generate unary operation"""
         operand = self._generate_expression(node.children[0])
@@ -616,3 +639,37 @@ class LLVMGenerator:
         with open(filename, 'w') as f:
             f.write(llvm_ir)
         print(f"LLVM IR saved to {filename}")
+    
+    def _generate_switch_statement(self, node):
+        """Generate switch statement"""
+        switch_expr = self._generate_expression(node.children[0])
+        cases = node.children[1:-1] if len(node.children) > 2 else []
+        default_block = node.children[-1] if len(node.children) > 2 else None
+
+        # Crear bloques básicos
+        end_block = self.builder.append_basic_block("switch.end")
+        case_blocks = [self.builder.append_basic_block(f"switch.case.{i}") for i in range(len(cases))]
+        default_block = self.builder.append_basic_block("switch.default") if default_block else end_block
+
+        # Generar comparación para cada caso
+        for i, case in enumerate(cases):
+            case_expr = self._generate_expression(case.children[0])
+            case_block = case_blocks[i]
+            cmp = self.builder.icmp_signed("==", switch_expr, case_expr)
+            self.builder.cbranch(cmp, case_block, default_block if i == len(cases) - 1 else case_blocks[i + 1])
+
+            # Generar bloque del caso
+            self.builder.position_at_end(case_block)
+            self._generate_node(case.children[1])
+            if not self.builder.block.is_terminated:
+                self.builder.branch(end_block)
+
+        # Generar bloque default si existe
+        if default_block != end_block:
+            self.builder.position_at_end(default_block)
+            self._generate_node(default_block.children[0])
+            if not self.builder.block.is_terminated:
+                self.builder.branch(end_block)
+
+        # Posicionarse en el bloque final
+        self.builder.position_at_end(end_block)
