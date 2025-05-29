@@ -411,6 +411,14 @@ def main():
                     print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
                 timer.end_phase()
                 
+                # Mostrar reporte de tiempos y suma sin selección de archivo
+                timer.print_report()
+                # Suma de tiempos excepto "Selección de archivo"
+                total_sin_seleccion = sum(
+                    tiempo for fase, tiempo in timer.phases.items() if fase != "Selección de archivo"
+                )
+                print(f"\n{Fore.MAGENTA}TOTAL (sin Selección de archivo): {total_sin_seleccion:.4f} segundos{Style.RESET_ALL}")
+                
             elif option == 2:  # Flujo completo sin optimización
                 llvm_code = process_input_file(path_file, timer)
                 
@@ -420,6 +428,8 @@ def main():
                 if not compile_llvm_ir(llvm_code, optimize=False, generate_executable=True, run_program=False):
                     print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
                 timer.end_phase()
+                
+                timer.print_report()
                 
             elif option == 3:  # Flujo completo con optimización para .exe
                 llvm_code = process_input_file(path_file, timer)
@@ -432,9 +442,12 @@ def main():
                     print(f"{Fore.RED}✖ Fallo en la compilación o ejecución{Style.RESET_ALL}")
                 timer.end_phase()
                 
+                timer.print_report()
+                
             elif option == 4:  # Solo generación de LLVM
                 llvm_code = process_input_file(path_file, timer)
                 print(f"{Fore.GREEN}✔ Proceso completado hasta generación de LLVM{Style.RESET_ALL}")
+                timer.print_report()
                 
             elif option == 5:  # Compilar .ll existente
                 ll_file = input(f"{Fore.GREEN}Ingrese la ruta del archivo .ll optimizado: {Style.RESET_ALL}")
@@ -442,6 +455,7 @@ def main():
                 if not compile_existing_llvm(ll_file, optimize=True):
                     print(f"{Fore.RED}✖ Fallo en la compilación{Style.RESET_ALL}")
                 timer.end_phase()
+                timer.print_report()
                 
             elif option == 6:  # Convertir a .exe
                 bin_file = input(f"{Fore.GREEN}Ingrese la ruta del binario a convertir: {Style.RESET_ALL}")
@@ -449,14 +463,12 @@ def main():
                 if not convert_to_exe(bin_file):
                     print(f"{Fore.RED}✖ Fallo en la conversión{Style.RESET_ALL}")
                 timer.end_phase()
+                timer.print_report()
                 
             elif option == 7:  # Salir
                 print(f"{Fore.YELLOW}Saliendo del programa...{Style.RESET_ALL}")
                 break
                 
-            # Mostrar reporte de tiempos
-            timer.print_report()
-            
         except FileNotFoundError as fnf_error:
             timer.end_phase()
             error_msg = f"{Fore.RED}✖ Archivo no encontrado: {fnf_error}{Style.RESET_ALL}"

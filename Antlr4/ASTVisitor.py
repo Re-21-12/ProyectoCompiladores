@@ -34,7 +34,12 @@ class ASTVisitor(ExprVisitor):
         return ASTNode('MainFunction', children=[block])
     
     def visitBloque(self, ctx):
-        statements = [self.visit(child) for child in ctx.sentencia()]
+        statements = []
+        for child in ctx.sentencia():
+            if child is not None:
+                result = self.visit(child)
+                if result is not None:
+                    statements.append(result)
         return ASTNode('Block', children=statements)
     
     def visitSentencia(self, ctx):
