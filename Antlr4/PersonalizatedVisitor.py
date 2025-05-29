@@ -1,159 +1,124 @@
 from ExprVisitor import ExprVisitor
 from ExprParser import ExprParser
-# Visitors modularizados
-from visitors.ExprBaseVisitor import *
-from visitors.ExprStatementVisitor import *
 
-def traducir_tipo(tipo):
-    return ExprBaseVisitor.traducir_tipo(tipo)
-
-
-class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
+class PersonalizatedVisitor(ExprVisitor):
     def __init__(self):
         super().__init__()
+        self.ambitos = [{}]  # Stack de ámbitos (inicia con ámbito global)
+        self.funciones = {}  # Diccionario de funciones (nombre: info)
+        self.return_value = None
+        self.should_return = False
 
+    # Métodos de manejo de ámbitos
+    def enter_scope(self):
+        """Crear un nuevo ámbito (nuevo diccionario en la pila)."""
+        self.ambitos.append({})
 
-    # Visit a parse tree produced by ExprParser#gramatica.
-    def visitGramatica(self, ctx:ExprParser.GramaticaContext):
-        return self.visitChildren(ctx)
+    def exit_scope(self):
+        """Eliminar el último ámbito (salir del bloque actual)."""
+        if len(self.ambitos) > 1:  # No permitir eliminar el ámbito global
+            self.ambitos.pop()
 
-    # Visit a parse tree produced by ExprParser#programa.
-    def visitPrograma(self, ctx: ExprParser.ProgramaContext):
-        return self.visitChildren(ctx)
+    def define_variable(self, name, value):
+        """Define una variable en el ámbito actual."""
+        self.ambitos[-1][name] = value
 
-    # Visit a parse tree produced by ExprParser#bloque.
-    def visitBloque(self, ctx:ExprParser.BloqueContext):
-        self.enter_scope()  # Inicia un nuevo ámbito local
-        result = self.visitChildren(ctx)
-        self.exit_scope()   # Finaliza el ámbito local
-        return result
+    def get_variable(self, name):
+        """Busca la variable en los ámbitos disponibles (de local a global)."""
+        for ambito in reversed(self.ambitos):
+            if name in ambito:
+                return ambito[name]
+        raise Exception(f"Variable '{name}' no definida")
 
-    def visitTipo(self, ctx:ExprParser.TipoContext):
-        return self.visitChildren(ctx)
-
-    def visitActualizacion(self, ctx: ExprParser.ActualizacionContext):
-        return super().visitActualizacion(ctx)
-
-    # Visit a parse tree produced by ExprParser#sentencia.
-    def visitSentencia(self, ctx: ExprParser.SentenciaContext):
-        return super().visitSentencia(ctx)
-
-    def visitDeclaracion_funcion(self, ctx:ExprParser.Declaracion_funcionContext):
-        return super().visitDeclaracion_funcion( ctx)
-
-    # Visit a parse tree produced by ExprParser#funcion_llamada.
-    def visitFuncion_llamada(self, ctx:ExprParser.Funcion_llamadaContext):
-        return super().visitFuncion_llamada(ctx)
-
-    # Visit a parse tree produced by ExprParser#parametros.
-    def visitParametros(self, ctx:ExprParser.ParametrosContext):
-        return super().visitParametros(ctx)
-
-    # Visit a parse tree produced by ExprParser#parametro.
-    def visitParametro(self, ctx:ExprParser.ParametroContext):
-        return super().visitParametro( ctx)
-
-    # Visit a parse tree produced by ExprParser#argumentos.
-    def visitArgumentos(self, ctx:ExprParser.ArgumentosContext):
-        return super().visitArgumentos( ctx)
-
+    # Métodos relacionados con sentencias
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
-        return super().visitSentencia_if( ctx)
+        """Maneja sentencias if, else if y else."""
+        condiciones = ctx.bloque_condicional()
+        bloques = ctx.bloque_de_sentencia()
 
-    def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
-        return super().visitBloque_de_sentencia(ctx)
+        if not isinstance(condiciones, list):
+            condiciones = [condiciones]
+        if not isinstance(bloques, list):
+            bloques = [bloques]
+
+        # Main if
+        if self.visit(condiciones[0]):
+            self.enter_scope()
+            result = self.visit(bloques[0])
+            self.exit_scope()
+            return result
+
+        # Else ifs
+        for i in range(1, len(condiciones)):
+            if self.visit(condiciones[i]):
+                self.enter_scope()
+                result = self.visit(bloques[i])
+                self.exit_scope()
+                return result
+
+        # Else
+        if ctx.ELSE():
+            self.enter_scope()
+            result = self.visit(bloques[-1])
+            self.exit_scope()
+            return result
+
+        return None
 
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
-        return super().visitSentencia_while( ctx)
+        """Maneja ciclos while."""
+        while self.visit(ctx.bloque_condicional()):
+            self.enter_scope()
+            self.visit(ctx.bloque_de_sentencia())
+            self.exit_scope()
 
     def visitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        return super().visitSentencia_for( ctx)
+        """Maneja ciclos for."""
+        self.enter_scope()
+        self.visit(ctx.declaracion())  # Declaración inicial
+        while self.visit(ctx.expr()):  # Condición
+            self.enter_scope()
+            self.visit(ctx.bloque_de_sentencia())
+            self.exit_scope()
+            self.visit(ctx.actualizacion())  # Actualización
+        self.exit_scope()
 
-    def visitBloque_condicional(self, ctx:ExprParser.Bloque_condicionalContext):
-        return super().visitBloque_condicional(ctx)
-
-    def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
-        return super().visitDeclaracion(ctx)
-
-    def visitReasignacion(self, ctx: ExprParser.ReasignacionContext):
-        return super().visitReasignacion(ctx)
-
-    def visitFuncion_llamada_expr(self, ctx:ExprParser.Funcion_llamada_exprContext):
-        return super().visitChildren(ctx) 
-
-    def visitRetorna(self, ctx:ExprParser.RetornaContext):
-        return super().visitRetorna(ctx)
-
-    def visitDeclaracion_sin_asignacion(self, ctx:ExprParser.Declaracion_sin_asignacionContext):
-        return super().visitChildren(ctx)
-
-    # Visit a parse tree produced by ExprParser#mostrar.
-    def visitMostrar(self, ctx:ExprParser.MostrarContext):
-        value = self.visit(ctx.expr())
-        print(value)
-
-
+    # Métodos relacionados con expresiones
     def visitExpr(self, ctx: ExprParser.ExprContext):
-        if ctx.getChildCount() == 1:
-            return self.visit(ctx.getChild(0))
-
-        left = self.visit(ctx.getChild(0))
-        operator = ctx.getChild(1)
-        right = self.visit(ctx.getChild(2))
-
-        # print(f"Variable L E: {left}")
-        # print(f"Variable R E: {right}")
-        # print(f"Operador R E: {operator.getText()}")
-
-        if operator.getText() == '+':
-            # Verificar si ambos operandos son cadenas
-            if isinstance(left, str) and isinstance(right, str):
-                result = left + right  # Concatenación de cadenas
-            elif isinstance(left, int) and isinstance(right, int):
-                result = left + right  # Suma numérica
-            else:
-                raise ValueError(f"Operación no permitida entre tipos {type(left)} y {type(right)} para el operador '+'")
-        elif operator.getText() == '-':
-            result = left - right
-        elif operator.getText() == '<':
-            result = left < right
-        elif operator.getText() == '>':
-            result = left > right
-        elif operator.getText() == '<=':
-            result = left <= right
-        elif operator.getText() == '>=':
-            result = left >= right
-        elif operator.getText() == '==':
-            result = left == right
-        elif operator.getText() == '!=':
-            result = left != right
+        """Evalúa expresiones aritméticas y lógicas."""
+        if ctx.MENOR_QUE():
+            return self.visit(ctx.expr(0)) < self.visit(ctx.expr(1))
+        elif ctx.MAYOR_QUE():
+            return self.visit(ctx.expr(0)) > self.visit(ctx.expr(1))
+        elif ctx.MENOR_IGUAL_QUE():
+            return self.visit(ctx.expr(0)) <= self.visit(ctx.expr(1))
+        elif ctx.MAYOR_IGUAL_QUE():
+            return self.visit(ctx.expr(0)) >= self.visit(ctx.expr(1))
+        elif ctx.IGUAL():
+            return self.visit(ctx.expr(0)) == self.visit(ctx.expr(1))
+        elif ctx.DIFERENTE():
+            return self.visit(ctx.expr(0)) != self.visit(ctx.expr(1))
+        elif ctx.MAS():
+            return self.visit(ctx.term(0)) + self.visit(ctx.term(1))
+        elif ctx.MENOS():
+            return self.visit(ctx.term(0)) - self.visit(ctx.term(1))
         else:
-            raise ValueError(f"Operador desconocido {operator.getText()}")
-
-        # print(f"Resultado de la evaluación: {result}")
-        return result
-
+            return self.visit(ctx.term(0))
 
     def visitTerm(self, ctx: ExprParser.TermContext):
-        if ctx.getChildCount() == 1:
-            return self.visit(ctx.getChild(0))
-
-        left = self.visit(ctx.getChild(0))
-        operator = ctx.getChild(1)
-        right = self.visit(ctx.getChild(2))
-
-        # print(f" Variable L T: {left}")
-        # print(f" Variable R T: {right}")
-        if operator.getText() == '*':
-            return left * right
-        elif operator.getText() == '/':
-            if right == 0:
-                raise ZeroDivisionError("División por cero no permitida")
-            return left / right
+        """Evalúa términos (multiplicación y división)."""
+        if ctx.MULTIPLICACION():
+            return self.visit(ctx.factor(0)) * self.visit(ctx.factor(1))
+        elif ctx.DIVISION():
+            divisor = self.visit(ctx.factor(1))
+            if divisor == 0:
+                raise ZeroDivisionError("Error: División por cero.")
+            return self.visit(ctx.factor(0)) / divisor
         else:
-            raise ValueError(f"Operador desconocido {operator.getText()}")
+            return self.visit(ctx.factor(0))
 
     def visitFactor(self, ctx: ExprParser.FactorContext):
+        """Evalúa factores (números, variables, expresiones entre paréntesis)."""
         if ctx.NUMERO():
             return int(ctx.NUMERO().getText())
         elif ctx.DECIMAL():
@@ -163,13 +128,82 @@ class PersonalizatedVisitor( ExprStatementVisitor, ExprVisitor):
         elif ctx.CADENA():
             return ctx.CADENA().getText()[1:-1]  # Elimina las comillas
         elif ctx.VARIABLE():
-            var_name = ctx.VARIABLE().getText()
-            return super().get_variable(var_name)
-        elif ctx.PARENTESIS_INICIAL():
-            return self.visit(ctx.getChild(1))
+            return self.get_variable(ctx.VARIABLE().getText())
+        elif ctx.funcion_llamada_expr():
+            return self.visit(ctx.funcion_llamada_expr())
+        elif ctx.expr():
+            return self.visit(ctx.expr())
         elif ctx.MENOS():
-            return -self.visit(ctx.getChild(1))
-        elif ctx.funcion_llamada_expr():  # Llamada a función como expresión
-            return self.visit(ctx.funcion_llamada_expr())        
+            return -self.visit(ctx.factor())
         else:
-            raise ValueError("Operación no soportada")
+            raise ValueError("Factor no reconocido.")
+
+    # Métodos relacionados con funciones
+    def visitDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
+        """Define una función."""
+        nombre = ctx.VARIABLE().getText()
+        tipo_retorno = ctx.tipo().getText()
+        parametros = self.visit(ctx.parametros()) if ctx.parametros() else []
+        cuerpo = ctx.bloque()
+        retorno = ctx.retorna()
+
+        self.funciones[nombre] = {
+            "tipo_retorno": tipo_retorno,
+            "parametros": parametros,
+            "cuerpo": cuerpo,
+            "retorno": retorno
+        }
+
+    def visitFuncion_llamada(self, ctx: ExprParser.Funcion_llamadaContext):
+        """Ejecuta una función."""
+        nombre = ctx.VARIABLE().getText()
+        if nombre not in self.funciones:
+            raise Exception(f"Función '{nombre}' no definida.")
+
+        funcion = self.funciones[nombre]
+        argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
+
+        if len(argumentos) != len(funcion["parametros"]):
+            raise Exception(f"Número incorrecto de argumentos para la función '{nombre}'.")
+
+        self.enter_scope()
+        for param, arg in zip(funcion["parametros"], argumentos):
+            self.define_variable(param["nombre"], arg)
+
+        self.visit(funcion["cuerpo"])
+        self.exit_scope()
+
+    def visitRetorna(self, ctx: ExprParser.RetornaContext):
+        """Maneja la sentencia de retorno."""
+        self.return_value = self.visit(ctx.expr())
+        self.should_return = True
+        return self.return_value
+
+    # Métodos faltantes de ExprVisitor
+    def visitGramatica(self, ctx: ExprParser.GramaticaContext):
+        return self.visitChildren(ctx)
+
+    def visitPrograma(self, ctx: ExprParser.ProgramaContext):
+        return self.visitChildren(ctx)
+
+    def visitBloque(self, ctx: ExprParser.BloqueContext):
+        return self.visitChildren(ctx)
+
+    def visitFuncion_llamada_expr(self, ctx: ExprParser.Funcion_llamada_exprContext):
+        return self.visitChildren(ctx)
+
+    def visitParametros(self, ctx: ExprParser.ParametrosContext):
+        return self.visitChildren(ctx)
+
+    def visitParametro(self, ctx: ExprParser.ParametroContext):
+        return self.visitChildren(ctx)
+
+    def visitArgumentos(self, ctx: ExprParser.ArgumentosContext):
+        return self.visitChildren(ctx)
+
+    def visitBloque_condicional(self, ctx: ExprParser.Bloque_condicionalContext):
+        return self.visitChildren(ctx)
+
+    def visitTipo(self, ctx: ExprParser.TipoContext):
+        return self.visitChildren(ctx)
+

@@ -825,3 +825,4 @@ opt: Did you mean '--consthoist'?
 2025-05-24 09:37:18,447 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
 2025-05-24 09:52:03,100 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
 2025-05-24 09:54:02,900 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-29 15:23:39,566 - ERROR - [31m✖ Error inesperado: Error de tipo: Se esperaba 'entero' para 'contadorA', pero se obtuvo 'desconocido'[0m
