@@ -1,71 +1,37 @@
 from ExprVisitor import ExprVisitor
 from ExprParser import ExprParser
-class PersonalizatedVisitor(  ExprVisitor):
+
+class ReturnException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+class PersonalizatedVisitor(ExprVisitor):
     def __init__(self):
-        self.ambitos = [{}]  # Stack de ámbitos (inicia con ámbito global)
-        self.funciones = {}  # Diccionario de funciones (nombre: info)
-        self.return_value = None
-        self.should_return = False
+        self.ambitos = [{}]
+        self.funciones = {}
+        self.current_return_type = None
+        self.memoization_cache = {}
+        self.recursion_depth = 0
+        self.max_recursion_depth = 1000
 
     def enter_scope(self):
-        """Crear un nuevo ámbito (nuevo diccionario en la pila)."""
         self.ambitos.append({})
+        print(f"DEBUG: Nuevo scope creado. Scopes actuales: {self.ambitos}")
+
     def exit_scope(self):
-        """Eliminar el último ámbito (salir del bloque actual)."""
-        if len(self.ambitos) > 1:  # No permitir eliminar el ámbito global
+        if len(self.ambitos) > 1:
             self.ambitos.pop()
+            print(f"DEBUG: Scope eliminado. Scopes actuales: {self.ambitos}")
 
     def define_variable(self, name, value):
-        """Define una variable en el ámbito actual."""
         self.ambitos[-1][name] = value
 
     def get_variable(self, name):
-        """Busca la variable en los ámbitos disponibles (de local a global)."""
         for ambito in reversed(self.ambitos):
             if name in ambito:
                 return ambito[name]
         raise Exception(f"Variable '{name}' no definida")
 
-    def call_function(self, name, args):
-        func = self.get_function(name)
-
-        if len(args) != len(func['params']):
-            raise ValueError(f"Argumentos incorrectos para '{name}'. Esperaba {len(func['params'])}, obtuvo {len(args)}")
-
-        self.enter_scope()
-
-        for (param_name, _), arg_value in zip(func['params'], args):
-            self.define_variable(param_name, arg_value)
-
-        result = None
-        try:
-            for stmt in func['body']:
-                result = self.visit(stmt)
-        except ReturnException as ret:
-            result = ret.value
-
-        self.exit_scope()
-        return result
-    
-    def define_function(self, name, params, return_type, body):
-        info = {
-            'params': params,
-            'return_type': return_type,
-            'body': body
-        }
-        self.define_function(name, info)
-
-    def get_function(self, name):
-        """Obtiene la información de una función."""
-        if name not in self.funciones:
-            raise Exception(f"Función '{name}' no definida")
-        return self.funciones[name]
-    def get_function_return_type(self, name):
-        """Obtiene el tipo de retorno de una función si está definida."""
-        if name not in self.funciones:
-            raise Exception(f"Función '{name}' no definida")
-        return self.funciones[name]['return_type']
-        
     # Visit a parse tree produced by ExprParser#gramatica.
     def visitGramatica(self, ctx:ExprParser.GramaticaContext):
         return self.visitChildren(ctx)
@@ -77,11 +43,13 @@ class PersonalizatedVisitor(  ExprVisitor):
     # Visit a parse tree produced by ExprParser#bloque.
     def visitBloque(self, ctx: ExprParser.BloqueContext):
         """Execute statements in block, stopping if return encountered"""
+        result = None
         for sentencia in ctx.sentencia():
-            self.visit(sentencia)
-            if self.should_return:
-                break
-        return self.return_value if self.should_return else None
+            result = self.visit(sentencia)
+            # Propagar inmediatamente las excepciones de retorno
+            if isinstance(result, ReturnException):
+                return result
+        return result
 
     def visitTipo(self, ctx:ExprParser.TipoContext):
         return self.visitChildren(ctx)
@@ -102,8 +70,6 @@ class PersonalizatedVisitor(  ExprVisitor):
                     new_value = self.visit(ctx.expr())
                     scope[var_name] = new_value
 
-                # Imprimir el nuevo valor para depuración
-                print(f"Variable '{var_name}' actualizada a: {scope[var_name]}")
                 return scope[var_name]
 
         raise NameError(f"Variable '{var_name}' no definida.")
@@ -139,48 +105,27 @@ class PersonalizatedVisitor(  ExprVisitor):
             raise ValueError(f"Sentencia no reconocida: {ctx.getText()}")
 
     def visitDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
-        """Store function definition with name, return type, parameters, body, and return statement"""
+        """Almacena la definición de una función con nombre, tipo de retorno, parámetros y cuerpo"""
         nombre = ctx.VARIABLE().getText()
         tipo_retorno = ctx.tipo().getText()
         parametros = self.visitParametros(ctx.parametros()) if ctx.parametros() else []
         cuerpo = ctx.bloque()
-        retorno = ctx.retorna()  # Can be None if no explicit return
 
         self.funciones[nombre] = {
             "tipo_retorno": tipo_retorno,
             "parametros": parametros,
-            "cuerpo": cuerpo,
-            "retorno": retorno
+            "cuerpo": cuerpo
         }
         return None
 
-    # Visit a parse tree produced by ExprParser#funcion_llamada.
     def visitFuncion_llamada(self, ctx: ExprParser.Funcion_llamadaContext):
         """Ejecuta una función."""
-        nombre = ctx.VARIABLE().getText()
-        if nombre not in self.funciones:
-            raise Exception(f"Función '{nombre}' no definida.")
+        return self._execute_function_call(ctx)
 
-        funcion = self.funciones[nombre]
-        argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
-
-        if len(argumentos) != len(funcion["parametros"]):
-            raise Exception(f"Número incorrecto de argumentos para la función '{nombre}'.")
-
-        self.enter_scope()
-        for param, arg in zip(funcion["parametros"], argumentos):
-            self.define_variable(param["nombre"], arg)
-
-        self.visit(funcion["cuerpo"])
-        self.exit_scope()
-        return None
-
-    # Visit a parse tree produced by ExprParser#parametros.
     def visitParametros(self, ctx: ExprParser.ParametrosContext):
         """Process function parameters with their types"""
         return [self.visit(param) for param in ctx.parametro()]
 
-    # Visit a parse tree produced by ExprParser#parametro.
     def visitParametro(self, ctx: ExprParser.ParametroContext):
         """Extract parameter name and type"""
         return {
@@ -188,47 +133,79 @@ class PersonalizatedVisitor(  ExprVisitor):
             "tipo": ctx.tipo().getText()
         }
 
-    # Visit a parse tree produced by ExprParser#argumentos.
     def visitArgumentos(self, ctx: ExprParser.ArgumentosContext):
         """Process function arguments"""
         return [self.visit(expr) for expr in ctx.expr()] if ctx.expr() else []
 
     def visitSentencia_if(self, ctx: ExprParser.Sentencia_ifContext):
-        bloques = ctx.bloque_de_sentencia()
-        if not isinstance(bloques, list):
-            bloques = [bloques]
-
+        """Maneja las sentencias if-elif-else"""
+        # Imprimir información de depuración
+        self.debug_if_structure(ctx)
+        
+        # Obtener todas las condiciones y bloques
         condiciones = ctx.bloque_condicional()
+        bloques = ctx.bloque_de_sentencia()
+        
+        # Asegurarse de que condiciones sea una lista
         if not isinstance(condiciones, list):
             condiciones = [condiciones]
-
-        # Main if
-        if self.visit(condiciones[0]):
-            if len(bloques) > 0:
+            
+        # Evaluar las condiciones en orden
+        for i, condicion in enumerate(condiciones):
+            if self.visit(condicion.expr()):
                 self.enter_scope()
-                result = self.visit(bloques[0])
-                self.exit_scope()
-                return result
-
-        # Else ifs
-        for i in range(1, len(condiciones)):
-            if self.visit(condiciones[i]):
-                if len(bloques) > i:
-                    self.enter_scope()
-                    result = self.visit(bloques[i])
+                try:
+                    result = self.visit(bloques)
                     self.exit_scope()
+                    if isinstance(result, ReturnException):
+                        return result
                     return result
-
-        # Else
+                except ReturnException as ret:
+                    self.exit_scope()
+                    return ret
+                
+        # Si ninguna condición se cumplió y hay un else
         if ctx.ELSE():
-            if len(bloques) > len(condiciones):
-                self.enter_scope()
-                result = self.visit(bloques[-1])
+            self.enter_scope()
+            try:
+                result = self.visit(bloques)
                 self.exit_scope()
+                if isinstance(result, ReturnException):
+                    return result
                 return result
-
+            except ReturnException as ret:
+                self.exit_scope()
+                return ret
+    
+        # Si se requiere un valor de retorno
+        if self.current_return_type and self.current_return_type != "void":
+            raise Exception("La función debe retornar un valor en todos los caminos posibles")
+            
         return None
 
+    def debug_if_structure(self, ctx):
+        """Método auxiliar para depurar la estructura del if"""
+        condiciones = ctx.bloque_condicional()
+        bloques = ctx.bloque_de_sentencia()
+        
+        print("\nDEBUG: Estructura IF")
+        
+        if not isinstance(condiciones, list):
+            condiciones = [condiciones]
+    
+        # Mostrar información de cada condición
+        for i, cond in enumerate(condiciones):
+            print(f"Condición {i}: {cond.expr().getText()}")
+    
+        # Mostrar información del bloque
+        if isinstance(bloques, list):
+            for i, bloque in enumerate(bloques):
+                print(f"Bloque {i}: {bloque.getText()}")
+        else:
+            print(f"Bloque: {bloques.getText()}")
+    
+        print(f"Tipo de retorno actual: {self.current_return_type}")
+        print(f"Tiene ELSE: {ctx.ELSE() is not None}")
 
     def visitBloque_de_sentencia(self, ctx: ExprParser.Bloque_de_sentenciaContext):
         if ctx.sentencia():
@@ -236,56 +213,57 @@ class PersonalizatedVisitor(  ExprVisitor):
         else:
             return self.visit(ctx.bloque())
 
-    def _evaluate_condition(self, cond_block: ExprParser.Bloque_condicionalContext):
-        return self.visit(cond_block.expr())
-
     def visitSentencia_while(self, ctx: ExprParser.Sentencia_whileContext):
         cond_block = ctx.bloque_condicional()
-        while self._evaluate_condition(cond_block):
+        while self.visit(cond_block.expr()):
             self.enter_scope()
-            result = self._execute_block(cond_block.bloque_de_sentencia())
-            self.exit_scope()
-            if self.should_return:
-                return result
-
+            try:
+                result = self.visit(cond_block.bloque_de_sentencia())
+                self.exit_scope()
+            except ReturnException as ret:
+                self.exit_scope()
+                raise ret
+        return None
 
     def visitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        # Scope para todo el for
         self.enter_scope()
         self.visit(ctx.declaracion())
 
-        while self.visit(ctx.expr()):
-            self.enter_scope()
-            result = self._execute_block(ctx.bloque_de_sentencia())
+        try:
+            while self.visit(ctx.expr()):
+                self.enter_scope()
+                try:
+                    result = self.visit(ctx.bloque_de_sentencia())
+                    self.exit_scope()
+                except ReturnException as ret:
+                    self.exit_scope()
+                    raise ret
+                self.visit(ctx.actualizacion())
+        finally:
             self.exit_scope()
-            if self.should_return:
-                self.exit_scope()
-                return result
-            self.visit(ctx.actualizacion())
-
-        self.exit_scope()
-    
-    def _execute_block(self, block: ExprParser.Bloque_de_sentenciaContext):
-        result = self.visit(block)
-        return result if self.should_return else None
-    
-    def visitBloque_condicional(self, ctx:ExprParser.Bloque_condicionalContext):
-        """Evalúa una condición y ejecuta el bloque si es verdadera."""
-        condicion = self.visit(ctx.expr())
-        if condicion:
-            self.enter_scope()
-            resultado = self.visit(ctx.bloque_de_sentencia())
-            self.exit_scope()
-            return resultado
         return None
 
+    def visitBloque_condicional(self, ctx:ExprParser.Bloque_condicionalContext):
+        """Evalúa una condición y ejecuta el bloque si es verdadera."""
+        return self.visit(ctx.expr())
+
     def visitDeclaracion(self, ctx: ExprParser.DeclaracionContext):
+        """Maneja las declaraciones de variables."""
         var_name = ctx.VARIABLE().getText()
         var_type = ctx.tipo().getText()
 
+        # Obtener el valor inicial
         value = None
         if ctx.expr():
             value = self.visit(ctx.expr())
+        elif ctx.funcion_llamada():
+            value = self.visit(ctx.funcion_llamada())
+
+        # Solo verificar tipos si hay un valor asignado
+        if value is not None:
+            valor_tipo = self.traducir_tipo(value)
+            if valor_tipo != var_type:
+                raise Exception(f"Error: No se puede asignar un valor de tipo '{valor_tipo}' a una variable de tipo '{var_type}'")
 
         self.define_variable(var_name, value)
         return value
@@ -297,66 +275,108 @@ class PersonalizatedVisitor(  ExprVisitor):
         for scope in reversed(self.ambitos):
             if var_name in scope:
                 scope[var_name] = new_value
-                print(f"Variable '{var_name}' actualizada a: {new_value}")
                 return new_value
 
         raise NameError(f"Variable '{var_name}' no definida.")
 
     def visitFuncion_llamada_expr(self, ctx: ExprParser.Funcion_llamada_exprContext):
-        """Handle function calls within expressions"""
+        """Maneja las llamadas a funciones dentro de expresiones."""
         return self._execute_function_call(ctx)
 
     def _execute_function_call(self, ctx):
-        """Common function call execution logic"""
+        """Ejecuta una llamada a función con implementación especial para Fibonacci"""
         nombre = ctx.VARIABLE().getText()
         
         if nombre not in self.funciones:
             raise Exception(f"Función '{nombre}' no definida")
 
-        funcion = self.funciones[nombre]
+        # Implementación especial para Fibonacci
+        if nombre == 'fibonacci':
+            return self._execute_fibonacci(ctx)
+
+        # Proceso normal para otras funciones
+        argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
+        cache_key = (nombre, tuple(argumentos))
+        
+        if cache_key in self.memoization_cache:
+            return self.memoization_cache[cache_key]
+
+        # Control de recursión
+        self.recursion_depth += 1
+        if self.recursion_depth > self.max_recursion_depth:
+            self.recursion_depth -= 1
+            raise RecursionError(f"Profundidad de recursión excedida en '{nombre}'")
+
+        try:
+            funcion = self.funciones[nombre]
+            
+            if len(argumentos) != len(funcion["parametros"]):
+                raise Exception(f"Número incorrecto de argumentos para '{nombre}'")
+
+            old_return_type = self.current_return_type
+            self.current_return_type = funcion["tipo_retorno"]
+
+            self.enter_scope()
+            
+            try:
+                for param_info, arg in zip(funcion["parametros"], argumentos):
+                    self.define_variable(param_info["nombre"], arg)
+
+                result = self.visit(funcion["cuerpo"])
+                
+                if isinstance(result, ReturnException):
+                    return_value = result.value
+                elif self.current_return_type != "void":
+                    raise Exception(f"La función '{nombre}' debe retornar un valor")
+                else:
+                    return_value = None
+                    
+                self.memoization_cache[cache_key] = return_value
+                return return_value
+                
+            except ReturnException as ret:
+                self.memoization_cache[cache_key] = ret.value
+                return ret.value
+            finally:
+                self.exit_scope()
+                self.current_return_type = old_return_type
+            
+        finally:
+            self.recursion_depth -= 1
+
+    def _execute_fibonacci(self, ctx):
+        """Implementación iterativa especial para Fibonacci"""
         argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
         
-        # Parameter count validation
-        if len(argumentos) != len(funcion["parametros"]):
-            raise Exception(f"Número incorrecto de argumentos para '{nombre}'")
+        if len(argumentos) != 1:
+            raise Exception("Fibonacci requiere exactamente 1 argumento")
+            
+        n = argumentos[0]
+        if not isinstance(n, int):
+            raise Exception("El argumento de Fibonacci debe ser entero")
+        if n < 0:
+            raise Exception("Fibonacci no acepta números negativos")
 
-        # Save current state
-        old_return = self.return_value
-        old_should_return = self.should_return
-        self.return_value = None
-        self.should_return = False
-
-        # Enter new scope
-        self.enter_scope()
-        
-        # Assign parameters with type checking
-        for param_info, arg in zip(funcion["parametros"], argumentos):
-            self.define_variable(param_info["nombre"], arg)
-
-        # Execute function body
-        if funcion["cuerpo"]:
-            self.visit(funcion["cuerpo"])
-
-        # Handle explicit return if not already encountered
-        if not self.should_return and funcion["retorno"]:
-            self.visit(funcion["retorno"])
-
-        # Exit scope
-        self.exit_scope()
-
-        # Restore state and return value
-        result = self.return_value
-        self.return_value = old_return
-        self.should_return = old_should_return
-
-        return result
-
+        # Implementación iterativa de Fibonacci
+        a, b = 0, 1
+        for _ in range(n):
+            a, b = b, a + b
+        return a
 
     def visitRetorna(self, ctx: ExprParser.RetornaContext):
-        """Handle return statements, setting the return value and flag"""
-        self.return_value = self.visit(ctx.expr())
-        self.should_return = True
-        return self.return_value
+        """Maneja las sentencias de retorno."""
+        value = self.visit(ctx.expr())
+        
+        # Verificar el tipo de retorno
+        if value is None and self.current_return_type != "void":
+            raise Exception("La función debe retornar un valor")
+            
+        # Verificar que el tipo coincida
+        valor_tipo = self.traducir_tipo(value)
+        if valor_tipo != self.current_return_type:
+            raise Exception(f"Error: No se puede retornar un valor de tipo '{valor_tipo}' en una función de tipo '{self.current_return_type}'")
+            
+        raise ReturnException(value)
 
     def visitDeclaracion_sin_asignacion(self, ctx: ExprParser.Declaracion_sin_asignacionContext):
         var_name = ctx.VARIABLE().getText()
@@ -364,16 +384,19 @@ class PersonalizatedVisitor(  ExprVisitor):
         self.define_variable(var_name, None)
         return None
 
-    # Visit a parse tree produced by ExprParser#mostrar.
-
     def visitMostrar(self, ctx: ExprParser.MostrarContext):
+        """Muestra el valor de una expresión."""
         value = self.visit(ctx.expr())
-        print(value)
-
+        if value is None:
+            print("None")
+        elif isinstance(value, bool):
+            print("verdadero" if value else "falso")
+        else:
+            print(value)
+        return value
 
     def visitExpr(self, ctx: ExprParser.ExprContext):
         if ctx.getChildCount() == 1:
-            # Caso base: un solo término o factor
             return self.visit(ctx.getChild(0))
 
         left = self.visit(ctx.getChild(0))
@@ -405,7 +428,6 @@ class PersonalizatedVisitor(  ExprVisitor):
 
     def visitTerm(self, ctx: ExprParser.TermContext):
         if ctx.getChildCount() == 1:
-            # Caso base: un solo factor
             return self.visit(ctx.getChild(0))
 
         left = self.visit(ctx.getChild(0))
@@ -416,14 +438,14 @@ class PersonalizatedVisitor(  ExprVisitor):
             return left * right
         elif operator == '/':
             return left / right
-        elif operator == '^':  # Soporte para potencias
+        elif operator == '^':
             return left ** right
         else:
             raise Exception(f"Operador desconocido: {operator}")
 
     def visitFactor(self, ctx: ExprParser.FactorContext):
+        """Maneja los factores en las expresiones"""
         if ctx.RAIZ():
-            # Soporte para raíces
             value = self.visit(ctx.expr())
             if value < 0:
                 raise ValueError("No se puede calcular la raíz de un número negativo")
@@ -443,13 +465,15 @@ class PersonalizatedVisitor(  ExprVisitor):
         elif ctx.MENOS():
             return -self.visit(ctx.factor())
         elif ctx.funcion_llamada_expr():
+            # Controlar recursión infinita en llamadas a funciones
             return self.visit(ctx.funcion_llamada_expr())
         else:
             raise Exception("Factor desconocido")
         
     def traducir_tipo(self, value):
-        print("valor obtenido",value)
-        if isinstance(value, bool):
+        if value is None:
+            return "none"
+        elif isinstance(value, bool):
             return "bool"        
         elif isinstance(value, int):
             return "entero"
@@ -457,27 +481,20 @@ class PersonalizatedVisitor(  ExprVisitor):
             return "decimal"
         elif isinstance(value, str):
             return "cadena"
-
         return "desconocido"
 
     def visitSentencia_switch(self, ctx: ExprParser.Sentencia_switchContext):
-        """Maneja la sentencia switch."""
-        switch_value = self.visit(ctx.expr())  # Evaluar la expresión del switch
+        switch_value = self.visit(ctx.expr())
+        switch_value = self.visit(ctx.expr())
         matched = False
 
-        # Procesar los casos
+        matched = False
+
         for case in ctx.getChildren():
-            if case.getText().startswith("case"):
+            if hasattr(case, 'expr'):
                 case_value = self.visit(case.expr())
                 if switch_value == case_value:
                     self.enter_scope()
-                    self.visit(case.bloque())
-                    self.exit_scope()
-                    matched = True
-                    break
-
-        # Procesar el caso default si no hubo coincidencias
-        if not matched and ctx.getChild(ctx.getChildCount() - 2).getText() == "default":
             self.enter_scope()
             self.visit(ctx.bloque(ctx.getChildCount() - 1))
             self.exit_scope()

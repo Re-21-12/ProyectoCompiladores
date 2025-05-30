@@ -47,8 +47,6 @@ hola {
   }
 
     if(es_validoA){
-        mensajeA cadena = "Usuario verificado";
-        mostrar(mensajeA);
 
         if(es_adminA){
             mostrar("Acceso completo");

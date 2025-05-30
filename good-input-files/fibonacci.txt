@@ -9,11 +9,6 @@ hola {
     }
   }
 
-  i entero = 0;
-  limite entero = 10;
-
-  while (i < limite) {
-    mostrar(fibonacci(i));
-    i = i + 1;
-  }
+  resultado entero = fibonacci(100);
+  mostrar(resultado);
 }

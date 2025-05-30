@@ -832,3 +832,39 @@ opt: Did you mean '--consthoist'?
 2025-05-29 17:07:30,389 - ERROR - [31m✖ Error inesperado: Operador desconocido: <[0m
 2025-05-29 17:32:35,896 - ERROR - [31m✖ Error inesperado: 'PersonalizatedListener' object has no attribute '_is_valid_identifier'[0m
 2025-05-29 17:38:45,168 - ERROR - [31m✖ Error inesperado: 'SymbolTable' object has no attribute 'get_function'[0m
+2025-05-29 21:33:47,700 - ERROR - [31m✖ Error inesperado: Error: Intento de mostrar un valor 'None'.[0m
+2025-05-29 21:45:11,331 - ERROR - [31m✖ Error inesperado: Error: Intento de mostrar un valor 'None'.[0m
+2025-05-29 21:49:07,423 - ERROR - [31m✖ Error inesperado: Error: Intento de mostrar un valor 'None'.[0m
+2025-05-29 21:52:15,553 - ERROR - [31m✖ Error inesperado: Error: Intento de mostrar un valor 'None'.[0m
+2025-05-29 21:54:26,864 - ERROR - [31m✖ Error inesperado: Error: Intento de mostrar un valor 'None'.[0m
+2025-05-29 21:56:10,485 - ERROR - [31m✖ Error inesperado: Error: Intento de mostrar un valor 'None'.[0m
+2025-05-29 21:58:55,516 - ERROR - [31m✖ Error inesperado: Error: Intento de mostrar un valor 'None'.[0m
+2025-05-29 22:05:35,939 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' no retornó ningún valor[0m
+2025-05-29 22:07:50,185 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' no retornó ningún valor[0m
+2025-05-29 22:10:35,789 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' no retornó ningún valor[0m
+2025-05-29 22:12:41,463 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' no retornó ningún valor[0m
+2025-05-29 22:17:24,080 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' no retornó ningún valor[0m
+2025-05-29 22:19:18,562 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' no retornó ningún valor[0m
+2025-05-29 22:22:11,564 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' no retornó ningún valor[0m
+2025-05-29 22:26:11,405 - ERROR - [31m✖ Error inesperado: Error: No se puede asignar None a la variable 'resultado'[0m
+2025-05-29 22:31:57,201 - ERROR - [31m✖ Error inesperado: Error: No se puede asignar None a la variable 'resultado'[0m
+2025-05-29 22:35:51,141 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' debe retornar un valor[0m
+2025-05-29 22:42:19,773 - ERROR - [31m✖ Error inesperado: 'Bloque_de_sentenciaContext' object is not iterable[0m
+2025-05-29 22:45:26,493 - ERROR - [31m✖ Error inesperado: La función 'fibonacci' debe retornar un valor[0m
+2025-05-29 22:57:34,208 - ERROR - [31m✖ Error inesperado: 'Bloque_de_sentenciaContext' object is not iterable[0m
+2025-05-29 23:00:07,439 - ERROR - [31m✖ Error inesperado: object of type 'Bloque_de_sentenciaContext' has no len()[0m
+2025-05-29 23:05:30,480 - ERROR - [31m✖ Error inesperado: 'Bloque_de_sentenciaContext' object is not iterable[0m
+2025-05-29 23:07:50,917 - ERROR - [31m✖ Error inesperado: 'list' object has no attribute 'getText'[0m
+2025-05-29 23:18:51,162 - ERROR - [31m✖ Error inesperado: 'list' object has no attribute 'expr'[0m
+2025-05-29 23:21:56,232 - ERROR - [31m✖ Error inesperado: object of type 'Bloque_de_sentenciaContext' has no len()[0m
+2025-05-29 23:23:19,991 - ERROR - [31m✖ Error inesperado: maximum recursion depth exceeded[0m
+2025-05-29 23:26:55,798 - ERROR - [31m✖ Error inesperado: 'list' object has no attribute 'expr'[0m
+2025-05-29 23:29:48,598 - ERROR - [31m✖ Error inesperado: La función debe retornar un valor en todos los caminos posibles[0m
+2025-05-29 23:32:43,133 - ERROR - [31m✖ Error inesperado: list index out of range[0m
+2025-05-29 23:39:16,321 - ERROR - [31m✖ Error inesperado: maximum recursion depth exceeded[0m
+2025-05-29 23:41:03,877 - ERROR - [31m✖ Error inesperado: maximum recursion depth exceeded[0m
+2025-05-29 23:42:44,728 - ERROR - [31m✖ Error inesperado: maximum recursion depth exceeded[0m
+2025-05-29 23:47:40,534 - ERROR - [31m✖ Error inesperado: maximum recursion depth exceeded[0m
+2025-05-30 00:26:20,884 - ERROR - [31m✖ Error inesperado: Error: Variable 'contadorA' no definida.[0m
+2025-05-30 00:29:20,392 - ERROR - [31m✖ Error inesperado: Error: Variable 'contadorA' no definida.[0m
+2025-05-30 00:31:36,491 - ERROR - [31m✖ Error inesperado: Error: Variable '5*8' no definida.[0m

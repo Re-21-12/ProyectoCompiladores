@@ -167,24 +167,34 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
         self.symbol_table.exit_scope()
 
     def enterDeclaracion(self, ctx: ExprParser.DeclaracionContext):
-        tipo = ctx.tipo().getText()
+        tipo = ctx.tipo()
+        if tipo is None:
+            self.report_error(ctx, "Error: Tipo no especificado en la declaración.")
+            return
+
+        tipo_texto = tipo.getText()
         variable = ctx.VARIABLE()
+        if variable is None:
+            self.report_error(ctx, "Error: Variable no especificada en la declaración.")
+            return
+
         nombre_variable = variable.getText()
 
         if not self._is_valid_identifier(nombre_variable):
             self.report_error(ctx, f"Error: Nombre de variable '{nombre_variable}' no válido.")
             return
 
-        if self.symbol_table.get_variable(nombre_variable) is not None:
-            self.report_error(ctx, f"Error: Variable '{nombre_variable}' ya declarada.")
+        if self.symbol_table.get_variable_in_current_scope(nombre_variable) is not None:
+            self.report_error(ctx, f"Error: Variable '{nombre_variable}' ya declarada en este scope.")
             return
 
         if ctx.expr():
             expr_type = self._infer_type_from_expression(ctx.expr())
-            if expr_type != tipo:
-                self.report_error(ctx, f"Error: Tipo incompatible. Se esperaba '{tipo}' pero se encontró '{expr_type}'.")
+            if expr_type != tipo_texto:
+                self.report_error(ctx, f"Error: Tipo incompatible. Se esperaba '{tipo_texto}' pero se encontró '{expr_type}'.")
 
-        self.symbol_table.define_variable(nombre_variable, tipo)
+        self.symbol_table.define_variable(nombre_variable, tipo_texto)
+        print(f"DEBUG: Variable '{nombre_variable}' de tipo '{tipo_texto}' declarada correctamente.")
 
     def exitDeclaracion(self, ctx: ExprParser.DeclaracionContext): pass
 
@@ -563,3 +573,27 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
             if char not in self.letras + self.digitos + "_":  # Solo se permiten letras, dígitos y guiones bajos
                 return False
         return True
+
+    def define_variable(self, name, value):
+        if name in self.ambitos[-1]:
+            raise Exception(f"Error: Variable '{name}' ya declarada en este scope.")
+        self.ambitos[-1][name] = value
+        print(f"DEBUG: Variable '{name}' definida con valor '{value}' en el scope actual. Scopes: {self.ambitos}")
+
+    def get_variable(self, name):
+        for ambito in reversed(self.ambitos):
+            if name in ambito:
+                print(f"DEBUG: Variable '{name}' encontrada en scope: {ambito}")
+                return ambito[name]
+        raise Exception(f"Error: Variable '{name}' no definida.")
+
+    def enter_scope(self):
+        self.ambitos.append({})
+        print(f"DEBUG: Nuevo scope creado. Scopes actuales: {self.ambitos}")
+
+    def exit_scope(self):
+        if len(self.ambitos) > 1:
+            self.ambitos.pop()
+            print(f"DEBUG: Scope eliminado. Scopes actuales: {self.ambitos}")
+        else:
+            raise Exception("Error: No se puede salir del scope global.")

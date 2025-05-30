@@ -37,7 +37,7 @@ class ColoredFormatter(logging.Formatter):
         color = self.COLORS.get(record.levelname, '')
         message = super().format(record)
         return color + message
-
+    
 # Configuración de los logs
 log_dir = os.path.join("..", "logs")
 
