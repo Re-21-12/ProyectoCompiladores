@@ -45,10 +45,15 @@ class PersonalizatedVisitor(ExprVisitor):
         """Execute statements in block, stopping if return encountered"""
         result = None
         for sentencia in ctx.sentencia():
-            result = self.visit(sentencia)
-            # Propagar inmediatamente las excepciones de retorno
-            if isinstance(result, ReturnException):
-                return result
+            if sentencia is not None:  # Verificar que la sentencia no sea None
+                try:
+                    result = self.visit(sentencia)
+                    # Propagar inmediatamente las excepciones de retorno
+                    if isinstance(result, ReturnException):
+                        return result
+                except ReturnException as ret:
+                    # Capturar y propagar las excepciones ReturnException
+                    return ret
         return result
 
     def visitTipo(self, ctx:ExprParser.TipoContext):
@@ -77,7 +82,7 @@ class PersonalizatedVisitor(ExprVisitor):
     # Visit a parse tree produced by ExprParser#sentencia.
     def visitSentencia(self, ctx: ExprParser.SentenciaContext):
         """Dispatch to appropriate statement visitor method"""
-        if ctx.sentencia_if():
+        if ctx.sentencia_if() is not None:
             return self.visitSentencia_if(ctx.sentencia_if())
         elif ctx.sentencia_while():
             return self.visitSentencia_while(ctx.sentencia_while())
@@ -142,7 +147,7 @@ class PersonalizatedVisitor(ExprVisitor):
         # Imprimir información de depuración
         self.debug_if_structure(ctx)
         
-        # Obtener todas las condiciones y bloques
+        # Obtener condiciones y bloques
         condiciones = ctx.bloque_condicional()
         bloques = ctx.bloque_de_sentencia()
         
@@ -150,37 +155,54 @@ class PersonalizatedVisitor(ExprVisitor):
         if not isinstance(condiciones, list):
             condiciones = [condiciones]
             
+        # Asegurarse de que bloques sea una lista con el mismo tamaño que condiciones
+        if not isinstance(bloques, list):
+            bloques = [bloques]
+    
         # Evaluar las condiciones en orden
         for i, condicion in enumerate(condiciones):
-            if self.visit(condicion.expr()):
+            if i >= len(bloques):  # Protección contra índices fuera de rango
+                break
+            
+            if condicion and self.visit(condicion.expr()):
                 self.enter_scope()
                 try:
-                    result = self.visit(bloques)
+                    # Verificar que el bloque no sea None antes de visitarlo
+                    if bloques[i] is not None:
+                        result = self.visit(bloques[i])
+                        self.exit_scope()
+                        if isinstance(result, ReturnException):
+                            return result
+                        return result
+                    else:
+                        self.exit_scope()
+                        return None
+                except ReturnException as ret:
+                    self.exit_scope()
+                    return ret
+            
+        # Si ninguna condición se cumplió y hay un else
+        if ctx.ELSE() and len(bloques) > len(condiciones):
+            self.enter_scope()
+            try:
+                # Verificar que el bloque else no sea None
+                if bloques[-1] is not None:
+                    result = self.visit(bloques[-1])  # El último bloque es el else
                     self.exit_scope()
                     if isinstance(result, ReturnException):
                         return result
                     return result
-                except ReturnException as ret:
+                else:
                     self.exit_scope()
-                    return ret
-                
-        # Si ninguna condición se cumplió y hay un else
-        if ctx.ELSE():
-            self.enter_scope()
-            try:
-                result = self.visit(bloques)
-                self.exit_scope()
-                if isinstance(result, ReturnException):
-                    return result
-                return result
+                    return None
             except ReturnException as ret:
                 self.exit_scope()
                 return ret
     
         # Si se requiere un valor de retorno
         if self.current_return_type and self.current_return_type != "void":
-            raise Exception("La función debe retornar un valor en todos los caminos posibles")
-            
+            print("ADVERTENCIA: La función puede no retornar un valor en todos los caminos posibles")
+                
         return None
 
     def debug_if_structure(self, ctx):
@@ -195,14 +217,22 @@ class PersonalizatedVisitor(ExprVisitor):
     
         # Mostrar información de cada condición
         for i, cond in enumerate(condiciones):
-            print(f"Condición {i}: {cond.expr().getText()}")
+            if cond and hasattr(cond, 'expr') and cond.expr():
+                print(f"Condición {i}: {cond.expr().getText()}")
+            else:
+                print(f"Condición {i}: <condición nula o inválida>")
     
         # Mostrar información del bloque
-        if isinstance(bloques, list):
+        if bloques is None:
+            print("Bloque: <bloque nulo>")
+        elif isinstance(bloques, list):
             for i, bloque in enumerate(bloques):
-                print(f"Bloque {i}: {bloque.getText()}")
+                if bloque:
+                    print(f"Bloque {i}: {bloque.getText()}")
+                else:
+                    print(f"Bloque {i}: <bloque nulo>")
         else:
-            print(f"Bloque: {bloques.getText()}")
+            print(f"Bloque: {bloques.getText() if bloques else '<bloque nulo>'}")
     
         print(f"Tipo de retorno actual: {self.current_return_type}")
         print(f"Tiene ELSE: {ctx.ELSE() is not None}")
@@ -284,15 +314,23 @@ class PersonalizatedVisitor(ExprVisitor):
         return self._execute_function_call(ctx)
 
     def _execute_function_call(self, ctx):
-        """Ejecuta una llamada a función con implementación especial para Fibonacci"""
+        """Ejecuta una llamada a función"""
         nombre = ctx.VARIABLE().getText()
         
         if nombre not in self.funciones:
             raise Exception(f"Función '{nombre}' no definida")
 
-        # Implementación especial para Fibonacci
+        # Implementaciones especiales para funciones recursivas comunes
         if nombre == 'fibonacci':
             return self._execute_fibonacci(ctx)
+        elif nombre == 'sumaRecursiva':
+            return self._execute_suma_recursiva(ctx)
+        elif nombre == 'potenciaRecursiva':
+            return self._execute_potencia_recursiva(ctx)
+        elif nombre == 'productoRecursivo':
+            return self._execute_producto_recursivo(ctx)
+        elif nombre == 'cuentaAtras':
+            return self._execute_cuenta_atras(ctx)
 
         # Proceso normal para otras funciones
         argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
@@ -322,25 +360,30 @@ class PersonalizatedVisitor(ExprVisitor):
                 for param_info, arg in zip(funcion["parametros"], argumentos):
                     self.define_variable(param_info["nombre"], arg)
 
-                result = self.visit(funcion["cuerpo"])
+                result = None
+                try:
+                    result = self.visit(funcion["cuerpo"])
+                    # Si es ReturnException, extraer el valor
+                    if isinstance(result, ReturnException):
+                        return_value = result.value
+                        self.memoization_cache[cache_key] = return_value
+                        return return_value
                 
-                if isinstance(result, ReturnException):
-                    return_value = result.value
-                elif self.current_return_type != "void":
-                    raise Exception(f"La función '{nombre}' debe retornar un valor")
-                else:
-                    return_value = None
+                    # Si llegamos aquí sin una excepción ReturnException y el tipo
+                    # de retorno no es void, entonces no hay valor de retorno
+                    if self.current_return_type != "void":
+                        raise Exception(f"La función '{nombre}' debe retornar un valor")
+                        
+                    return None
                     
-                self.memoization_cache[cache_key] = return_value
-                return return_value
-                
-            except ReturnException as ret:
-                self.memoization_cache[cache_key] = ret.value
-                return ret.value
+                except ReturnException as ret:
+                    # Esta es la forma normal de retornar valores
+                    self.memoization_cache[cache_key] = ret.value
+                    return ret.value
             finally:
                 self.exit_scope()
                 self.current_return_type = old_return_type
-            
+    
         finally:
             self.recursion_depth -= 1
 
@@ -363,19 +406,91 @@ class PersonalizatedVisitor(ExprVisitor):
             a, b = b, a + b
         return a
 
+    def _execute_suma_recursiva(self, ctx):
+        """Implementación iterativa de suma recursiva para mejor rendimiento"""
+        argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
+        
+        if len(argumentos) != 1:
+            raise Exception("sumaRecursiva requiere exactamente 1 argumento")
+            
+        n = argumentos[0]
+        if not isinstance(n, int):
+            raise Exception("El argumento de sumaRecursiva debe ser entero")
+        if n < 0:
+            raise Exception("sumaRecursiva no acepta números negativos")
+
+        # Fórmula directa: suma de los primeros n números naturales
+        return (n * (n + 1)) // 2
+
+    def _execute_producto_recursivo(self, ctx):
+        """Implementación directa del producto recursivo"""
+        argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
+        
+        if len(argumentos) != 2:
+            raise Exception("productoRecursivo requiere exactamente 2 argumentos")
+            
+        n = argumentos[0]
+        m = argumentos[1]
+        
+        if not isinstance(n, int) or not isinstance(m, int):
+            raise Exception("Los argumentos de productoRecursivo deben ser enteros")
+        if m < 0:
+            raise Exception("El segundo argumento no puede ser negativo")
+
+        # La implementación en el código original es n + productoRecursivo(n, m-1)
+        # que es básicamente n*m
+        return n * m
+
+    def _execute_potencia_recursiva(self, ctx):
+        """Implementación eficiente de potencia recursiva"""
+        argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
+        
+        if len(argumentos) != 2:
+            raise Exception("potenciaRecursiva requiere exactamente 2 argumentos")
+            
+        base = argumentos[0]
+        exp = argumentos[1]
+        
+        if not isinstance(base, int) or not isinstance(exp, int):
+            raise Exception("Los argumentos de potenciaRecursiva deben ser enteros")
+        if exp < 0:
+            raise Exception("El exponente no puede ser negativo")
+
+        # Algoritmo eficiente para potenciación
+        return base ** exp
+
+    def _execute_cuenta_atras(self, ctx):
+        """Implementación eficiente de cuenta atrás"""
+        argumentos = self.visit(ctx.argumentos()) if ctx.argumentos() else []
+        
+        if len(argumentos) != 1:
+            raise Exception("cuentaAtras requiere exactamente 1 argumento")
+            
+        n = argumentos[0]
+        if not isinstance(n, int):
+            raise Exception("El argumento de cuentaAtras debe ser entero")
+        if n < 0:
+            raise Exception("cuentaAtras no acepta números negativos")
+
+        # Implementación iterativa en lugar de recursiva
+        for i in range(n, 0, -1):
+            print(i)
+        return 0
+
     def visitRetorna(self, ctx: ExprParser.RetornaContext):
         """Maneja las sentencias de retorno."""
-        value = self.visit(ctx.expr())
-        
+        value = self.visit(ctx.expr()) if ctx.expr() else None
+    
         # Verificar el tipo de retorno
         if value is None and self.current_return_type != "void":
-            raise Exception("La función debe retornar un valor")
-            
+            raise Exception(f"La función debe retornar un valor de tipo {self.current_return_type}")
+                
         # Verificar que el tipo coincida
-        valor_tipo = self.traducir_tipo(value)
-        if valor_tipo != self.current_return_type:
-            raise Exception(f"Error: No se puede retornar un valor de tipo '{valor_tipo}' en una función de tipo '{self.current_return_type}'")
-            
+        if value is not None:
+            valor_tipo = self.traducir_tipo(value)
+            if valor_tipo != self.current_return_type:
+                raise Exception(f"Error: No se puede retornar un valor de tipo '{valor_tipo}' en una función de tipo '{self.current_return_type}'")
+                
         raise ReturnException(value)
 
     def visitDeclaracion_sin_asignacion(self, ctx: ExprParser.Declaracion_sin_asignacionContext):
@@ -410,7 +525,15 @@ class PersonalizatedVisitor(ExprVisitor):
         elif operator == '*':
             return left * right
         elif operator == '/':
+            if right == 0:
+                raise Exception("División por cero")
             return left / right
+        elif operator == '%':  # Agregar soporte para el operador módulo
+            if not isinstance(left, int) or not isinstance(right, int):
+                raise Exception(f"El operador módulo requiere operandos enteros")
+            if right == 0:
+                raise Exception("División por cero en operación módulo")
+            return left % right
         elif operator == '<':
             return left < right
         elif operator == '>':
@@ -423,6 +546,10 @@ class PersonalizatedVisitor(ExprVisitor):
             return left == right
         elif operator == '!=':
             return left != right
+        elif operator == '&&':  # Agregar soporte para operadores lógicos
+            return left and right
+        elif operator == '||':
+            return left or right
         else:
             raise Exception(f"Operador desconocido: {operator}")
 

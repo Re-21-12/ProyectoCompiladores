@@ -71,22 +71,14 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
     def exitRetorna(self, ctx:ExprParser.RetornaContext): pass
 
     def enterSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        self.symbol_table.enter_scope()  # Nuevo scope para el for
+        # Crear un nuevo scope para el bucle for
+        self.symbol_table.enter_scope()
+        print(f"DEBUG: Nuevo scope creado para el bucle for. Scopes actuales: {self.symbol_table.ambitos}")
         
-        declaracion = ctx.declaracion()  
-        if declaracion:
-            tipo = declaracion.tipo().getText()
-            nombre_variable = declaracion.VARIABLE().getText()
-
-            if self.symbol_table.get_variable_in_current_scope(nombre_variable):
-                self.report_error(ctx, f"Error: La variable '{nombre_variable}' ya ha sido declarada en este scope.")
-                return
-
-            self.symbol_table.define_variable(nombre_variable, tipo)
-
+        # No procesamos la declaración aquí, se hará en enterDeclaracion
 
     def exitSentencia_for(self, ctx: ExprParser.Sentencia_forContext):
-        self.symbol_table.exit_scope()  # Salir del scope del f
+        self.symbol_table.exit_scope()  # Salir del scope del bucle for
 
     # En el Listener (corrección para funciones):
     def enterDeclaracion_funcion(self, ctx: ExprParser.Declaracion_funcionContext):
@@ -420,32 +412,67 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
     def _get_type_from_node(self, node):
         if node is None:
             return None
-        
+
         # Si el nodo ya tiene tipo asignado
         if hasattr(node, 'type'):
             return node.type
 
         text = node.getText()
 
+        # Si es una operación (expresión compuesta)
+        if node.getChildCount() == 3:
+            left = node.getChild(0)
+            operator = node.getChild(1).getText()
+            right = node.getChild(2)
+            
+            left_type = self._get_type_from_node(left)
+            right_type = self._get_type_from_node(right)
+            
+            if operator in ['+', '-', '*', '/']:
+                if 'decimal' in (left_type, right_type):
+                    return 'decimal'
+                if 'entero' in (left_type, right_type):
+                    return 'entero'
+            elif operator in ['==', '!=', '<', '>', '<=', '>=']:
+                return 'bool'
+            elif operator == '%':
+                if left_type == 'entero' and right_type == 'entero':
+                    return 'entero'
+            elif operator == '^':
+                if self._is_numeric_type(left_type) and self._is_numeric_type(right_type):
+                    return 'decimal' if 'decimal' in (left_type, right_type) else 'entero'
+            return None
+
         # Literales
         if text.isdigit():
             return 'entero'
-        elif text.replace('.', '', 1).isdigit():
+        elif text.replace('.', '', 1).isdigit() and text.count('.') == 1:
             return 'decimal'
         elif text.startswith('"') and text.endswith('"'):
             return 'cadena'
         elif text in ['verdadero', 'falso']:
             return 'bool'
-        
-        # Llamadas a funciones
+
+        # Llamadas a funciones - verifica explícitamente que sea una llamada a función
         if '(' in text and text.endswith(')'):
+            # Extrae solo el nombre de la función (hasta el primer paréntesis)
             func_name = text.split('(')[0]
-            return self.symbol_table.get_function_return_type(func_name)
-        
+            # Verifica que sea un identificador válido
+            if func_name.isidentifier():
+                try:
+                    return self.symbol_table.get_function_return_type(func_name)
+                except Exception:
+                    # Si la función no está definida, registra el error pero no interrumpas
+                    print(f"Advertencia: No se pudo determinar el tipo de retorno para '{func_name}'")
+                    return None
+
         # Variables
-        var_type = self.symbol_table.get_variable(text)
-        if var_type:
-            return var_type
+        if text.isidentifier():
+            try:
+                var_type = self.symbol_table.get_variable(text)
+                return var_type
+            except Exception:
+                return "no_declarada"
 
         return None
 
@@ -574,19 +601,6 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
                 return False
         return True
 
-    def define_variable(self, name, value):
-        if name in self.ambitos[-1]:
-            raise Exception(f"Error: Variable '{name}' ya declarada en este scope.")
-        self.ambitos[-1][name] = value
-        print(f"DEBUG: Variable '{name}' definida con valor '{value}' en el scope actual. Scopes: {self.ambitos}")
-
-    def get_variable(self, name):
-        for ambito in reversed(self.ambitos):
-            if name in ambito:
-                print(f"DEBUG: Variable '{name}' encontrada en scope: {ambito}")
-                return ambito[name]
-        raise Exception(f"Error: Variable '{name}' no definida.")
-
     def enter_scope(self):
         self.ambitos.append({})
         print(f"DEBUG: Nuevo scope creado. Scopes actuales: {self.ambitos}")
@@ -597,3 +611,9 @@ class PersonalizatedListener(ExprListener, SymbolTable, ErrorListener):
             print(f"DEBUG: Scope eliminado. Scopes actuales: {self.ambitos}")
         else:
             raise Exception("Error: No se puede salir del scope global.")
+
+    def define_variable(self, name, value):
+        if name in self.ambitos[-1]:
+            raise Exception(f"Error: Variable '{name}' ya declarada en este scope.")
+        self.ambitos[-1][name] = value
+        print(f"DEBUG: Variable '{name}' definida con valor '{value}' en el scope actual. Scopes: {self.ambitos}")

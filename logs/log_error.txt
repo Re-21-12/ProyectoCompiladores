@@ -868,3 +868,15 @@ opt: Did you mean '--consthoist'?
 2025-05-30 00:26:20,884 - ERROR - [31m✖ Error inesperado: Error: Variable 'contadorA' no definida.[0m
 2025-05-30 00:29:20,392 - ERROR - [31m✖ Error inesperado: Error: Variable 'contadorA' no definida.[0m
 2025-05-30 00:31:36,491 - ERROR - [31m✖ Error inesperado: Error: Variable '5*8' no definida.[0m
+2025-05-30 15:22:32,795 - ERROR - [31m✖ Error inesperado: Error: Variable '5*8' no definida.[0m
+2025-05-30 15:26:46,708 - ERROR - [31m✖ Error inesperado: 'SymbolTable' object has no attribute 'get_function_return_type'[0m
+2025-05-30 15:31:03,396 - ERROR - [31m✖ Error inesperado: 'SymbolTable' object has no attribute 'get_variable_type'[0m
+2025-05-30 15:51:59,254 - ERROR - [31m✖ Error inesperado: 'SymbolTable' object has no attribute 'get_current_scope'[0m
+2025-05-30 15:58:48,970 - ERROR - [31m✖ Error inesperado: Error: Función 'base*potenciaRecursiva' no definida.[0m
+2025-05-30 16:03:36,778 - ERROR - [31m✖ Error inesperado: Error: Función 'base*potenciaRecursiva' no definida.[0m
+2025-05-30 16:09:59,656 - ERROR - [31m✖ Error inesperado: Error: Función 'combinatoria' no definida.[0m
+2025-05-30 16:10:33,021 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'getText'[0m
+2025-05-30 16:14:42,398 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'accept'[0m
+2025-05-30 16:19:01,768 - ERROR - [31m✖ Error inesperado: Operador desconocido: %[0m
+2025-05-30 16:22:27,756 - ERROR - [31m✖ Error inesperado: La función 'sumaRecursiva' debe retornar un valor[0m
+2025-05-30 16:26:40,209 - ERROR - [31m✖ Error inesperado: La función 'sumaRecursiva' debe retornar un valor[0m

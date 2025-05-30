@@ -18,7 +18,6 @@ class SymbolTable:
         if name in self.ambitos[-1]:
             raise Exception(f"Error: Variable '{name}' ya declarada en este scope.")
         self.ambitos[-1][name] = value
-        print(f"DEBUG: Variable '{name}' definida con valor '{value}' en el scope actual.")
 
     def get_variable(self, name):
         """Busca una variable en todos los scopes, desde el más reciente hasta el global."""
@@ -46,3 +45,20 @@ class SymbolTable:
         if name in self.funciones:
             return self.funciones[name]
         raise Exception(f"Error: Función '{name}' no definida.")
+
+    def get_function_return_type(self, name):
+        """Obtiene el tipo de retorno de una función."""
+        if name in self.funciones:
+            return self.funciones[name]['return_type']
+        raise Exception(f"Error: Función '{name}' no definida.")
+
+    def get_variable_type(self, name):
+        """Obtiene el tipo de una variable."""
+        variable_info = self.get_variable(name)
+        if variable_info is not None:
+            return variable_info
+        raise Exception(f"Error: Variable '{name}' no definida.")
+
+    def get_current_scope(self):
+        """Devuelve el scope actual (el último en la pila)."""
+        return self.ambitos[-1]

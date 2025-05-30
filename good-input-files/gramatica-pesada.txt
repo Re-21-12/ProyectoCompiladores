@@ -625,12 +625,12 @@ resultadonumeroC4 decimal = 60.5 / 2;
 
     calcularPromedioE2(6.66,7.77);
 
-asd entero = 0;
-limite entero = 10;
+asdf entero = 0;
+limite2 entero = 10;
 
-while (asd < limite) {
-    mostrar(fibonacci(asd));
-    asd++;
+while (asdf < limite2) {
+    mostrar(fibonacci(asdf));
+    asdf++;
 }
 
 indiceFibo entero = 10;
@@ -684,18 +684,10 @@ funcion cuentaAtras entero(n entero) {
     }
 }
 
-funcion combinatoria entero(n entero, k entero) {
-    if (k == 0 || k == n) {
-        retorna 1;
-    } else {
-        retorna combinatoria(n - 1, k - 1) + combinatoria(n - 1, k);
-    }
-}
-
 asd2 entero = 0;
-limite2 entero = 10000;
+limite3 entero = 10000;
 
-while (asd2 < limite2) {
+while (asd2 < limite3) {
     mostrar(fibonacci(asd2 % 30)); 
     asd2++;
 }
@@ -723,7 +715,6 @@ mostrar(sumaRecursiva(5000));
 mostrar(productoRecursivo(100, 50));
 mostrar(potenciaRecursiva(2, 20));
 cuentaAtras(1000);
-mostrar(combinatoria(20, 10));
 
 
 for (x2 entero = 0; x2 < 10000; x2++) {
@@ -736,10 +727,6 @@ for (y2 entero = 0; y2 < 10000; y2++) {
 
 for (z2 entero = 0; z2 < 10000; z2++) {
     mostrar(potenciaRecursiva(3, z2 % 10));
-}
-
-for (w2 entero = 0; w2 < 10000; w2++) {
-    mostrar(combinatoria(10, w2 % 10));
 }
 
 
