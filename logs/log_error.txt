@@ -881,3 +881,7 @@ opt: Did you mean '--consthoist'?
 2025-05-30 16:22:27,756 - ERROR - [31m✖ Error inesperado: La función 'sumaRecursiva' debe retornar un valor[0m
 2025-05-30 16:26:40,209 - ERROR - [31m✖ Error inesperado: La función 'sumaRecursiva' debe retornar un valor[0m
 2025-05-30 21:37:54,144 - ERROR - [31m✖ Error inesperado: Error: Variable 'res' no definida.[0m
+2025-05-30 23:50:39,789 - ERROR - [31m✖ Error inesperado: 'NoneType' object has no attribute 'type'[0m
+2025-05-31 09:31:49,686 - ERROR - [31m✖ Error de valor: Tipo no soportado: cadena[0m
+2025-05-31 09:39:33,509 - ERROR - [31m✖ Error de valor: Tipo literal no soportado[0m
+2025-05-31 09:43:25,795 - ERROR - [31m✖ Error de valor: Tipo no soportado: [0m

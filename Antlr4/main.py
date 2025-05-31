@@ -173,25 +173,46 @@ def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_progr
         print(f"{Fore.GREEN}✔ Archivo objeto generado: {obj_file}{Style.RESET_ALL}")
 
         # Enlace
-        exe_file = output_dir / "program"
-        link_cmd = [
-            "gcc",
-            str(obj_file),
-            "-o", str(exe_file),
-            "-no-pie"
-        ]
-
-        print(f"{Fore.CYAN}[INFO] Ejecutando comando de enlace: {' '.join(link_cmd)}{Style.RESET_ALL}")
-        result_link = subprocess.run(link_cmd, capture_output=True, text=True)
-        if result_link.returncode != 0:
-            print(f"{Fore.RED}[ERROR] Enlace fallido:\n{result_link.stderr}{Style.RESET_ALL}")
-            return False
-
-        # Hacer el binario ejecutable
-        os.chmod(str(exe_file), 0o755)
-        print(f"{Fore.GREEN}✔ Ejecutable generado: {exe_file}{Style.RESET_ALL}")
-
-        return True
+        if target_exe:
+            exe_file = output_dir / "program.exe"
+            # Verificar si el compilador cruzado está disponible
+            try:
+                subprocess.run(["x86_64-w64-mingw32-gcc", "--version"], capture_output=True, check=True)
+            except Exception:
+                print(f"{Fore.RED}[ERROR] Compilador cruzado x86_64-w64-mingw32-gcc no encontrado. Instálelo para generar .exe.{Style.RESET_ALL}")
+                return False
+            link_cmd = [
+                "x86_64-w64-mingw32-gcc",
+                str(obj_file),
+                "-o", str(exe_file),
+                "-static",
+                "-static-libgcc",
+                "-static-libstdc++"
+            ]
+            print(f"{Fore.CYAN}[INFO] Ejecutando comando de enlace para .exe: {' '.join(link_cmd)}{Style.RESET_ALL}")
+            result_link = subprocess.run(link_cmd, capture_output=True, text=True)
+            if result_link.returncode != 0:
+                print(f"{Fore.RED}[ERROR] Enlace para .exe fallido:\n{result_link.stderr}{Style.RESET_ALL}")
+                return False
+            print(f"{Fore.GREEN}✔ Ejecutable Windows generado: {exe_file}{Style.RESET_ALL}")
+            return True
+        else:
+            exe_file = output_dir / "program"
+            link_cmd = [
+                "gcc",
+                str(obj_file),
+                "-o", str(exe_file),
+                "-no-pie"
+            ]
+            print(f"{Fore.CYAN}[INFO] Ejecutando comando de enlace: {' '.join(link_cmd)}{Style.RESET_ALL}")
+            result_link = subprocess.run(link_cmd, capture_output=True, text=True)
+            if result_link.returncode != 0:
+                print(f"{Fore.RED}[ERROR] Enlace fallido:\n{result_link.stderr}{Style.RESET_ALL}")
+                return False
+            # Hacer el binario ejecutable
+            os.chmod(str(exe_file), 0o755)
+            print(f"{Fore.GREEN}✔ Ejecutable generado: {exe_file}{Style.RESET_ALL}")
+            return True
 
     except Exception as e:
         print(f"{Fore.RED}[EXCEPCIÓN] {e}{Style.RESET_ALL}")
@@ -338,7 +359,7 @@ def show_main_menu():
         except ValueError:
             print(f"{Fore.RED}¡Ingrese un número válido!{Style.RESET_ALL}")
 
-def process_input_file(path_file, timer):
+def process_input_file(path_file, timer, windows_target=False):
     """Procesa el archivo de entrada hasta generar el código LLVM"""
     if not check_extension(path_file):
         raise ValueError("El archivo debe tener extensión .txt")
@@ -394,7 +415,7 @@ def process_input_file(path_file, timer):
     # ========== FASE 7: Generación LLVM ==========
     timer.start_phase("Generación LLVM")
     logging.info("Generando código LLVM...")
-    llvm_generator = LLVMGenerator()
+    llvm_generator = LLVMGenerator(windows_target=windows_target)
     llvm_code = llvm_generator.generate_code(ast_result)
     timer.end_phase()
     
@@ -425,7 +446,7 @@ def main():
         
         try:
             if option == 1:  # Flujo completo con optimización
-                llvm_code = process_input_file(path_file, timer)
+                llvm_code = process_input_file(path_file, timer, windows_target=False)
                 
                 # ========== FASE 8: Compilación con optimización ==========
                 timer.start_phase("Compilación con optimización")
@@ -443,7 +464,7 @@ def main():
                 print(f"\n{Fore.MAGENTA}TOTAL (sin Selección de archivo): {total_sin_seleccion:.4f} segundos{Style.RESET_ALL}")
                 
             elif option == 2:  # Flujo completo sin optimización
-                llvm_code = process_input_file(path_file, timer)
+                llvm_code = process_input_file(path_file, timer, windows_target=False)
                 
                 # ========== FASE 8: Compilación sin optimización ==========
                 timer.start_phase("Compilación sin optimización")
@@ -455,7 +476,7 @@ def main():
                 timer.print_report()
                 
             elif option == 3:  # Flujo completo con optimización para .exe
-                llvm_code = process_input_file(path_file, timer)
+                llvm_code = process_input_file(path_file, timer, windows_target=True)
                 
                 # ========== FASE 8: Compilación con optimización para Windows ==========
                 timer.start_phase("Compilación para .exe optimizado")
@@ -468,7 +489,7 @@ def main():
                 timer.print_report()
                 
             elif option == 4:  # Solo generación de LLVM
-                llvm_code = process_input_file(path_file, timer)
+                llvm_code = process_input_file(path_file, timer, windows_target=False)
                 print(f"{Fore.GREEN}✔ Proceso completado hasta generación de LLVM{Style.RESET_ALL}")
                 timer.print_report()
                 

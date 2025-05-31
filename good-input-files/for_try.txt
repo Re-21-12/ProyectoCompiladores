@@ -1,5 +1,5 @@
 hola {
-    for (i entero = 0; i < 10; i++) {
+    for (i entero = 0; i < 100000; i++) {
     mostrar(i);
 }
 }

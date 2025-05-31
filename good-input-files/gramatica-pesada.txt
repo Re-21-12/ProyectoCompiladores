@@ -2,17 +2,13 @@ hola {
     contadorA entero = 0;
     sumaA entero = 0;
     sumaA2 entero = 0;
-    mensajeA cadena = "Iniciando proceso";
     es_validoA bool = verdadero;
     es_adminA bool = falso;
     
     contadorA2 entero = 0;
     sumaA3 entero = 0;
     sumaA4 entero = 0;
-    mensajeA1 cadena = "Iniciando proceso";
     es_validoA2 bool = verdadero;
-
-    mostrar(mensajeA);
 
     resultadoA1 entero = 6 + 4;
     resultadoA2 entero = 11 - 3;
@@ -28,30 +24,13 @@ hola {
     totalA2 entero = resultadoA3 * resultadoA1;
     mostrar(totalA);
 
-      funcion fibonacci entero(n entero) {
-    if (n == 0) {
-      retorna 0;
-    } else if (n == 1) {
-      retorna 1;
-    } else {
-      retorna fibonacci(n - 1) + fibonacci(n - 2);
-    }
-  }
-
   asd entero = 0;
   limite entero = 10;
-
-  while (asd < limite) {
-    mostrar(fibonacci(asd));
-    asd++;
-  }
 
     if(es_validoA){
 
         if(es_adminA){
-            mostrar("Acceso completo");
         } else {
-            mostrar("Acceso restringido");
         }
     }
 
@@ -90,9 +69,7 @@ hola {
 
     parA bool = verdadero;
     if(parA){
-        mostrar("El numero es par");
     } else {
-        mostrar("El numero es impar");
     }
 
     for (y entero = 0; y < 10000; y++) {
@@ -138,17 +115,13 @@ resultadonumeroA4 decimal = 40.5 / 2;
     contadorB entero = 0;
     sumaB entero = 0;
     sumaB2 entero = 0;
-    mensajeB cadena = "Ejecutando rutina";
     es_validoB bool = verdadero;
     es_adminB bool = falso;
     
     contadorB2 entero = 0;
     sumaB3 entero = 0;
     sumaB4 entero = 0;
-    mensajeB1 cadena = "Ejecutando rutina";
     es_validoB2 bool = verdadero;
-
-    mostrar(mensajeB);
 
     resultadoB1 entero = 7 + 5;
     resultadoB2 entero = 12 - 4;
@@ -165,13 +138,11 @@ resultadonumeroA4 decimal = 40.5 / 2;
     mostrar(totalB);
 
     if(es_validoB){
-        mensajeB cadena = "Cliente autorizado";
-        mostrar(mensajeB);
 
         if(es_adminB){
-            mostrar("Privilegios totales");
+
         } else {
-            mostrar("Privilegios basicos");
+
         }
     }
 
@@ -210,9 +181,7 @@ resultadonumeroA4 decimal = 40.5 / 2;
 
     parB bool = verdadero;
     if(parB){
-        mostrar("El valor es par");
     } else {
-        mostrar("El valor es impar");
     }
 
     for (z entero = 0; z < 1000; z++) {
@@ -258,17 +227,13 @@ resultadonumeroB4 decimal = 50.5 / 2;
     contadorC entero = 0;
     sumaC entero = 0;
     sumaC2 entero = 0;
-    mensajeC cadena = "Procesando datos";
     es_validoC bool = verdadero;
     es_adminC bool = falso;
     
     contadorC2 entero = 0;
     sumaC3 entero = 0;
     sumaC4 entero = 0;
-    mensajeC1 cadena = "Procesando datos";
     es_validoC2 bool = verdadero;
-
-    mostrar(mensajeC);
 
     resultadoC1 entero = 8 + 6;
     resultadoC2 entero = 13 - 5;
@@ -285,13 +250,9 @@ resultadonumeroB4 decimal = 50.5 / 2;
     mostrar(totalC);
 
     if(es_validoC){
-        mensajeC cadena = "Sesion activa";
-        mostrar(mensajeC);
 
         if(es_adminC){
-            mostrar("Modo administrador");
         } else {
-            mostrar("Modo usuario");
         }
     }
 
@@ -330,9 +291,7 @@ resultadonumeroB4 decimal = 50.5 / 2;
 
     parC bool = verdadero;
     if(parC){
-        mostrar("La cifra es par");
     } else {
-        mostrar("La cifra es impar");
     }
 
     for (w entero = 0; w < 10000; w++) {
@@ -378,17 +337,13 @@ resultadonumeroC4 decimal = 60.5 / 2;
     contadorD entero = 0;
     sumaD entero = 0;
     sumaD2 entero = 0;
-    mensajeD cadena = "Inicio de rutina D";
     es_validoD bool = verdadero;
     es_adminD bool = falso;
 
     contadorD2 entero = 0;
     sumaD3 entero = 0;
     sumaD4 entero = 0;
-    mensajeD1 cadena = "Inicio de rutina D extra";
     es_validoD2 bool = verdadero;
-
-    mostrar(mensajeD);
 
     resultadoD1 entero = 9 + 3;
     resultadoD2 entero = 15 - 6;
@@ -415,13 +370,9 @@ resultadonumeroC4 decimal = 60.5 / 2;
     mostrar(factorial(5));
 
     if(es_validoD){
-        mensajeD cadena = "Usuario D verificado";
-        mostrar(mensajeD);
 
         if(es_adminD){
-            mostrar("Acceso D completo");
         } else {
-            mostrar("Acceso D restringido");
         }
     }
 
@@ -460,9 +411,7 @@ resultadonumeroC4 decimal = 60.5 / 2;
 
     imparD bool = esImparFuncD(7);
     if(imparD){
-        mostrar("El numero es impar");
     } else {
-        mostrar("El numero es par");
     }
 
     for (n entero = 0; n < 5000; n++) {
@@ -508,17 +457,13 @@ resultadonumeroC4 decimal = 60.5 / 2;
     contadorE entero = 0;
     sumaE entero = 0;
     sumaE2 entero = 0;
-    mensajeE cadena = "Inicio de rutina E";
     es_validoE bool = verdadero;
     es_adminE bool = falso;
 
     contadorE2 entero = 0;
     sumaE3 entero = 0;
     sumaE4 entero = 0;
-    mensajeE1 cadena = "Inicio de rutina E extra";
     es_validoE2 bool = verdadero;
-
-    mostrar(mensajeE);
 
     resultadoE1 entero = 10 + 2;
     resultadoE2 entero = 18 - 7;
@@ -535,13 +480,9 @@ resultadonumeroC4 decimal = 60.5 / 2;
     mostrar(totalE);
 
     if(es_validoE){
-        mensajeE cadena = "Usuario E verificado";
-        mostrar(mensajeE);
 
         if(es_adminE){
-            mostrar("Acceso E completo");
         } else {
-            mostrar("Acceso E restringido");
         }
     }
 
@@ -580,9 +521,7 @@ resultadonumeroC4 decimal = 60.5 / 2;
 
     parE bool = esParFuncE(8);
     if(parE){
-        mostrar("El numero es par");
     } else {
-        mostrar("El numero es impar");
     }
 
     for (q entero = 0; q < 3000; q++) {
@@ -628,28 +567,9 @@ resultadonumeroC4 decimal = 60.5 / 2;
 asdf entero = 0;
 limite2 entero = 10;
 
-while (asdf < limite2) {
-    mostrar(fibonacci(asdf));
-    asdf++;
-}
 
 indiceFibo entero = 10;
 limiteFibo entero = 30;
-
-while (indiceFibo < limiteFibo) {
-    mostrar(fibonacci(indiceFibo));
-    indiceFibo++;
-}
-
-for (iF entero = 30; iF < 50; iF++) {
-    mostrar(fibonacci(iF));
-}
-
-jF entero = 50;
-while (jF <= 60) {
-    mostrar(fibonacci(jF));
-    jF = jF + 2;
-}
 
 funcion sumaRecursiva entero(n entero) {
     if (n == 0) {
@@ -686,30 +606,6 @@ funcion cuentaAtras entero(n entero) {
 
 asd2 entero = 0;
 limite3 entero = 10000;
-
-while (asd2 < limite3) {
-    mostrar(fibonacci(asd2 % 30)); 
-    asd2++;
-}
-
-indiceFibo2 entero = 10000;
-limiteFibo2 entero = 20000;
-
-while (indiceFibo2 < limiteFibo2) {
-    mostrar(fibonacci(indiceFibo2 % 30));
-    indiceFibo2++;
-}
-
-for (iF2 entero = 20000; iF2 < 30000; iF2++) {
-    mostrar(fibonacci(iF2 % 30));
-}
-
-jF2 entero = 30000;
-while (jF2 <= 40000) {
-    mostrar(fibonacci(jF2 % 30));
-    jF2 = jF2 + 2;
-}
-
 
 mostrar(sumaRecursiva(5000));
 mostrar(productoRecursivo(100, 50));

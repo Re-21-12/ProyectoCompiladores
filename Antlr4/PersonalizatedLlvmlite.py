@@ -1,684 +1,352 @@
-from llvmlite import ir
-from llvmlite.ir import Constant, IRBuilder
-import llvmlite.binding as llvm
+from llvmlite import ir, binding as llvm
 
 class LLVMGenerator:
-    def __init__(self):
-        # Initialize LLVM
+    def __init__(self, windows_target=False):
         llvm.initialize()
         llvm.initialize_native_target()
         llvm.initialize_native_asmprinter()
-        self.symbol_table_stack = [{}]
-        # Create module
         self.module = ir.Module(name="main_module")
-        self.module.triple = llvm.get_process_triple()
-        target = llvm.Target.from_triple(self.module.triple)
-        self.module.data_layout = target.create_target_machine().target_data
-        
-        # Initialize builder and context
+        # Establecer triple y datalayout válidos según el destino
+        if windows_target:
+            self.module.triple = "x86_64-w64-windows-gnu"
+            # Data layout para Windows x86_64 (puede requerir ajuste según tu toolchain)
+            self.module.data_layout = "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+        else:
+            self.module.triple = llvm.get_default_triple()
+            target = llvm.Target.from_default_triple()
+            target_machine = target.create_target_machine()
+            self.module.data_layout = target_machine.target_data
         self.builder = None
         self.current_function = None
-        
-        # Symbol tables
+        self.symbol_table_stack = [{}]  # Pila de scopes
         self.functions = {}
-        self.symbol_table = {}
         self.string_constants = {}
-        
-        # Type definitions
-        self.int_type = ir.IntType(32)       # entero
-        self.double_type = ir.DoubleType()   # decimal
-        self.bool_type = ir.IntType(1)       # bool
-        self.void_type = ir.VoidType()       # void
-        self.char_ptr_type = ir.IntType(8).as_pointer()  # cadena
-        
-        # Initialize builtins
+        self.int_type = ir.IntType(32)
+        self.double_type = ir.DoubleType()
+        self.bool_type = ir.IntType(1)
+        self.void_type = ir.VoidType()
+        self.char_ptr_type = ir.IntType(8).as_pointer()
         self._declare_builtins()
-    def _enter_scope(self):
-        """Entrar a un nuevo scope"""
-        self.symbol_table_stack.append({'_strings': {}})
-
-    def _current_symbol_table(self):
-        """Obtener la tabla de símbolos actual"""
-        return self.symbol_table_stack[-1]
-        
-
-    def _exit_scope(self):
-        """Salir del scope actual"""
-        if len(self.symbol_table_stack) > 1:
-            self.symbol_table_stack.pop()
-            
 
     def _declare_builtins(self):
-        """Declare built-in functions like printf"""
-        printf_type = ir.FunctionType(self.int_type, [self.char_ptr_type], var_arg=True)
-        ir.Function(self.module, printf_type, name="printf")
+        printf_ty = ir.FunctionType(self.int_type, [self.char_ptr_type], var_arg=True)
+        self.functions["printf"] = ir.Function(self.module, printf_ty, name="printf")
 
-    def generate_code(self, ast_node):
-        """Generate LLVM IR from AST"""
-        # Create main function
-        main_func_type = ir.FunctionType(self.int_type, [])
-        main_func = ir.Function(self.module, main_func_type, name="main")
-        self.current_function = main_func
-        
-        # Create entry block
-        entry_block = main_func.append_basic_block(name="entry")
-        self.builder = IRBuilder(entry_block)
-        
-        # Generate code for the AST
-        self._generate_node(ast_node)
-        
-        # Ensure main has a return at the end
+    def _enter_scope(self):
+        self.symbol_table_stack.append({})
+
+    def _exit_scope(self):
+        self.symbol_table_stack.pop()
+
+    def _current_symbol_table(self):
+        return self.symbol_table_stack[-1]
+
+    def generate_code(self, ast):
+        main_ty = ir.FunctionType(self.int_type, [])
+        main_fn = ir.Function(self.module, main_ty, name="main")
+        self.current_function = main_fn
+        block = main_fn.append_basic_block("entry")
+        self.builder = ir.IRBuilder(block)
+        self._generate_node(ast)
         if not self.builder.block.is_terminated:
-            self.builder.ret(Constant(self.int_type, 0))
-        
+            self.builder.ret(ir.Constant(self.int_type, 0))
         return self.module
 
-
     def _generate_node(self, node):
-        """Dispatch node generation based on type"""
-        node_type = node.type
-
-        if node_type == "Program":
-            # Procesa todos los hijos del programa (debería ser solo uno: MainFunction)
+        if node.type == "Program":
             for child in node.children:
                 self._generate_node(child)
-
-        elif node_type == "MainFunction":
-            # Procesa todos los hijos del main (debería ser solo uno: Block)
+        elif node.type == "MainFunction":
+            self._enter_scope()
             for child in node.children:
                 self._generate_node(child)
-
-        elif node_type == "Block":
-            # Procesa todas las sentencias del bloque
-            for child in node.children:
-                self._generate_node(child)
-
-        elif node_type == "VariableDecl":
+            self._exit_scope()
+        elif node.type == "Block":
+            self._enter_scope()
+            for stmt in node.children:
+                self._generate_node(stmt)
+            self._exit_scope()
+        elif node.type == "VariableDecl":
             self._generate_variable_decl(node)
-
-        elif node_type == "Assignment":
+        elif node.type == "Assignment":
             self._generate_assignment(node)
-
-        elif node_type == "PrintStatement":
+        elif node.type == "PrintStatement":
             self._generate_print(node.children[0])
-
-        elif node_type == "IfStatement":
-            self._generate_if_statement(node)
-
-        elif node_type == "WhileLoop":
-            self._generate_while_loop(node)
-
-        elif node_type == "ForLoop":
-            self._generate_for_loop(node)
-
-        elif node_type == "FunctionDecl":
+        elif node.type == "IfStatement":
+            self._generate_if(node)
+        elif node.type == "WhileLoop":
+            self._generate_while(node)
+        elif node.type == "ForLoop":
+            self._generate_for(node)
+        elif node.type == "FunctionDecl":
             self._generate_function_decl(node)
-
-        elif node_type == "FunctionCall":
+        elif node.type == "FunctionCall":
             self._generate_function_call(node)
-
-        elif node_type == "ReturnStatement":
+        elif node.type == "ReturnStatement":
             self._generate_return(node)
+        # ...otros nodos...
 
-        elif node_type == "SwitchStatement":
-            self._generate_switch_statement(node)
     def _generate_variable_decl(self, node):
         var_name = node.value
         var_type = self._llvm_type(node.children[0].value)
-        
-        # Allocate space on stack
         ptr = self.builder.alloca(var_type, name=var_name)
         self._current_symbol_table()[var_name] = ptr
-        
-        # Initialize if needed
         if len(node.children) > 1:
             value = self._generate_expression(node.children[1])
             self.builder.store(value, ptr)
-            
+
     def _generate_assignment(self, node):
         var_name = node.value
-        # Buscar la variable en todos los scopes
+        value = self._generate_expression(node.children[0])
         for scope in reversed(self.symbol_table_stack):
             if var_name in scope:
-                ptr = scope[var_name]
-                value = self._generate_expression(node.children[0])
-                
-                # Convertir tipos si es necesario
-                if ptr.type.pointee != value.type:
-                    if isinstance(ptr.type.pointee, ir.DoubleType) and isinstance(value.type, ir.IntType):
-                        value = self.builder.sitofp(value, self.double_type)
-                    elif isinstance(ptr.type.pointee, ir.IntType) and isinstance(value.type, ir.DoubleType):
-                        value = self.builder.fptosi(value, self.int_type)
-                
-                self.builder.store(value, ptr)
-                return value
-        raise Exception(f"Variable '{var_name}' no declarada")
+                self.builder.store(value, scope[var_name])
+                return
+        raise NameError(f"Variable '{var_name}' no declarada")
 
     def _generate_print(self, expr_node):
-        """Generate print statement"""
         value = self._generate_expression(expr_node)
-        value_type = self._get_expression_type(expr_node)
-        
-        # Get printf function
-        printf = self.module.get_global("printf")
-        
-        # Create format string based on type
+        value_type = value.type
         if isinstance(value_type, ir.IntType) and value_type.width == 32:
-            fmt_str = "%d\n\0"
+            fmt = "%d\\0a\\00"
         elif isinstance(value_type, ir.DoubleType):
-            fmt_str = "%f\n\0"
-        elif isinstance(value_type, ir.IntType) and value_type.width == 1:  # bool
-            fmt_str = "%d\n\0"
-        else:  # string
-            fmt_str = "%s\n\0"
-        
-        # Create global constant for format string
-        if fmt_str not in self.string_constants:
-            byte_array = bytearray(fmt_str.encode("utf8"))
-            fmt = ir.Constant(ir.ArrayType(ir.IntType(8), len(byte_array)), byte_array)
-            global_fmt = ir.GlobalVariable(self.module, fmt.type, name=f"fmt.{len(self.string_constants)}")
-            global_fmt.linkage = "internal"
-            global_fmt.global_constant = True
-            global_fmt.initializer = fmt
-            self.string_constants[fmt_str] = global_fmt
-        
-        # Get pointer to format string
-        fmt_ptr = self.builder.bitcast(self.string_constants[fmt_str], self.char_ptr_type)
-        
-        # Call printf
-        if isinstance(value_type, ir.IntType) and value_type.width == 1:  # bool
-            value = self.builder.zext(value, self.int_type)
-        self.builder.call(printf, [fmt_ptr, value])
+            fmt = "%f\\0a\\00"
+        else:
+            fmt = "%d\\0a\\00"
+        if fmt not in self.string_constants:
+            c_fmt = ir.GlobalVariable(self.module, ir.ArrayType(ir.IntType(8), len(fmt)), name=f"fmt_{len(self.string_constants)}")
+            c_fmt.linkage = "internal"
+            c_fmt.global_constant = True
+            c_fmt.initializer = ir.Constant(ir.ArrayType(ir.IntType(8), len(fmt)), bytearray(fmt.encode("utf8")))
+            self.string_constants[fmt] = c_fmt
+        fmt_ptr = self.builder.bitcast(self.string_constants[fmt], self.char_ptr_type)
+        self.builder.call(self.functions["printf"], [fmt_ptr, value])
 
-    def _generate_if_statement(self, node):
-        """Generate if-else statement"""
-        condition = node.children[0]
-        then_block_node = node.children[1]
-        else_block_node = node.children[2] if len(node.children) > 2 else None
-
-        # Crear bloques básicos
-        then_block = self.builder.append_basic_block("if.then")
-        end_block = self.builder.append_basic_block("if.end")
-        else_block = self.builder.append_basic_block("if.else") if else_block_node else end_block
-
-        # Evaluar condición
-        cond_value = self._generate_expression(condition)
-
-        # Asegurar que cond_value sea de tipo i1
-        if cond_value.type != self.bool_type:
-            cond_value = self.builder.icmp_unsigned("!=", cond_value, ir.Constant(cond_value.type, 0))
-
-        self.builder.cbranch(cond_value, then_block, else_block)
-
-        # Generar bloque "then"
+    def _generate_if(self, node):
+        cond = self._generate_expression(node.children[0].children[0])
+        then_block = self.current_function.append_basic_block("if.then")
+        end_block = self.current_function.append_basic_block("if.end")
+        self.builder.cbranch(cond, then_block, end_block)
         self.builder.position_at_end(then_block)
-        self._generate_node(then_block_node)
+        self._generate_node(node.children[1].children[0])
         if not self.builder.block.is_terminated:
             self.builder.branch(end_block)
-
-        # Generar bloque "else" si existe
-        if else_block_node and else_block != end_block:
-            self.builder.position_at_end(else_block)
-            self._generate_node(else_block_node)
-            if not self.builder.block.is_terminated:
-                self.builder.branch(end_block)
-
-        # Solo posicionarse en end_block si no estamos ya allí
-        if self.builder.block != end_block:
-            self.builder.position_at_end(end_block)
-            
-    def _generate_while_loop(self, node):
-        condition = node.children[0]
-        body = node.children[1]
-
-        # Guardar el bloque actual para volver después del bucle
-        current_block = self.builder.block
-
-        cond_block = self.builder.append_basic_block("while.cond")
-        body_block = self.builder.append_basic_block("while.body")
-        end_block = self.builder.append_basic_block("while.end")
-
-        # Saltar al bloque de condición
-        self.builder.branch(cond_block)
-
-        # Bloque de condición
-        self.builder.position_at_end(cond_block)
-        cond_value = self._generate_expression(condition)
-
-        if cond_value.type != self.bool_type:
-            cond_value = self.builder.icmp_unsigned("!=", cond_value, ir.Constant(cond_value.type, 0))
-
-        self.builder.cbranch(cond_value, body_block, end_block)
-
-        # Bloque del cuerpo
-        self.builder.position_at_end(body_block)
-        self._generate_node(body)
-        if not self.builder.block.is_terminated:
-            self.builder.branch(cond_block)
-
-        # Posicionarse en el bloque final
         self.builder.position_at_end(end_block)
 
-    def _generate_for_loop(self, node):
-        # 1. Procesar inicialización (crea la variable en el scope)
-        self._enter_scope()  # Nuevo scope para el bucle
-        init_node = node.children[0]
-        self._generate_node(init_node)
-        
-        # Crear bloques básicos
-        cond_block = self.builder.append_basic_block("for.cond")
-        body_block = self.builder.append_basic_block("for.body")
-        update_block = self.builder.append_basic_block("for.update")
-        end_block = self.builder.append_basic_block("for.end")
-        
-        # Saltar al bloque de condición
+    def _generate_while(self, node):
+        cond_block = self.current_function.append_basic_block("while.cond")
+        body_block = self.current_function.append_basic_block("while.body")
+        end_block = self.current_function.append_basic_block("while.end")
         self.builder.branch(cond_block)
-        
-        # 2. Bloque de condición
         self.builder.position_at_end(cond_block)
-        cond_node = node.children[1]
-        cond_value = self._generate_expression(cond_node)
-        
-        # Convertir condición a booleano si es necesario
-        if cond_value.type != self.bool_type:
-            cond_value = self.builder.icmp_unsigned("!=", cond_value, 
-                                                ir.Constant(cond_value.type, 0))
-        
-        self.builder.cbranch(cond_value, body_block, end_block)
-        
-        # 3. Bloque del cuerpo
+        cond = self._generate_expression(node.children[0])
+        self.builder.cbranch(cond, body_block, end_block)
         self.builder.position_at_end(body_block)
-        body_node = node.children[3]
-        self._generate_node(body_node)
-        
-        # Saltar al bloque de actualización si no hay terminación explícita
+        self._generate_node(node.children[1])
+        if not self.builder.block.is_terminated:
+            self.builder.branch(cond_block)
+        self.builder.position_at_end(end_block)
+
+    def _generate_for(self, node):
+        self._enter_scope()
+        self._generate_node(node.children[0])  # init
+        cond_block = self.current_function.append_basic_block("for.cond")
+        body_block = self.current_function.append_basic_block("for.body")
+        update_block = self.current_function.append_basic_block("for.update")
+        end_block = self.current_function.append_basic_block("for.end")
+        self.builder.branch(cond_block)
+        self.builder.position_at_end(cond_block)
+        cond = self._generate_expression(node.children[1])
+        self.builder.cbranch(cond, body_block, end_block)
+        self.builder.position_at_end(body_block)
+        self._generate_node(node.children[3])  # body
         if not self.builder.block.is_terminated:
             self.builder.branch(update_block)
-        
-        # 4. Bloque de actualización
         self.builder.position_at_end(update_block)
         update_node = node.children[2]
-        self._generate_node(update_node)
-        
-        # Saltar de nuevo al bloque de condición
-        if not self.builder.block.is_terminated:
-            self.builder.branch(cond_block)
-        
-        # 5. Bloque final
+        if update_node.type in ("Assignment", "UnaryOp"):
+            self._generate_expression(update_node)
+        else:
+            self._generate_node(update_node)
+        self.builder.branch(cond_block)
         self.builder.position_at_end(end_block)
-        self._exit_scope()  # Salir del scope del bucle
+        self._exit_scope()
+
     def _generate_function_decl(self, node):
-        """Generate function declaration with proper scope handling"""
-        func_name = node.value
-        return_type = self._llvm_type(node.children[0].value)
+        name = node.value
+        ret_type = self._llvm_type(node.children[0].value)
         params = node.children[1].children
-        body_node = node.children[2]
-
-        # Registrar la función primero (importante para recursión)
         param_types = [self._llvm_type(p.children[0].value) for p in params]
-        func_type = ir.FunctionType(return_type, param_types)
-        func = ir.Function(self.module, func_type, name=func_name)
-        
-        # Guardar información de la función antes de generar el cuerpo
-        self.functions[func_name] = {
-            'function': func,
-            'return_type': return_type
-        }
-
-        # 1. Backup current context
-        old_context = {
-            'function': self.current_function,
-            'builder': self.builder,
-            'symbol_table_stack': self.symbol_table_stack.copy(),
-            'functions': self.functions.copy()
-        }
-
-        # 2. Set new context for function body
-        self.current_function = func
-        self.symbol_table_stack = [{}]  # reset to global scope
-        entry_block = func.append_basic_block("entry")
-        self.builder = IRBuilder(entry_block)
-
-        # 3. New scope for parameters
+        func_ty = ir.FunctionType(ret_type, param_types)
+        func = ir.Function(self.module, func_ty, name=name)
+        self.functions[name] = func
         self._enter_scope()
-
-        # 4. Handle parameters
-        for i, (param, param_node) in enumerate(zip(func.args, params)):
-            param_name = param_node.value
-            ptr = self.builder.alloca(param.type, name=f"{param_name}.addr")
-            self.builder.store(param, ptr)
-            self._current_symbol_table()[param_name] = ptr
-
-        # 5. Generate function body
-        self._generate_node(body_node)
-
-        # 6. Ensure function has a proper termination
+        for i, p in enumerate(params):
+            ptr = self.builder.alloca(param_types[i], name=p.value)
+            self.builder.store(func.args[i], ptr)
+            self._current_symbol_table()[p.value] = ptr
+        block = func.append_basic_block("entry")
+        old_builder = self.builder
+        self.builder = ir.IRBuilder(block)
+        for child in node.children[2:]:
+            self._generate_node(child)
         if not self.builder.block.is_terminated:
-            if isinstance(return_type, ir.VoidType):
+            if isinstance(ret_type, ir.VoidType):
                 self.builder.ret_void()
             else:
-                # For non-void functions, return a default value
-                if return_type == self.int_type:
-                    self.builder.ret(Constant(self.int_type, 0))
-                elif return_type == self.double_type:
-                    self.builder.ret(Constant(self.double_type, 0.0))
-                elif return_type == self.bool_type:
-                    self.builder.ret(Constant(self.bool_type, False))
-                else:
-                    self.builder.ret_void()
+                self.builder.ret(ir.Constant(ret_type, 0))
+        self.builder = old_builder
+        self._exit_scope()
 
-        # 7. Restore old context
-        self.current_function = old_context['function']
-        self.builder = old_context['builder']
-        self.symbol_table_stack = old_context['symbol_table_stack']
-        self.functions = old_context['functions']
     def _generate_function_call(self, node):
-        """Generar llamada a función"""
-        func_name = node.value
-        args = [self._generate_expression(child) for child in node.children]
-
-        if func_name not in self.functions:
-            raise Exception(f"Función '{func_name}' no declarada")
-
-        func_info = self.functions[func_name]
-        func = func_info['function']
-
-        if not isinstance(func, ir.Function):
-            raise Exception(f"'{func_name}' no es una función válida")
-
-        # Generar la llamada y devolver el valor
-        call = self.builder.call(func, args, name=f"call_{func_name}")
-        return call  # Asegurarse de devolver el valor de la llamada
-
+        func = self.functions[node.value]
+        args = [self._generate_expression(arg) for arg in node.children]
+        return self.builder.call(func, args)
 
     def _generate_return(self, node):
-        """Generate return statement"""
-        if not self.current_function:
-            raise Exception("Return statement outside of function")
-        
-        # Obtener el tipo de retorno de la función actual
-        return_type = self.current_function.function_type.return_type
-        
-        if len(node.children) > 0:
-            ret_value = self._generate_expression(node.children[0])
-            # Asegurarse de que el tipo de retorno coincida con la función
-            if ret_value.type != return_type:
-                if isinstance(ret_value.type, ir.IntType) and isinstance(return_type, ir.DoubleType):
-                    ret_value = self.builder.sitofp(ret_value, self.double_type)
-                elif isinstance(ret_value.type, ir.DoubleType) and isinstance(return_type, ir.IntType):
-                    ret_value = self.builder.fptosi(ret_value, self.int_type)
-            self.builder.ret(ret_value)
-        else:
-            if isinstance(return_type, ir.VoidType):
-                self.builder.ret_void()
-            else:
-                # Retornar cero por defecto para tipos no void
-                zero_val = ir.Constant(return_type, 0)
-                self.builder.ret(zero_val)
+        value = self._generate_expression(node.children[0])
+        self.builder.ret(value)
 
     def _generate_expression(self, node):
-        """Generate expression code"""
         if node.type == "Literal":
             return self._generate_literal(node)
         elif node.type == "Variable":
-            return self._generate_variable(node)
+            for scope in reversed(self.symbol_table_stack):
+                if node.value in scope:
+                    return self.builder.load(scope[node.value], name=f"{node.value}.val")
+            raise NameError(f"Variable '{node.value}' no declarada")
         elif node.type == "BinaryOp":
-            return self._generate_binary_op(node)
+            # Soporte para operadores lógicos y aritméticos
+            left = self._generate_expression(node.children[0])
+            right = self._generate_expression(node.children[1])
+            op = node.value
+            if op == "&&":
+                return self.builder.and_(left, right, name="andtmp")
+            elif op == "||":
+                return self.builder.or_(left, right, name="ortmp")
+            elif op == "%":
+                return self.builder.srem(left, right, name="modtmp")
+            else:
+                return self._generate_binary_op(node)
         elif node.type == "UnaryOp":
             return self._generate_unary_op(node)
         elif node.type == "FunctionCall":
             return self._generate_function_call(node)
+        # ...otros tipos...
         else:
-            return Constant(self.int_type, 0)  # Default value
+            raise ValueError(f"Tipo de expresión no soportado: {node.type}")
 
     def _generate_literal(self, node):
-        """Generate literal value"""
-        if isinstance(node.value, bool):
-            return Constant(self.bool_type, int(node.value))
-        elif isinstance(node.value, int):
-            return Constant(self.int_type, node.value)
-        elif isinstance(node.value, float):
-            return Constant(self.double_type, node.value)
-        elif isinstance(node.value, str):
-            return self._generate_string(node.value)
+        v = node.value
+        if isinstance(v, bool):
+            return ir.Constant(self.bool_type, int(v))
+        elif isinstance(v, int):
+            return ir.Constant(self.int_type, v)
+        elif isinstance(v, float):
+            return ir.Constant(self.double_type, v)
         else:
-            return Constant(self.int_type, 0)
+            raise ValueError("Tipo literal no soportado")
 
-    def _generate_string(self, value):
-        # Verificar si ya tenemos esta cadena en el scope actual
-        for scope in reversed(self.symbol_table_stack):
-            if value in scope.get('_strings', {}):
-                return scope['_strings'][value]
-        
-        # Crear constante de cadena
-        str_type = ir.ArrayType(ir.IntType(8), len(value) + 1)
-        str_const = ir.Constant(str_type, bytearray(value.encode('utf-8') + b'\x00'))
-        
-        # Generar nombre único considerando el scope
-        scope_depth = len(self.symbol_table_stack)
-        str_name = f"str.{scope_depth}.{len(self.string_constants)}"
-        
-        # Crear variable global
-        global_str = ir.GlobalVariable(self.module, str_type, name=str_name)
-        global_str.linkage = "internal"
-        global_str.global_constant = True
-        global_str.initializer = str_const
-        
-        # Registrar en el scope actual y en el registro global
-        if '_strings' not in self._current_symbol_table():
-            self._current_symbol_table()['_strings'] = {}
-        self._current_symbol_table()['_strings'][value] = global_str
-        self.string_constants[value] = global_str
-        
-        # Obtener puntero al primer carácter (como i8*)
-        zero = Constant(ir.IntType(32), 0)
-        return self.builder.gep(global_str, [zero, zero], name=f"{str_name}_ptr")
-
-    def _generate_variable(self, node):
-        var_name = node.value
-        for scope in reversed(self.symbol_table_stack):
-            if var_name in scope:
-                ptr = scope[var_name]
-                return self.builder.load(ptr, name=f"{var_name}.val")
-        raise Exception(f"Variable '{var_name}' no declarada")
-    
     def _generate_binary_op(self, node):
-        """Generate binary operation"""
         left = self._generate_expression(node.children[0])
         right = self._generate_expression(node.children[1])
         op = node.value
-        
-        # Determine types
-        left_type = self._get_expression_type(node.children[0])
-        right_type = self._get_expression_type(node.children[1])
-        
-        # Convert types if needed
-        if left_type != right_type:
-            if isinstance(left_type, ir.IntType) and isinstance(right_type, ir.DoubleType):
+        # Distinguir tipos
+        if isinstance(left.type, ir.DoubleType) or isinstance(right.type, ir.DoubleType):
+            # Promocionar a double si es necesario
+            if isinstance(left.type, ir.IntType):
                 left = self.builder.sitofp(left, self.double_type)
-            elif isinstance(left_type, ir.DoubleType) and isinstance(right_type, ir.IntType):
+            if isinstance(right.type, ir.IntType):
                 right = self.builder.sitofp(right, self.double_type)
-        
-        # Perform operation
-        if op in ["+", "-", "*", "/"]:
-            if isinstance(left_type, ir.DoubleType) or isinstance(right_type, ir.DoubleType):
-                if op == "+": 
-                    return self.builder.fadd(left, right, name="addtmp")
-                elif op == "-": 
-                    return self.builder.fsub(left, right, name="subtmp")
-                elif op == "*": 
-                    return self.builder.fmul(left, right, name="multmp")
-                else: 
-                    return self.builder.fdiv(left, right, name="divtmp")
+            if op == "+":
+                return self.builder.fadd(left, right, name="addtmp")
+            elif op == "-":
+                return self.builder.fsub(left, right, name="subtmp")
+            elif op == "*":
+                return self.builder.fmul(left, right, name="multmp")
+            elif op == "/":
+                return self.builder.fdiv(left, right, name="divtmp")
+            elif op == "<":
+                return self.builder.fcmp_ordered("<", left, right, name="cmptmp")
+            elif op == ">":
+                return self.builder.fcmp_ordered(">", left, right, name="cmptmp")
+            elif op == "<=":
+                return self.builder.fcmp_ordered("<=", left, right, name="cmptmp")
+            elif op == ">=":
+                return self.builder.fcmp_ordered(">=", left, right, name="cmptmp")
+            elif op == "==":
+                return self.builder.fcmp_ordered("==", left, right, name="cmptmp")
+            elif op == "!=":
+                return self.builder.fcmp_ordered("!=", left, right, name="cmptmp")
             else:
-                if op == "+": 
-                    return self.builder.add(left, right, name="addtmp")
-                elif op == "-": 
-                    return self.builder.sub(left, right, name="subtmp")
-                elif op == "*": 
-                    return self.builder.mul(left, right, name="multmp")
-                else: 
-                    return self.builder.sdiv(left, right, name="divtmp")
-        elif op in ["<", ">", "<=", ">=", "==", "!="]:
-            if isinstance(left_type, ir.DoubleType) or isinstance(right_type, ir.DoubleType):
-                if op == "<": 
-                    return self.builder.fcmp_ordered("<", left, right, name="cmptmp")
-                elif op == ">": 
-                    return self.builder.fcmp_ordered(">", left, right, name="cmptmp")
-                elif op == "<=": 
-                    return self.builder.fcmp_ordered("<=", left, right, name="cmptmp")
-                elif op == ">=": 
-                    return self.builder.fcmp_ordered(">=", left, right, name="cmptmp")
-                elif op == "==": 
-                    return self.builder.fcmp_ordered("==", left, right, name="cmptmp")
-                else: 
-                    return self.builder.fcmp_ordered("!=", left, right, name="cmptmp")
+                raise ValueError(f"Operador binario no soportado para decimales: {op}")
+        else:
+            if op == "+":
+                return self.builder.add(left, right, name="addtmp")
+            elif op == "-":
+                return self.builder.sub(left, right, name="subtmp")
+            elif op == "*":
+                return self.builder.mul(left, right, name="multmp")
+            elif op == "/":
+                return self.builder.sdiv(left, right, name="divtmp")
+            elif op == "%":
+                return self.builder.srem(left, right, name="modtmp")
+            elif op == "<":
+                return self.builder.icmp_signed("<", left, right, name="cmptmp")
+            elif op == ">":
+                return self.builder.icmp_signed(">", left, right, name="cmptmp")
+            elif op == "<=":
+                return self.builder.icmp_signed("<=", left, right, name="cmptmp")
+            elif op == ">=":
+                return self.builder.icmp_signed(">=", left, right, name="cmptmp")
+            elif op == "==":
+                return self.builder.icmp_signed("==", left, right, name="cmptmp")
+            elif op == "!=":
+                return self.builder.icmp_signed("!=", left, right, name="cmptmp")
             else:
-                if op == "<": 
-                    return self.builder.icmp_signed("<", left, right, name="cmptmp")
-                elif op == ">": 
-                    return self.builder.icmp_signed(">", left, right, name="cmptmp")
-                elif op == "<=": 
-                    return self.builder.icmp_signed("<=", left, right, name="cmptmp")
-                elif op == ">=": 
-                    return self.builder.icmp_signed(">=", left, right, name="cmptmp")
-                elif op == "==": 
-                    return self.builder.icmp_signed("==", left, right, name="cmptmp")
-                else: 
-                    return self.builder.icmp_signed("!=", left, right, name="cmptmp")
-        elif op == "%":
-            if isinstance(left_type, ir.DoubleType) or isinstance(right_type, ir.DoubleType):
-                raise Exception("El operador '%' no es válido para tipos decimales")
-            return self.builder.srem(left, right, name="modtmp")
-        elif op == "^":
-            # Llamar a una función externa como `pow` para manejar potencias
-            pow_func = self.module.get_global("pow")
-            if not pow_func:
-                pow_type = ir.FunctionType(self.double_type, [self.double_type, self.double_type])
-                pow_func = ir.Function(self.module, pow_type, name="pow")
-            left = self.builder.sitofp(left, self.double_type) if isinstance(left.type, ir.IntType) else left
-            right = self.builder.sitofp(right, self.double_type) if isinstance(right.type, ir.IntType) else right
-            return self.builder.call(pow_func, [left, right], name="powtmp")
-        elif op == "raiz":
-            sqrt_func = self.module.get_global("sqrt")
-            if not sqrt_func:
-                sqrt_type = ir.FunctionType(self.double_type, [self.double_type])
-                sqrt_func = ir.Function(self.module, sqrt_type, name="sqrt")
-            operand = self.builder.sitofp(operand, self.double_type) if isinstance(operand.type, ir.IntType) else operand
-            return self.builder.call(sqrt_func, [operand], name="sqrttmp")
+                raise ValueError(f"Operador binario no soportado para enteros: {op}")
 
     def _generate_unary_op(self, node):
-        op = node.value
-        var_name = node.children[0].value
-        
-        # Buscar la variable en todos los scopes
-        for scope in reversed(self.symbol_table_stack):
-            if var_name in scope:
-                ptr = scope[var_name]
-                current_value = self.builder.load(ptr, name=f"{var_name}.val")
-                
-                # Generar nuevo valor
-                if op == "++":
-                    new_value = self.builder.add(current_value, 
-                                            ir.Constant(current_value.type, 1),
-                                            name=f"{var_name}.inc")
-                elif op == "--":
-                    new_value = self.builder.sub(current_value, 
-                                            ir.Constant(current_value.type, 1),
-                                            name=f"{var_name}.dec")
-                
-                # Almacenar el nuevo valor
-                self.builder.store(new_value, ptr)
-                
-                # Devolver el valor original (post-incremento) o nuevo (pre-incremento)
-                return current_value if op == "++" else new_value
-        
-        raise Exception(f"Variable '{var_name}' no declarada")
-    def _llvm_type(self, type_str):
-        """Map language type to LLVM type"""
-        type_map = {
-            "entero": self.int_type,
-            "decimal": self.double_type,
-            "cadena": self.char_ptr_type,
-            "bool": self.bool_type,
-            "void": self.void_type
-        }
-        return type_map.get(type_str, self.int_type)
-
-    def _get_expression_type(self, node):
-        """Get LLVM type of an expression"""
-        if node.type == "Literal":
-            if isinstance(node.value, bool):
-                return self.bool_type
-            elif isinstance(node.value, int):
-                return self.int_type
-            elif isinstance(node.value, float):
-                return self.double_type
-            elif isinstance(node.value, str):
-                return self.char_ptr_type
-        elif node.type == "Variable":
-            # Buscar la variable en todos los scopes
+        operand = self._generate_expression(node.children[0])
+        if node.value == "-":
+            return self.builder.neg(operand, name="negtmp")
+        elif node.value == "raiz":
+            # Implementa sqrt si lo necesitas
+            pass
+        elif node.value == "++":
+            var_name = node.children[0].value
             for scope in reversed(self.symbol_table_stack):
-                if node.value in scope:
-                    ptr = scope[node.value]
-                    return ptr.type.pointee
-            raise Exception(f"Variable '{node.value}' no declarada")
-        elif node.type == "BinaryOp":
-            left_type = self._get_expression_type(node.children[0])
-            right_type = self._get_expression_type(node.children[1])
-            
-            if node.value in ["+", "-", "*", "/"]:
-                if isinstance(left_type, ir.DoubleType) or isinstance(right_type, ir.DoubleType):
-                    return self.double_type
-                return self.int_type
-            else:
-                return self.bool_type
-        elif node.type == "UnaryOp":
-            return self._get_expression_type(node.children[0])
-        elif node.type == "FunctionCall":
-            if node.value in self.functions:
-                return self.functions[node.value]['return_type']
+                if var_name in scope:
+                    ptr = scope[var_name]
+                    val = self.builder.load(ptr)
+                    new_val = self.builder.add(val, ir.Constant(self.int_type, 1))
+                    self.builder.store(new_val, ptr)
+                    return new_val
+        elif node.value == "--":
+            # Pre-decremento
+            var_name = node.children[0].value
+            for scope in reversed(self.symbol_table_stack):
+                if var_name in scope:
+                    ptr = scope[var_name]
+                    val = self.builder.load(ptr)
+                    new_val = self.builder.sub(val, ir.Constant(self.int_type, 1))
+                    self.builder.store(new_val, ptr)
+                    return new_val
+        else:
+            raise ValueError(f"Operador unario no soportado: {node.value}")
+
+    def _llvm_type(self, type_str):
+        if type_str == "entero":
             return self.int_type
-        
-        return self.int_type
+        elif type_str == "decimal":
+            return self.double_type
+        elif type_str == "bool":
+            return self.bool_type
+        elif type_str == "void":
+            return self.void_type
+        else:
+            raise ValueError(f"Tipo no soportado: {type_str}")
 
     def save_to_file(self, filename="output.ll"):
-        """Save generated IR to file"""
-        llvm_ir = str(self.module)
-        with open(filename, 'w') as f:
-            f.write(llvm_ir)
-        print(f"LLVM IR saved to {filename}")
-    
-    def _generate_switch_statement(self, node):
-        """Generate switch statement"""
-        switch_expr = self._generate_expression(node.children[0])
-        cases = node.children[1:-1] if len(node.children) > 2 else []
-        default_block = node.children[-1] if len(node.children) > 2 else None
-
-        # Crear bloques básicos
-        end_block = self.builder.append_basic_block("switch.end")
-        case_blocks = [self.builder.append_basic_block(f"switch.case.{i}") for i in range(len(cases))]
-        default_block = self.builder.append_basic_block("switch.default") if default_block else end_block
-
-        # Generar comparación para cada caso
-        for i, case in enumerate(cases):
-            case_expr = self._generate_expression(case.children[0])
-            case_block = case_blocks[i]
-            cmp = self.builder.icmp_signed("==", switch_expr, case_expr)
-            self.builder.cbranch(cmp, case_block, default_block if i == len(cases) - 1 else case_blocks[i + 1])
-
-            # Generar bloque del caso
-            self.builder.position_at_end(case_block)
-            self._generate_node(case.children[1])
-            if not self.builder.block.is_terminated:
-                self.builder.branch(end_block)
-
-        # Generar bloque default si existe
-        if default_block != end_block:
-            self.builder.position_at_end(default_block)
-            self._generate_node(default_block.children[0])
-            if not self.builder.block.is_terminated:
-                self.builder.branch(end_block)
-
-        # Posicionarse en el bloque final
-        self.builder.position_at_end(end_block)
+        with open(filename, "w") as f:
+            f.write(str(self.module))
