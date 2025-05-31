@@ -85,10 +85,27 @@ class ASTVisitor(ExprVisitor):
         return ASTNode('WhileLoop', children=[condition, body])
     
     def visitSentencia_for(self, ctx):
+        # Inicialización
         init = self.visit(ctx.declaracion())
+        if init is None or init.type != "VariableDecl":
+            raise Exception("Error en la inicialización del bucle 'for'")
+
+        # Condición
         condition = self.visit(ctx.expr())
+        if condition is None or condition.type != "BinaryOp":
+            raise Exception("Error en la condición del bucle 'for'")
+
+        # Actualización
         update = self.visit(ctx.actualizacion())
+        if update is None or update.type not in {"UnaryOp", "Assignment"}:
+            raise Exception("Error en la actualización del bucle 'for'")
+
+        # Cuerpo
         body = self.visit(ctx.bloque_de_sentencia())
+        if body is None or body.type != "Block":
+            raise Exception("Error en el cuerpo del bucle 'for'")
+
+        # Crear el nodo del bucle 'for'
         return ASTNode('ForLoop', children=[init, condition, update, body])
     
     def visitDeclaracion_funcion(self, ctx):
@@ -151,6 +168,8 @@ class ASTVisitor(ExprVisitor):
         var_name = ctx.VARIABLE().getText()
         var_type = self.visit(ctx.tipo())
         value = self.visit(ctx.expr())
+        if value is None:
+            raise Exception(f"Error en la inicialización de la variable '{var_name}'")
         return ASTNode('VariableDecl', children=[var_type, value], value=var_name)
     
     def visitDeclaracion_sin_asignacion(self, ctx):
@@ -177,10 +196,15 @@ class ASTVisitor(ExprVisitor):
             right = self.visit(ctx.getChild(2))
 
             if operator in {'&&', '||', '%', '<', '>', '<=', '>=', '==', '!='}:
+                if left is None or right is None:
+                    raise Exception("Error en los operandos de la condición")
                 return ASTNode('BinaryOp', children=[left, right], value=operator)
 
         # Manejo de términos
-        return self.visit(ctx.term(0))
+        term = self.visit(ctx.term(0))
+        if term is None:
+            raise Exception("Error en la expresión")
+        return term
     
     def visitTerm(self, ctx):
         if ctx.getChildCount() == 3:
@@ -231,10 +255,12 @@ class ASTVisitor(ExprVisitor):
                          value=op)
         elif ctx.expr():
             expr = self.visit(ctx.expr())
+            if expr is None:
+                raise Exception(f"Error en la expresión de actualización de la variable '{var_name}'")
             return ASTNode('Assignment',
                          children=[expr],
                          value=var_name)
-        return ASTNode('Empty')
+        raise Exception(f"Error en la actualización de la variable '{var_name}'")
 
     def visitSentencia_switch(self, ctx):
         """Maneja la sentencia switch."""

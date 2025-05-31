@@ -2,5 +2,10 @@ hola {
 x entero = 5;
 y entero = 3;
 z entero = x + y * 2;
+a entero  = 2 + 2;
+b entero  = 4;  
 mostrar(z);
 }
+18
+/home/vre_fedorin/ProyectoCompiladores/output.ll
+/home/vre_fedorin/ProyectoCompiladores/outputs/program

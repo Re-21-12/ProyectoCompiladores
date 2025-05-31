@@ -123,7 +123,6 @@ class LLVMGenerator:
         elif node_type == "SwitchStatement":
             self._generate_switch_statement(node)
     def _generate_variable_decl(self, node):
-        """Generate variable declaration"""
         var_name = node.value
         var_type = self._llvm_type(node.children[0].value)
         
@@ -134,24 +133,25 @@ class LLVMGenerator:
         # Initialize if needed
         if len(node.children) > 1:
             value = self._generate_expression(node.children[1])
-            # Handle string type conversion
-            if isinstance(value.type, ir.PointerType) and isinstance(value.type.pointee, ir.ArrayType):
-                if var_type == self.char_ptr_type:
-                    # Convert array pointer to char pointer
-                    zero = Constant(ir.IntType(32), 0)
-                    value = self.builder.gep(value, [zero, zero], name=f"{var_name}_ptr_cast")
             self.builder.store(value, ptr)
             
     def _generate_assignment(self, node):
-        """Generate variable assignment"""
         var_name = node.value
         # Buscar la variable en todos los scopes
         for scope in reversed(self.symbol_table_stack):
             if var_name in scope:
                 ptr = scope[var_name]
                 value = self._generate_expression(node.children[0])
+                
+                # Convertir tipos si es necesario
+                if ptr.type.pointee != value.type:
+                    if isinstance(ptr.type.pointee, ir.DoubleType) and isinstance(value.type, ir.IntType):
+                        value = self.builder.sitofp(value, self.double_type)
+                    elif isinstance(ptr.type.pointee, ir.IntType) and isinstance(value.type, ir.DoubleType):
+                        value = self.builder.fptosi(value, self.int_type)
+                
                 self.builder.store(value, ptr)
-                return
+                return value
         raise Exception(f"Variable '{var_name}' no declarada")
 
     def _generate_print(self, expr_node):
@@ -260,44 +260,53 @@ class LLVMGenerator:
         self.builder.position_at_end(end_block)
 
     def _generate_for_loop(self, node):
-        init, cond, update, body = node.children
-        self._enter_scope()
-
-        # Guardar el bloque actual
-        current_block = self.builder.block
-
+        # 1. Procesar inicialización (crea la variable en el scope)
+        self._enter_scope()  # Nuevo scope para el bucle
+        init_node = node.children[0]
+        self._generate_node(init_node)
+        
+        # Crear bloques básicos
         cond_block = self.builder.append_basic_block("for.cond")
         body_block = self.builder.append_basic_block("for.body")
         update_block = self.builder.append_basic_block("for.update")
         end_block = self.builder.append_basic_block("for.end")
-
-        # Generar código de inicialización
-        self._generate_node(init)
+        
+        # Saltar al bloque de condición
         self.builder.branch(cond_block)
-
-        # Bloque de condición
+        
+        # 2. Bloque de condición
         self.builder.position_at_end(cond_block)
-        cond_value = self._generate_expression(cond)
+        cond_node = node.children[1]
+        cond_value = self._generate_expression(cond_node)
+        
+        # Convertir condición a booleano si es necesario
         if cond_value.type != self.bool_type:
-            cond_value = self.builder.icmp_unsigned("!=", cond_value, ir.Constant(cond_value.type, 0))
+            cond_value = self.builder.icmp_unsigned("!=", cond_value, 
+                                                ir.Constant(cond_value.type, 0))
+        
         self.builder.cbranch(cond_value, body_block, end_block)
-
-        # Bloque del cuerpo
+        
+        # 3. Bloque del cuerpo
         self.builder.position_at_end(body_block)
-        self._generate_node(body)
+        body_node = node.children[3]
+        self._generate_node(body_node)
+        
+        # Saltar al bloque de actualización si no hay terminación explícita
         if not self.builder.block.is_terminated:
             self.builder.branch(update_block)
-
-        # Bloque de actualización
+        
+        # 4. Bloque de actualización
         self.builder.position_at_end(update_block)
-        self._generate_node(update)
+        update_node = node.children[2]
+        self._generate_node(update_node)
+        
+        # Saltar de nuevo al bloque de condición
         if not self.builder.block.is_terminated:
             self.builder.branch(cond_block)
-
-        # Posicionarse en el bloque final
-        self.builder.position_at_end(end_block)
-        self._exit_scope()
         
+        # 5. Bloque final
+        self.builder.position_at_end(end_block)
+        self._exit_scope()  # Salir del scope del bucle
     def _generate_function_decl(self, node):
         """Generate function declaration with proper scope handling"""
         func_name = node.value
@@ -466,9 +475,7 @@ class LLVMGenerator:
         return self.builder.gep(global_str, [zero, zero], name=f"{str_name}_ptr")
 
     def _generate_variable(self, node):
-        """Generate variable access"""
         var_name = node.value
-        # Buscar la variable en todos los scopes, desde el más interno
         for scope in reversed(self.symbol_table_stack):
             if var_name in scope:
                 ptr = scope[var_name]
@@ -559,32 +566,34 @@ class LLVMGenerator:
                 sqrt_func = ir.Function(self.module, sqrt_type, name="sqrt")
             operand = self.builder.sitofp(operand, self.double_type) if isinstance(operand.type, ir.IntType) else operand
             return self.builder.call(sqrt_func, [operand], name="sqrttmp")
-    def _generate_unary_op(self, node):
-        """Generate unary operation"""
-        operand = self._generate_expression(node.children[0])
-        op = node.value
-        
-        if op == "-":
-            if isinstance(operand.type, ir.DoubleType):
-                return self.builder.fneg(operand)
-            else:
-                return self.builder.sub(Constant(operand.type, 0), operand)
-        elif op in ["++", "--"]:
-            # Handle increment/decrement
-            var_name = node.children[0].value
-            ptr = self.symbol_table[var_name]
-            value = self.builder.load(ptr)
-            
-            if isinstance(value.type, ir.DoubleType):
-                delta = Constant(value.type, 1.0 if op == "++" else -1.0)
-                new_value = self.builder.fadd(value, delta)
-            else:
-                delta = Constant(value.type, 1 if op == "++" else -1)
-                new_value = self.builder.add(value, delta)
-            
-            self.builder.store(new_value, ptr)
-            return new_value
 
+    def _generate_unary_op(self, node):
+        op = node.value
+        var_name = node.children[0].value
+        
+        # Buscar la variable en todos los scopes
+        for scope in reversed(self.symbol_table_stack):
+            if var_name in scope:
+                ptr = scope[var_name]
+                current_value = self.builder.load(ptr, name=f"{var_name}.val")
+                
+                # Generar nuevo valor
+                if op == "++":
+                    new_value = self.builder.add(current_value, 
+                                            ir.Constant(current_value.type, 1),
+                                            name=f"{var_name}.inc")
+                elif op == "--":
+                    new_value = self.builder.sub(current_value, 
+                                            ir.Constant(current_value.type, 1),
+                                            name=f"{var_name}.dec")
+                
+                # Almacenar el nuevo valor
+                self.builder.store(new_value, ptr)
+                
+                # Devolver el valor original (post-incremento) o nuevo (pre-incremento)
+                return current_value if op == "++" else new_value
+        
+        raise Exception(f"Variable '{var_name}' no declarada")
     def _llvm_type(self, type_str):
         """Map language type to LLVM type"""
         type_map = {

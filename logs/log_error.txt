@@ -880,3 +880,4 @@ opt: Did you mean '--consthoist'?
 2025-05-30 16:19:01,768 - ERROR - [31m✖ Error inesperado: Operador desconocido: %[0m
 2025-05-30 16:22:27,756 - ERROR - [31m✖ Error inesperado: La función 'sumaRecursiva' debe retornar un valor[0m
 2025-05-30 16:26:40,209 - ERROR - [31m✖ Error inesperado: La función 'sumaRecursiva' debe retornar un valor[0m
+2025-05-30 21:37:54,144 - ERROR - [31m✖ Error inesperado: Error: Variable 'res' no definida.[0m
