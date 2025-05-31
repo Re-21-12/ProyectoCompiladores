@@ -769,4 +769,81 @@ for (d entero = 0; d < 10000; d++) {
     mostrar(sumaExtra4);
 }
 
+sumaExtra5 entero = 0;
+for (e entero = 0; e < 10000; e++) {
+    sumaExtra5 = sumaExtra5 + e;
+    mostrar(sumaExtra5);
+}
+
+sumaExtra6 entero = 0;
+for (f entero = 0; f < 10000; f++) {
+    sumaExtra6 = sumaExtra6 + f;
+    mostrar(sumaExtra6);
+}
+
+sumaExtra7 entero = 0;
+for (g entero = 0; g < 10000; g++) {
+    sumaExtra7 = sumaExtra7 + g;
+    mostrar(sumaExtra7);
+}
+
+sumaExtra8 entero = 0;
+for (h entero = 0; h < 10000; h++) {
+    sumaExtra8 = sumaExtra8 + h;
+    mostrar(sumaExtra8);
+}
+
+sumaExtra9 entero = 0;
+for (i entero = 0; i < 10000; i++) {
+    sumaExtra9 = sumaExtra9 + i;
+    mostrar(sumaExtra9);
+}
+
+sumaExtra10 entero = 0;
+for (j entero = 0; j < 10000; j++) {
+    sumaExtra10 = sumaExtra10 + j;
+    mostrar(sumaExtra10);
+}
+
+funcion sumaParesRecursiva entero(n entero) {
+    if (n == 0) {
+        retorna 0;
+    } else if (n % 2 == 0) {
+        retorna n + sumaParesRecursiva(n - 2);
+    } else {
+        retorna sumaParesRecursiva(n - 1);
+    }
+}
+
+funcion sumaImparesRecursiva entero(n entero) {
+    if (n == 0) {
+        retorna 0;
+    } else if (n % 2 != 0) {
+        retorna n + sumaImparesRecursiva(n - 2);
+    } else {
+        retorna sumaImparesRecursiva(n - 1);
+    }
+}
+
+mostrar(sumaParesRecursiva(1000));
+mostrar(sumaImparesRecursiva(999));
+
+for (k entero = 0; k < 1000; k++) {
+    mostrar(sumaParesRecursiva(k));
+}
+
+for (l entero = 0; l < 1000; l++) {
+    mostrar(sumaImparesRecursiva(l));
+}
+
+contadorWhile1 entero = 0;
+while (contadorWhile1 < 5000) {
+    contadorWhile1 = contadorWhile1 + 1;
+    mostrar(contadorWhile1);
+}
+
+contadorWhile2 entero = 0;
+while (contadorWhile2 < 5000) {
+    contadorWhile2 = contadorWhile2 + 2;
+    mostrar(contadorWhile2);
 }

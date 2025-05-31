@@ -7,8 +7,7 @@ declare i32 @"printf"(i8* %".1", ...)
 define i32 @"main"()
 {
 entry:
-  %"contadorA" = alloca i32
-  store i32 0, i32* %"contadorA"
+
   %"sumaA" = alloca i32
   store i32 0, i32* %"sumaA"
   %"sumaA2" = alloca i32
@@ -20,26 +19,20 @@ entry:
   store i1 1, i1* %"es_validoA"
   %"es_adminA" = alloca i1
   store i1 0, i1* %"es_adminA"
-  %"contadorA2" = alloca i32
-  store i32 0, i32* %"contadorA2"
-  %"sumaA3" = alloca i32
-  store i32 0, i32* %"sumaA3"
-  %"sumaA4" = alloca i32
-  store i32 0, i32* %"sumaA4"
-  %"mensajeA1" = alloca i8*
-  %"mensajeA1_ptr_cast" = getelementptr [18 x i8], [18 x i8]* @"str.1.0", i32 0, i32 0
-  store i8* %"mensajeA1_ptr_cast", i8** %"mensajeA1"
-  %"es_validoA2" = alloca i1
-  store i1 1, i1* %"es_validoA2"
+
+
+
+
+
   %"mensajeA.val" = load i8*, i8** %"mensajeA"
   %".13" = bitcast [4 x i8]* @"fmt.1" to i8*
   %".14" = call i32 (i8*, ...) @"printf"(i8* %".13", i8* %"mensajeA.val")
   %"resultadoA1" = alloca i32
-  %"addtmp" = add i32 6, 4
-  store i32 %"addtmp", i32* %"resultadoA1"
+  store i32 10, i32* %"resultadoA1"
+
   %"resultadoA2" = alloca i32
-  %"subtmp" = sub i32 11, 3
-  store i32 %"subtmp", i32* %"resultadoA2"
+  store i32 8, i32* %"resultadoA2"
+
   %"resultadoA3" = alloca i32
   %"multmp" = mul i32 5, 8
   store i32 %"multmp", i32* %"resultadoA3"
