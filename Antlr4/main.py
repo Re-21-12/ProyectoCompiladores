@@ -131,19 +131,11 @@ def check_extension(text):
     return text.endswith('.txt')
 
 def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_program=False, target_exe=False):
-    """Compila código LLVM IR a ejecutable (nativo o .exe para Windows)
-    
-    Args:
-        llvm_ir: Código LLVM IR
-        optimize: Aplica optimizaciones con `opt` si es True
-        generate_executable: Genera ejecutable si es True
-        run_program: Ejecuta el binario generado si es True
-        target_exe: Genera .exe para Windows si es True
-    """
     try:
         output_dir = Path("outputs")
         output_dir.mkdir(exist_ok=True)
         
+        # Guardar archivo .ll
         ll_file = output_dir / "output.ll"
         with open(ll_file, "w", encoding='utf-8') as f:
             f.write(str(llvm_ir))
@@ -154,8 +146,9 @@ def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_progr
             opt_file = output_dir / "optimized.ll"
             opt_cmd = ["opt", "-O2", "-S", str(ll_file), "-o", str(opt_file)]
             result = subprocess.run(opt_cmd, capture_output=True, text=True)
-            if result.stderr:
-                print(f"{Fore.YELLOW}⚠ Optimización: {result.stderr}{Style.RESET_ALL}")
+            if result.returncode != 0:
+                print(f"{Fore.RED}[ERROR] Optimización fallida:\n{result.stderr}{Style.RESET_ALL}")
+                return False
             print(f"{Fore.GREEN}✔ LLVM IR optimizado: {opt_file}{Style.RESET_ALL}")
             ll_file = opt_file
 
@@ -168,11 +161,9 @@ def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_progr
             "llc",
             "-filetype=obj",
             "-O3",
+            str(ll_file),
+            "-o", str(obj_file)
         ]
-
-        if target_exe:
-            llc_cmd.extend(["-mtriple=x86_64-pc-windows-gnu"])
-        llc_cmd.extend([str(ll_file), "-o", str(obj_file)])
 
         print(f"{Fore.CYAN}[INFO] Ejecutando llc: {' '.join(llc_cmd)}{Style.RESET_ALL}")
         result_llc = subprocess.run(llc_cmd, capture_output=True, text=True)
@@ -181,33 +172,47 @@ def compile_llvm_ir(llvm_ir, optimize=False, generate_executable=True, run_progr
             return False
         print(f"{Fore.GREEN}✔ Archivo objeto generado: {obj_file}{Style.RESET_ALL}")
 
-        # Enlazado
-        exe_file = output_dir / ("program.exe" if target_exe else "program")
+        # Enlace
         if target_exe:
-            gcc_cmd = [
+            exe_file = output_dir / "program.exe"
+            # Verificar si el compilador cruzado está disponible
+            try:
+                subprocess.run(["x86_64-w64-mingw32-gcc", "--version"], capture_output=True, check=True)
+            except Exception:
+                print(f"{Fore.RED}[ERROR] Compilador cruzado x86_64-w64-mingw32-gcc no encontrado. Instálelo para generar .exe.{Style.RESET_ALL}")
+                return False
+            link_cmd = [
                 "x86_64-w64-mingw32-gcc",
                 str(obj_file),
-                "-o", str(exe_file)
+                "-o", str(exe_file),
+                "-static",
+                "-static-libgcc",
+                "-static-libstdc++"
             ]
+            print(f"{Fore.CYAN}[INFO] Ejecutando comando de enlace para .exe: {' '.join(link_cmd)}{Style.RESET_ALL}")
+            result_link = subprocess.run(link_cmd, capture_output=True, text=True)
+            if result_link.returncode != 0:
+                print(f"{Fore.RED}[ERROR] Enlace para .exe fallido:\n{result_link.stderr}{Style.RESET_ALL}")
+                return False
+            print(f"{Fore.GREEN}✔ Ejecutable Windows generado: {exe_file}{Style.RESET_ALL}")
+            return True
         else:
-            gcc_cmd = [
+            exe_file = output_dir / "program"
+            link_cmd = [
                 "gcc",
                 str(obj_file),
-                "-o", str(exe_file)
+                "-o", str(exe_file),
+                "-no-pie"
             ]
-
-        print(f"{Fore.CYAN}[INFO] Enlazando ejecutable: {' '.join(gcc_cmd)}{Style.RESET_ALL}")
-        result_gcc = subprocess.run(gcc_cmd, capture_output=True, text=True)
-        if result_gcc.returncode != 0:
-            print(f"{Fore.RED}[ERROR] Enlace fallido:\n{result_gcc.stderr}{Style.RESET_ALL}")
-            return False
-        print(f"{Fore.GREEN}✔ Ejecutable generado: {exe_file}{Style.RESET_ALL}")
-
-        if run_program:
-            print(f"{Fore.MAGENTA}▶ Ejecutando el programa:{Style.RESET_ALL}")
-            subprocess.run([str(exe_file)])
-
-        return True
+            print(f"{Fore.CYAN}[INFO] Ejecutando comando de enlace: {' '.join(link_cmd)}{Style.RESET_ALL}")
+            result_link = subprocess.run(link_cmd, capture_output=True, text=True)
+            if result_link.returncode != 0:
+                print(f"{Fore.RED}[ERROR] Enlace fallido:\n{result_link.stderr}{Style.RESET_ALL}")
+                return False
+            # Hacer el binario ejecutable
+            os.chmod(str(exe_file), 0o755)
+            print(f"{Fore.GREEN}✔ Ejecutable generado: {exe_file}{Style.RESET_ALL}")
+            return True
 
     except Exception as e:
         print(f"{Fore.RED}[EXCEPCIÓN] {e}{Style.RESET_ALL}")
