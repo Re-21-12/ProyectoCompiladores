@@ -1,0 +1,201 @@
+hola {
+    suma entero = 0;
+    producto entero = 1;
+    i entero = 0;
+
+    for (i entero = 1; i <= 10; i++) {
+        suma = suma + i;
+    }
+
+    j entero = 1;
+    while (j <= 5) {
+        producto = producto * j;
+        j = j + 1;
+    }
+
+    mostrar(suma);
+    mostrar(producto);
+
+    a entero = 8 + 2 * 3;
+    b decimal = 10.0 / 4.0;
+    d entero = 15 % 4;
+
+    mostrar(a);
+    mostrar(b);
+    mostrar(d);
+
+    suma2 entero = 0;
+    producto2 entero = 1;
+    i2 entero = 0;
+
+    for (i2 entero = 1; i2 <= 12; i2++) {
+        suma2 = suma2 + i2;
+    }
+
+    j2 entero = 1;
+    while (j2 <= 6) {
+        producto2 = producto2 * j2;
+        j2 = j2 + 1;
+    }
+
+    mostrar(suma2);
+    mostrar(producto2);
+
+    a2 entero = 12 + 3 * 4;
+    b2 decimal = 20.0 / 5.0;
+    d2 entero = 22 % 5;
+
+    mostrar(a2);
+    mostrar(b2);
+    mostrar(d2);
+
+    suma3 entero = 0;
+    producto3 entero = 1;
+    i3 entero = 0;
+
+    for (i3 entero = 1; i3 <= 8; i3++) {
+        suma3 = suma3 + i3;
+    }
+
+    j3 entero = 1;
+    while (j3 <= 4) {
+        producto3 = producto3 * j3;
+        j3 = j3 + 1;
+    }
+
+    mostrar(suma3);
+    mostrar(producto3);
+
+    a3 entero = 6 + 5 * 2;
+    b3 decimal = 15.0 / 3.0;
+    d3 entero = 18 % 6;
+
+    mostrar(a3);
+    mostrar(b3);
+    mostrar(d3);
+
+    suma4 entero = 0;
+    producto4 entero = 1;
+    i4 entero = 0;
+
+    for (i4 entero = 1; i4 <= 15; i4++) {
+        suma4 = suma4 + i4;
+    }
+
+    j4 entero = 1;
+    while (j4 <= 7) {
+        producto4 = producto4 * j4;
+        j4 = j4 + 1;
+    }
+
+    mostrar(suma4);
+    mostrar(producto4);
+
+    a4 entero = 10 + 4 * 5;
+    b4 decimal = 25.0 / 2.0;
+    d4 entero = 27 % 7;
+
+    mostrar(a4);
+    mostrar(b4);
+    mostrar(d4);
+
+    suma5 entero = 0;
+    producto5 entero = 1;
+    i5 entero = 0;
+
+    for (i5 entero = 1; i5 <= 9; i5++) {
+        suma5 = suma5 + i5;
+    }
+
+    j5 entero = 1;
+    while (j5 <= 3) {
+        producto5 = producto5 * j5;
+        j5 = j5 + 1;
+    }
+
+    mostrar(suma5);
+    mostrar(producto5);
+
+    a5 entero = 7 + 6 * 2;
+    b5 decimal = 18.0 / 6.0;
+    d5 entero = 21 % 5;
+
+    mostrar(a5);
+    mostrar(b5);
+    mostrar(d5);
+
+    suma6 entero = 0;
+    producto6 entero = 1;
+    i6 entero = 0;
+
+    for (i6 entero = 1; i6 <= 11; i6++) {
+        suma6 = suma6 + i6;
+    }
+
+    j6 entero = 1;
+    while (j6 <= 8) {
+        producto6 = producto6 * j6;
+        j6 = j6 + 1;
+    }
+
+    mostrar(suma6);
+    mostrar(producto6);
+
+    a6 entero = 9 + 3 * 5;
+    b6 decimal = 30.0 / 5.0;
+    d6 entero = 24 % 6;
+
+    mostrar(a6);
+    mostrar(b6);
+    mostrar(d6);
+
+    suma7 entero = 0;
+    for (k1 entero = 0; k1 < 10000; k1++) {
+        suma7 = suma7 + k1;
+    }
+    mostrar(suma7);
+
+    suma8 entero = 0;
+    for (k2 entero = 0; k2 < 10000; k2++) {
+        suma8 = suma8 + k2;
+    }
+    mostrar(suma8);
+
+    suma9 entero = 0;
+    for (k3 entero = 0; k3 < 10000; k3++) {
+        suma9 = suma9 + k3;
+    }
+    mostrar(suma9);
+
+    suma10 entero = 0;
+    for (k4 entero = 0; k4 < 10000; k4++) {
+        suma10 = suma10 + k4;
+    }
+    mostrar(suma10);
+
+    suma11 entero = 0;
+    for (k5 entero = 0; k5 < 10000; k5++) {
+        suma11 = suma11 + k5;
+    }
+    mostrar(suma11);
+
+    suma12 entero = 0;
+    for (k6 entero = 0; k6 < 10000; k6++) {
+        suma12 = suma12 + k6;
+    }
+    mostrar(suma12);
+
+ 
+
+
+    funcion sumaRecursiva entero(n entero) {
+        if (n == 0) {
+            retorna 0;
+        } else {
+            retorna n + sumaRecursiva(n - 1);
+        }
+    }
+
+    resultadoSumaRec entero = sumaRecursiva(100);
+    mostrar(resultadoSumaRec);
+}

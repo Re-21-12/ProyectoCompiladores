@@ -125,12 +125,21 @@ class LLVMGenerator:
     def _generate_if(self, node):
         cond = self._generate_expression(node.children[0].children[0])
         then_block = self.current_function.append_basic_block("if.then")
+        else_block = self.current_function.append_basic_block("if.else")
         end_block = self.current_function.append_basic_block("if.end")
-        self.builder.cbranch(cond, then_block, end_block)
+        self.builder.cbranch(cond, then_block, else_block)
+        # THEN
         self.builder.position_at_end(then_block)
         self._generate_node(node.children[1].children[0])
         if not self.builder.block.is_terminated:
             self.builder.branch(end_block)
+        # ELSE
+        self.builder.position_at_end(else_block)
+        if len(node.children) > 2:
+            self._generate_node(node.children[2].children[0])
+        if not self.builder.block.is_terminated:
+            self.builder.branch(end_block)
+        # END
         self.builder.position_at_end(end_block)
 
     def _generate_while(self, node):
@@ -180,14 +189,15 @@ class LLVMGenerator:
         func_ty = ir.FunctionType(ret_type, param_types)
         func = ir.Function(self.module, func_ty, name=name)
         self.functions[name] = func
+        block = func.append_basic_block("entry")
+        old_builder = self.builder
+        self.builder = ir.IRBuilder(block)
         self._enter_scope()
+        # Asignar argumentos a variables locales
         for i, p in enumerate(params):
             ptr = self.builder.alloca(param_types[i], name=p.value)
             self.builder.store(func.args[i], ptr)
             self._current_symbol_table()[p.value] = ptr
-        block = func.append_basic_block("entry")
-        old_builder = self.builder
-        self.builder = ir.IRBuilder(block)
         for child in node.children[2:]:
             self._generate_node(child)
         if not self.builder.block.is_terminated:
@@ -195,8 +205,8 @@ class LLVMGenerator:
                 self.builder.ret_void()
             else:
                 self.builder.ret(ir.Constant(ret_type, 0))
-        self.builder = old_builder
         self._exit_scope()
+        self.builder = old_builder
 
     def _generate_function_call(self, node):
         func = self.functions[node.value]
@@ -312,26 +322,25 @@ class LLVMGenerator:
             return self.builder.neg(operand, name="negtmp")
         elif node.value == "raiz":
             # Implementa sqrt si lo necesitas
-            pass
-        elif node.value == "++":
-            var_name = node.children[0].value
-            for scope in reversed(self.symbol_table_stack):
-                if var_name in scope:
-                    ptr = scope[var_name]
-                    val = self.builder.load(ptr)
-                    new_val = self.builder.add(val, ir.Constant(self.int_type, 1))
-                    self.builder.store(new_val, ptr)
-                    return new_val
+            return operand  # Placeholder
         elif node.value == "--":
             # Pre-decremento
             var_name = node.children[0].value
             for scope in reversed(self.symbol_table_stack):
-                if var_name in scope:
-                    ptr = scope[var_name]
-                    val = self.builder.load(ptr)
-                    new_val = self.builder.sub(val, ir.Constant(self.int_type, 1))
-                    self.builder.store(new_val, ptr)
-                    return new_val
+                ptr = scope[var_name]
+                val = self.builder.load(ptr)
+                new_val = self.builder.sub(val, ir.Constant(self.int_type, 1))
+                self.builder.store(new_val, ptr)
+                return new_val
+        elif node.value == "++":
+            # Pre-incremento
+            var_name = node.children[0].value
+            for scope in reversed(self.symbol_table_stack):
+                ptr = scope[var_name]
+                val = self.builder.load(ptr)
+                new_val = self.builder.add(val, ir.Constant(self.int_type, 1))
+                self.builder.store(new_val, ptr)
+                return new_val
         else:
             raise ValueError(f"Operador unario no soportado: {node.value}")
 
